@@ -22,6 +22,12 @@ range-checked before the handler runs — a failure there is `400`, never the ha
 | --- | --- | --- |
 | [`GET /`](homepage.md) | THe homepage of the url shortner | `homepage` |
 
+## Links
+
+| Route | Answers | Package |
+| --- | --- | --- |
+| [`GET /list-links`](list_links.md) | List all links | `list_links` |
+
 ## Assets
 
 | Route | Answers | Package |

@@ -1,0 +1,9 @@
+category: Links
+help: List all links
+method: GET
+params:
+    - name: password
+      required: true
+      type: string
+paths:
+    - identifier: /list-links

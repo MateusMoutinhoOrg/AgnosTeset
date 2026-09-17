@@ -57,6 +57,17 @@ func NewCommand(sandbox *api.Sandbox) api.Command {
 			HasDefault:  true,
 			Identifiers: []string{"--write-timeout-ms"},
 		},
+		{
+			Id:          "root-password",
+			Type:        "string",
+			Required:    true,
+			Array:       false,
+			Description: "root password required to list links",
+			Examples:    []string{},
+			Default:     "",
+			HasDefault:  false,
+			Identifiers: []string{"--root-password"},
+		},
 	}
 
 	command.Args = []api.CommandArg{}
