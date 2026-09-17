@@ -2,9 +2,9 @@ package standard
 
 import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/argvdeps"
+	database "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/embeddeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/hashdeps"
-	keep "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/keep"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serverdeps"
 	sortdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/sortdeps"
@@ -17,9 +17,9 @@ import (
 func New() deps.Deps {
 	deps := deps.Deps{}
 	argvdeps.Bind(&deps)
+	database.Bind(&deps)
 	embeddeps.Bind(&deps)
 	hashdeps.Bind(&deps)
-	keep.Bind(&deps)
 	serializables.Bind(&deps)
 	serverdeps.Bind(&deps)
 	sortdeps.Bind(&deps)

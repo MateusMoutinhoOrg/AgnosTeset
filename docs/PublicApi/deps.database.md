@@ -1,6 +1,6 @@
-# `deps.Keep`
+# `deps.Database`
 
-`sandbox/deps/keep`
+`sandbox/deps/database`
 
 | Constant | Value | Description |
 | --- | --- | --- |

@@ -1,4 +1,4 @@
-package keep
+package database
 
 // This file is the whole of Keep's database surface: the Databases contract
 // that reaches the Sandbox as the field of the same name, and the types that

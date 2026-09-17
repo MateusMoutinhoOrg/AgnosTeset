@@ -2,9 +2,9 @@ package deps
 
 import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/argvdeps"
+	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/hashdeps"
-	keep "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/keep"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	sortdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/sortdeps"
@@ -18,9 +18,9 @@ import (
 // sandbox only calls them, which is what keeps it free of OS packages.
 type Deps struct {
 	Argvdeps      argvdeps.Sandbox
+	Database      database.Sandbox
 	Embeddeps     embeddeps.Sandbox
 	Hashdeps      hashdeps.Sandbox
-	Keep          keep.Sandbox
 	Serializables serializables.Sandbox
 	Serverdeps    serverdeps.Sandbox
 	Sortdeps      sortdeps.Sandbox

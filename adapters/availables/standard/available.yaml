@@ -1,8 +1,8 @@
 adapters:
     - argvdeps
+    - database
     - embeddeps
     - hashdeps
-    - keep
     - serializables
     - serverdeps
     - sortdeps
