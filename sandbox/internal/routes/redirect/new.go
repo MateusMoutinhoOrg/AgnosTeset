@@ -32,7 +32,18 @@ func NewRoute(sandbox *api.Sandbox) api.Route {
 
 	route.Headers = []api.RouteField{}
 
-	route.Params = []api.RouteField{}
+	route.Params = []api.RouteField{
+		{
+			Id:          "alias",
+			Type:        "string",
+			Required:    true,
+			Array:       false,
+			Description: "",
+			Examples:    []string{},
+			Default:     "",
+			HasDefault:  false,
+		},
+	}
 
 	route.Body = api.RouteBody{
 		Type:        "none",

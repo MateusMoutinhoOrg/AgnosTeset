@@ -8,7 +8,28 @@
     {{ dirref "scripts" }}
   </head>
   <body>
-    <h1>{{ .Title }}</h1>
-    <p>{{ .Message }}</p>
+    <div class="container fade-in">
+      <div class="glass-panel">
+        <h1>Url Shortner</h1>
+        <p class="subtitle">Shorten your long links into easily shareable URLs instantly.</p>
+        
+        <div class="input-group">
+          <input type="text" id="urlInput" placeholder="Enter your long URL here (e.g. https://google.com)" />
+          <button id="shortenBtn">Shorten</button>
+        </div>
+        <div id="result" class="result"></div>
+      </div>
+
+      <div class="glass-panel" style="animation-delay: 0.2s;">
+        <h2>Link Management</h2>
+        <p class="subtitle" style="text-align: left;">View all shortened URLs in the database (requires root password).</p>
+        
+        <div class="input-group">
+          <input type="password" id="passInput" placeholder="Enter root password" />
+          <button id="listBtn">List Links</button>
+        </div>
+        <div id="linksTableContainer"></div>
+      </div>
+    </div>
   </body>
 </html>
