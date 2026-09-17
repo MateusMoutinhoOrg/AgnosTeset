@@ -16,5 +16,8 @@ func NewDataBase(path string) *AppDatabase {
 			},
 		},
 	}
+	self := AppDatabase{}
+	self.InnerDatabase = api.NewDatabase(props)
 
+	return &self
 }
