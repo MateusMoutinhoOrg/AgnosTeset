@@ -6,7 +6,7 @@ func NewDataBase(path string) *AppDatabase {
 		Path: path,
 		Schemas: []api.Schema{
 			{
-				Name: "urls",
+				Name: "url",
 				Itens: []api.Item{
 					{Name: "alias", Type: api.Key, Required: true},
 					{Name: "link", Type: api.String, Required: true},
@@ -18,6 +18,9 @@ func NewDataBase(path string) *AppDatabase {
 	}
 	self := AppDatabase{}
 	self.InnerDatabase = api.NewDatabase(props)
+	self.FindUrlLinkByAlias = func(alias string) *UrlItem {
+		return FindUrlLinkByAlias(&self, alias)
+	}
 
 	return &self
 }
