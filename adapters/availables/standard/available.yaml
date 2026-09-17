@@ -2,6 +2,7 @@ adapters:
     - argvdeps
     - embeddeps
     - hashdeps
+    - keep
     - serializables
     - serverdeps
     - sortdeps

@@ -4,6 +4,7 @@ import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/argvdeps"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/hashdeps"
+	keep "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/keep"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	sortdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/sortdeps"
@@ -19,6 +20,7 @@ type Deps struct {
 	Argvdeps      argvdeps.Sandbox
 	Embeddeps     embeddeps.Sandbox
 	Hashdeps      hashdeps.Sandbox
+	Keep          keep.Sandbox
 	Serializables serializables.Sandbox
 	Serverdeps    serverdeps.Sandbox
 	Sortdeps      sortdeps.Sandbox

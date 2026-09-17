@@ -1,0 +1,5 @@
+dep: keep
+help: Generated shim over github.com/MateusMoutinhoOrg/Keep
+module: github.com/MateusMoutinhoOrg/Keep@v0.0.7
+name: keep
+origin: generated

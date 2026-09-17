@@ -80,6 +80,7 @@ The contracts available to patch:
 | `deps.Argvdeps` | `sandbox/deps/argvdeps` |
 | `deps.Embeddeps` | `sandbox/deps/embeddeps` |
 | `deps.Hashdeps` | `sandbox/deps/hashdeps` |
+| `deps.Keep` | `sandbox/deps/keep` |
 | `deps.Serializables` | `sandbox/deps/serializables` |
 | `deps.Serverdeps` | `sandbox/deps/serverdeps` |
 | `deps.Sortdeps` | `sandbox/deps/sortdeps` |
@@ -95,6 +96,7 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
 | `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
 | `adapters/libs/hashdeps` | `hashdeps.Bind(&deps)` |
+| `adapters/libs/keep` | `keep.Bind(&deps)` |
 | `adapters/libs/serializables` | `serializables.Bind(&deps)` |
 | `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |
 | `adapters/libs/sortdeps` | `sortdeps.Bind(&deps)` |
