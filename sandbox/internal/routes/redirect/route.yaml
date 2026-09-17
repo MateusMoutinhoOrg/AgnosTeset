@@ -1,0 +1,5 @@
+method: GET
+paths:
+  - identifier: "/redirect"
+category: "Server"
+help: "makes the redirection"

@@ -3,6 +3,7 @@ package server
 import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	routes_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/health"
+	routes_redirect "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/redirect"
 	routes_shortner "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/shortner"
 	routes_static "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/static"
 )
@@ -16,6 +17,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 	server := api.Server{}
 
 	server.Routes = []api.Route{
+		routes_redirect.NewRoute(sandbox),
 		routes_shortner.NewRoute(sandbox),
 		routes_health.NewRoute(sandbox),
 		routes_static.NewRoute(sandbox),

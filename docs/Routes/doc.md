@@ -18,6 +18,10 @@ Reports that the server is up
 curl localhost:8080/health
 ```
 
+### `GET /redirect`
+
+makes the redirection
+
 ### `POST /shortner`
 
 shorts the url
