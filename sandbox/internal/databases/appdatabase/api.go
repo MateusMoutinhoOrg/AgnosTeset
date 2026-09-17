@@ -19,6 +19,7 @@ type FiltrageProps struct {
 
 type AppDatabase struct {
 	InnerDatabase      database.DatabaseHandle
+	AddUrlLink         func(alias string, link string) error
 	FindUrlLinkByAlias func(alias string) *UrlItem
 	FindUrlLinkByLink  func(link string) *UrlItem
 	ListUrls           func(filtrage FiltrageProps) []UrlItem
