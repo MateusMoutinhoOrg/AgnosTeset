@@ -1,0 +1,5 @@
+method: GET
+paths:
+  - identifier: "/"
+category: "Pages"
+help: "the homepage of the project"

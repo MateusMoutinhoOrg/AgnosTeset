@@ -26,6 +26,12 @@ makes the redirection
 
 shorts the url
 
+## Pages
+
+### `GET /`
+
+the homepage of the project
+
 ## Assets
 
 ### `GET /static/{item...}`
