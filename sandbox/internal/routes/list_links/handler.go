@@ -24,7 +24,12 @@ func RouteHandler(sandbox *api.Sandbox, route *api.Route, response serverdeps.Re
 		return api.StatusFailure
 	}
 
-	links := globals.DB.ListUrls(appdatabase.FiltrageProps{})
+	filtrage := appdatabase.FiltrageProps{
+		LinkStartsWith: route.GetString("starts_with"),
+		Creation:       int64(route.GetInt("min_creation")),
+		Redirects:      int64(route.GetInt("min_redirects")),
+	}
+	links := globals.DB.ListUrls(filtrage)
 	if links == nil {
 		links = []appdatabase.UrlItem{} // ensure we return an array, not null
 	}

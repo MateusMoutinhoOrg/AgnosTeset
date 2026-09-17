@@ -22,13 +22,11 @@
 
       <div class="glass-panel" style="animation-delay: 0.2s;">
         <h2>Link Management</h2>
-        <p class="subtitle" style="text-align: left;">View all shortened URLs in the database (requires root password).</p>
+        <p class="subtitle" style="text-align: left;">Manage and filter your shortened URLs.</p>
         
         <div class="input-group">
-          <input type="password" id="passInput" placeholder="Enter root password" />
-          <button id="listBtn">List Links</button>
+          <button onclick="window.location.href='/manage-links'" style="width: 100%;">Go to Link Management</button>
         </div>
-        <div id="linksTableContainer"></div>
       </div>
     </div>
   </body>

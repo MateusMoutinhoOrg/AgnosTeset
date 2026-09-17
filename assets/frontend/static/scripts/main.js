@@ -40,9 +40,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (listBtn) {
     listBtn.addEventListener("click", async () => {
-      const password = passInput.value.trim();
+      const password = passInput ? passInput.value.trim() : "";
+      const filterStartsWith = document.getElementById("filterStartsWith")?.value.trim() || "";
+      const filterMinRedirects = document.getElementById("filterMinRedirects")?.value.trim() || "";
+      const filterMinCreation = document.getElementById("filterMinCreation")?.value;
+      
+      let minCreationUnix = 0;
+      if (filterMinCreation) {
+        minCreationUnix = Math.floor(new Date(filterMinCreation).getTime() / 1000);
+      }
+
+      const params = new URLSearchParams();
+      if (password) params.append("password", password);
+      if (filterStartsWith) params.append("starts_with", filterStartsWith);
+      if (filterMinRedirects) params.append("min_redirects", filterMinRedirects);
+      if (minCreationUnix > 0) params.append("min_creation", minCreationUnix.toString());
+
       try {
-        const response = await fetch(`/list-links?password=${encodeURIComponent(password)}`);
+        const response = await fetch(`/list-links?${params.toString()}`);
         if (response.ok) {
           const links = await response.json();
           renderLinksTable(links);

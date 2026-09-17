@@ -1,0 +1,5 @@
+method: GET
+paths:
+  - identifier: "/manage-links"
+category: "Pages"
+help: "Renders the manage-links page from the embedded html template"

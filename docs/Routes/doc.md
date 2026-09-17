@@ -21,6 +21,7 @@ range-checked before the handler runs — a failure there is `400`, never the ha
 | Route | Answers | Package |
 | --- | --- | --- |
 | [`GET /`](homepage.md) | THe homepage of the url shortner | `homepage` |
+| [`GET /manage-links`](manage_links.md) | Renders the manage-links page from the embedded html template | `manage_links` |
 
 ## Links
 

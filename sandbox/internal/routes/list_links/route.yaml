@@ -5,5 +5,11 @@ params:
     - name: password
       required: true
       type: string
+    - name: starts_with
+      type: string
+    - name: min_creation
+      type: int
+    - name: min_redirects
+      type: int
 paths:
     - identifier: /list-links

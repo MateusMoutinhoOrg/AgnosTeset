@@ -1,4 +1,4 @@
-package list_links
+package manage_links
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -15,65 +15,24 @@ import (
 func NewRoute(sandbox *api.Sandbox) api.Route {
 	route := api.NewRoute()
 
-	route.Name = "list_links"
+	route.Name = "manage_links"
 	route.Method = "GET"
-	route.Pattern = "/list-links"
-	route.Category = "Links"
-	route.Help = "List all links"
+	route.Pattern = "/manage-links"
+	route.Category = "Pages"
+	route.Help = "Renders the manage-links page from the embedded html template"
 	route.LongDescription = ""
 	route.Examples = []string{}
 	route.Hidden = false
 
 	route.Paths = []api.RoutePath{
 		{
-			Identifier: "/list-links",
+			Identifier: "/manage-links",
 		},
 	}
 
 	route.Headers = []api.RouteField{}
 
-	route.Params = []api.RouteField{
-		{
-			Id:          "password",
-			Type:        "string",
-			Required:    true,
-			Array:       false,
-			Description: "",
-			Examples:    []string{},
-			Default:     "",
-			HasDefault:  false,
-		},
-		{
-			Id:          "starts_with",
-			Type:        "string",
-			Required:    false,
-			Array:       false,
-			Description: "",
-			Examples:    []string{},
-			Default:     "",
-			HasDefault:  false,
-		},
-		{
-			Id:          "min_creation",
-			Type:        "int",
-			Required:    false,
-			Array:       false,
-			Description: "",
-			Examples:    []string{},
-			Default:     "",
-			HasDefault:  false,
-		},
-		{
-			Id:          "min_redirects",
-			Type:        "int",
-			Required:    false,
-			Array:       false,
-			Description: "",
-			Examples:    []string{},
-			Default:     "",
-			HasDefault:  false,
-		},
-	}
+	route.Params = []api.RouteField{}
 
 	route.Body = api.RouteBody{
 		Type:        "none",
