@@ -1,5 +1,16 @@
+body:
+    content-type: application/json
+    json-schema:
+        properties:
+            url:
+                type: string
+        required:
+            - url
+        type: object
+    max-bytes: 1048576
+    type: json
+category: Server
+help: shortern the url
 method: POST
 paths:
-  - identifier: "/shortner"
-category: "Server"
-help: "shorts the url"
+    - identifier: /shortner

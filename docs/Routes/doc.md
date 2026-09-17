@@ -24,7 +24,9 @@ makes the redirection
 
 ### `POST /shortner`
 
-shorts the url
+shortern the url
+
+Body: `json`, `application/json`, json-schema, up to 1048576 bytes
 
 ## Pages
 

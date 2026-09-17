@@ -2,6 +2,8 @@ package shortner
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
 )
 
@@ -19,7 +21,7 @@ func NewRoute(sandbox *api.Sandbox) api.Route {
 	route.Method = "POST"
 	route.Pattern = "/shortner"
 	route.Category = "Server"
-	route.Help = "shorts the url"
+	route.Help = "shortern the url"
 	route.LongDescription = ""
 	route.Examples = []string{}
 	route.Hidden = false
@@ -35,11 +37,11 @@ func NewRoute(sandbox *api.Sandbox) api.Route {
 	route.Params = []api.RouteField{}
 
 	route.Body = api.RouteBody{
-		Type:        "none",
+		Type:        "json",
 		Required:    false,
 		MaxBytes:    1048576,
-		ContentType: "",
-		Schema:      "",
+		ContentType: "application/json",
+		Schema:      BodySchema,
 	}
 
 	route.Handler = func(bound *api.Route) int {
@@ -47,4 +49,56 @@ func NewRoute(sandbox *api.Sandbox) api.Route {
 	}
 
 	return *route
+}
+
+// Body is one object of this route's declared json-schema, as the
+// generated ReadBody hands it over.
+type Body struct {
+	Url string
+}
+
+// MaxBodyBytes is the largest request body this route reads, from the
+// `max-bytes` of its declaration. A longer one is answered 413.
+const MaxBodyBytes = 1048576
+
+// BodySchema is this route's declared json-schema in canonical form — the text
+// routeio.ValidateSchema checks a request body against.
+const BodySchema = "{\"properties\":{\"url\":{\"type\":\"string\"}},\"required\":[\"url\"],\"type\":\"object\"}"
+
+// ReadBody reads, validates and converts the request body of one bound route.
+// The body is the one part of a request the dispatch does not touch, so a
+// handler may refuse a request before a byte of it is read.
+//
+// It returns api.StatusOk when the body passed; on any other status the error
+// response has already been written, and the handler only has to return it.
+func ReadBody(sandbox *api.Sandbox, route *api.Route, response serverdeps.Response) (Body, int) {
+	var body Body
+
+	raw, err := routeio.RequestOf(route).ReadBody(MaxBodyBytes)
+	if err != nil {
+		return body, routeio.WriteError(sandbox, response, api.StatusPayloadTooLarge, "",
+			"the request body is larger than 1048576 bytes")
+	}
+
+	if len(raw) == 0 {
+		return body, api.StatusOk
+	}
+
+	parsed, field, message, ok := routeio.ValidateSchema(sandbox, BodySchema, raw)
+	if !ok {
+		return body, routeio.WriteError(sandbox, response, api.StatusBadRequest, field, message)
+	}
+
+	body = bindBody(parsed)
+
+	return body, api.StatusOk
+}
+
+// bindBody converts one already-validated document into Body. The
+// schema has been enforced by then, so a property that will not read was
+// optional and comes back as its zero value.
+func bindBody(document *serializables.SerializibleObject) Body {
+	value := Body{}
+	value.Url = routeio.ReadString(document, "url")
+	return value
 }
