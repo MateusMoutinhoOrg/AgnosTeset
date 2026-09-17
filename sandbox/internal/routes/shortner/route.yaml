@@ -1,0 +1,5 @@
+method: POST
+paths:
+  - identifier: "/shortner"
+category: "Server"
+help: "shorts the url"
