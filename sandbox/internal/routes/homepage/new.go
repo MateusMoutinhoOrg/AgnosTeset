@@ -1,4 +1,4 @@
-package home
+package homepage
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -15,11 +15,11 @@ import (
 func NewRoute(sandbox *api.Sandbox) api.Route {
 	route := api.NewRoute()
 
-	route.Name = "home"
+	route.Name = "homepage"
 	route.Method = "GET"
 	route.Pattern = "/"
 	route.Category = "Pages"
-	route.Help = "the homepage of the project"
+	route.Help = "THe homepage of the url shortner"
 	route.LongDescription = ""
 	route.Examples = []string{}
 	route.Hidden = false

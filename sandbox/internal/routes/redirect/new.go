@@ -19,7 +19,7 @@ func NewRoute(sandbox *api.Sandbox) api.Route {
 	route.Method = "GET"
 	route.Pattern = "/redirect"
 	route.Category = "Server"
-	route.Help = "makes the redirection"
+	route.Help = "redirect the url"
 	route.LongDescription = ""
 	route.Examples = []string{}
 	route.Hidden = false

@@ -21,7 +21,7 @@ func NewRoute(sandbox *api.Sandbox) api.Route {
 	route.Method = "POST"
 	route.Pattern = "/shortner"
 	route.Category = "Server"
-	route.Help = "shortern the url"
+	route.Help = "shortner a url"
 	route.LongDescription = ""
 	route.Examples = []string{}
 	route.Hidden = false

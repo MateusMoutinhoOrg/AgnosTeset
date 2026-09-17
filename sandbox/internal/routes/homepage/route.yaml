@@ -2,4 +2,4 @@ method: GET
 paths:
   - identifier: "/"
 category: "Pages"
-help: "the homepage of the project"
+help: "THe homepage of the url shortner"

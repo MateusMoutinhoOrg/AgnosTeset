@@ -1,4 +1,4 @@
-package home
+package homepage
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -9,8 +9,8 @@ import (
 
 // pageAsset is the embedded template this route renders, as sandbox.Deps.Embeddeps
 // spells a path: slash-separated and relative to the root of the assets
-// package, so "assets/frontend/pages/home.html" on disk.
-const pageAsset = "frontend/pages/home.html"
+// package, so "assets/frontend/pages/homepage.html" on disk.
+const pageAsset = "frontend/pages/homepage.html"
 
 // pageVars is what the template is rendered against — every {{ .Field }}
 // of the html is one exported field here, so a new variable in the page is a
@@ -31,12 +31,12 @@ type pageVars struct {
 // is one of them — so it answers 500 and says nothing about the asset tree.
 func RouteHandler(sandbox *api.Sandbox, route *api.Route, response serverdeps.Response) int {
 	content, err := pageio.Render(sandbox, pageAsset, pageVars{
-		Title:   "homepage",
-		Message: "this page is rendered from assets/frontend/pages/home.html",
+		Title:   "HomePage",
+		Message: "this page is rendered from assets/frontend/pages/homepage.html",
 	})
 	if err != nil {
 		return routeio.WriteError(sandbox, response, api.StatusFailure, "page",
-			"could not render the home page")
+			"could not render the homepage page")
 	}
 
 	response.SetHeader("Content-Type", "text/html; charset=utf-8")

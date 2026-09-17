@@ -3,7 +3,7 @@ package server
 import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	routes_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/health"
-	routes_home "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/home"
+	routes_homepage "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/homepage"
 	routes_redirect "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/redirect"
 	routes_shortner "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/shortner"
 	routes_static "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/static"
@@ -22,7 +22,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routes_shortner.NewRoute(sandbox),
 		routes_health.NewRoute(sandbox),
 		routes_static.NewRoute(sandbox),
-		routes_home.NewRoute(sandbox),
+		routes_homepage.NewRoute(sandbox),
 	}
 
 	server.Serve = func(props api.ServeProps) error {

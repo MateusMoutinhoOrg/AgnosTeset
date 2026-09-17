@@ -1,48 +1,31 @@
 # Routes
 
-Every route this server answers, generated from
-`sandbox/internal/routes/<name>/route.yaml` ([RouteYaml](../RouteYaml/doc.md)) on each build.
-Hidden routes are not listed.
+Every route this server answers, one page each, generated from
+`sandbox/internal/routes/<name>/route.yaml` ([RouteYaml](../RouteYaml/doc.md)) on each build —
+open the one you need rather than this whole page. Hidden routes are not listed.
 
 A path is matched segment by segment, most specific route first. A path nothing matches is
-`404`; one matched under another method is `405`. Every field below is bound, converted and
+`404`; one matched under another method is `405`. Every field of a route is bound, converted and
 range-checked before the handler runs — a failure there is `400`, never the handler's call.
 
 ## Server
 
-### `GET /health`
-
-Reports that the server is up
-
-```bash
-curl localhost:8080/health
-```
-
-### `GET /redirect`
-
-makes the redirection
-
-### `POST /shortner`
-
-shortern the url
-
-Body: `json`, `application/json`, json-schema, up to 1048576 bytes
+| Route | Answers | Package |
+| --- | --- | --- |
+| [`GET /health`](health.md) | Reports that the server is up | `health` |
+| [`GET /redirect`](redirect.md) | redirect the url | `redirect` |
+| [`POST /shortner`](shortner.md) | shortner a url | `shortner` |
 
 ## Pages
 
-### `GET /`
-
-the homepage of the project
+| Route | Answers | Package |
+| --- | --- | --- |
+| [`GET /`](homepage.md) | THe homepage of the url shortner | `homepage` |
 
 ## Assets
 
-### `GET /static/{item...}`
-
-Serves one file from the embedded static assets
-
-| Field | In | Type | Default | Description |
-| --- | --- | --- | --- | --- |
-| `item` | path | string, the rest of the path, required |  | the asset path under assets/frontend/static, one or more segments |
-| `sha` | query | string |  | the digest staticref stamped on the url; when it matches the asset the answer is cacheable forever |
+| Route | Answers | Package |
+| --- | --- | --- |
+| [`GET /static/{item...}`](static.md) | Serves one file from the embedded static assets | `static` |
 
 Statuses and who answers each one are in [RouteYaml](../RouteYaml/doc.md#dispatch).

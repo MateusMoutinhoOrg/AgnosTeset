@@ -10,7 +10,7 @@ body:
     max-bytes: 1048576
     type: json
 category: Server
-help: shortern the url
+help: shortner a url
 method: POST
 paths:
     - identifier: /shortner

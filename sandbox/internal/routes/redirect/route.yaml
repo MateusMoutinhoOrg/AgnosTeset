@@ -2,4 +2,4 @@ method: GET
 paths:
   - identifier: "/redirect"
 category: "Server"
-help: "makes the redirection"
+help: "redirect the url"
