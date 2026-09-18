@@ -1,9 +1,0 @@
-category: Server
-help: redirect the url
-method: GET
-params:
-    - name: alias
-      required: true
-      type: string
-paths:
-    - identifier: /redirect

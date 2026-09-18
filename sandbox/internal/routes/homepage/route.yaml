@@ -1,5 +1,0 @@
-method: GET
-paths:
-  - identifier: "/"
-category: "Pages"
-help: "THe homepage of the url shortner"
