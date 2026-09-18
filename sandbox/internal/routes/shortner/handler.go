@@ -1,8 +1,6 @@
 package shortner
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
@@ -21,9 +19,7 @@ func RouteHandler(sandbox *api.Sandbox, route *api.Route, response serverdeps.Re
 		return api.StatusFailure
 	}
 
-	bytes := make([]byte, 3)
-	rand.Read(bytes)
-	alias := hex.EncodeToString(bytes)
+	alias := sandbox.Deps.Stringsdeps.FormatInt(sandbox.Deps.Std.Now(), 16)
 
 	err := globals.DB.AddUrlLink(alias, body.Url)
 	if err != nil {

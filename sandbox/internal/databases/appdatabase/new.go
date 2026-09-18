@@ -3,9 +3,10 @@ package appdatabase
 
 import (
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps"
 )
 
-func NewDataBase(path string, buildDatabase func(props database.Props) database.DatabaseHandle) *AppDatabase {
+func NewDataBase(deps *deps.Deps, path string, buildDatabase func(props database.Props) database.DatabaseHandle) *AppDatabase {
 	props := database.Props{
 		Path: path,
 		Schemas: []database.Schema{
@@ -20,7 +21,7 @@ func NewDataBase(path string, buildDatabase func(props database.Props) database.
 			},
 		},
 	}
-	self := AppDatabase{}
+	self := AppDatabase{deps: deps}
 	self.InnerDatabase = buildDatabase(props)
 	self.AddUrlLink = func(alias string, link string) error {
 		return AddUrlLink(&self, alias, link)

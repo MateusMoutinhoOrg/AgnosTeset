@@ -1,9 +1,7 @@
 package appdatabase
 
 import (
-	"errors"
-	"strings"
-	"time"
+
 
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
 )
@@ -11,16 +9,16 @@ import (
 func AddUrlLink(self *AppDatabase, alias string, link string) error {
 	schema, ok := self.InnerDatabase.GetSchema("url")
 	if !ok {
-		return errors.New("schema not found")
+		return self.deps.Std.Errorf("schema not found")
 	}
 	_, err := schema.NewItem(map[string]any{
 		"alias":     alias,
 		"link":      link,
-		"creation":  time.Now().Unix(),
+		"creation":  self.deps.Std.Now(),
 		"redirects": 0,
 	})
 	if err != nil {
-		return errors.New(err.Message)
+		return self.deps.Std.Errorf(err.Message)
 	}
 	return nil
 }
@@ -70,7 +68,7 @@ func ListUrls(self *AppDatabase, filtrage FiltrageProps) []UrlItem {
 		if ui == nil {
 			continue
 		}
-		if filtrage.LinkStartsWith != "" && !strings.HasPrefix(ui.Link, filtrage.LinkStartsWith) {
+		if filtrage.LinkStartsWith != "" && !self.deps.Stringsdeps.HasPrefix(ui.Link, filtrage.LinkStartsWith) {
 			continue
 		}
 		if filtrage.Creation > 0 && ui.Creation < filtrage.Creation {

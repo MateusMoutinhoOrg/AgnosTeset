@@ -10,7 +10,7 @@ import (
 
 func CommandHandler(sandbox *api.Sandbox, command *api.Command) int {
 	config.RootPassword = command.GetString("root_password")
-	globals.DB = appdatabase.NewDataBase("app_db_data", sandbox.Deps.Database.Databases.New)
+	globals.DB = appdatabase.NewDataBase(sandbox.Deps, "app_db_data", sandbox.Deps.Database.Databases.New)
 	err := server.ServerMain(sandbox, api.ServeProps{
 		Addr:           command.GetString("addr"),
 		ReadTimeoutMs:  command.GetInt("read_timeout_ms"),

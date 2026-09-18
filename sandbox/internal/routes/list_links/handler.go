@@ -1,7 +1,6 @@
 package list_links
 
 import (
-	"encoding/json"
 
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
@@ -34,12 +33,17 @@ func RouteHandler(sandbox *api.Sandbox, route *api.Route, response serverdeps.Re
 		links = []appdatabase.UrlItem{} // ensure we return an array, not null
 	}
 	
-	data, err := json.Marshal(links)
-	if err != nil {
-		response.SetStatus(api.StatusFailure)
-		response.Write([]byte("Failed to encode response\n"))
-		return api.StatusFailure
+	array := sandbox.Deps.Serializables.CreateArray()
+	for _, link := range links {
+		obj := sandbox.Deps.Serializables.CreateObject()
+		obj.AddItemToObject("Alias", sandbox.Deps.Serializables.CreateString(link.Alias))
+		obj.AddItemToObject("Link", sandbox.Deps.Serializables.CreateString(link.Link))
+		obj.AddItemToObject("Creation", sandbox.Deps.Serializables.CreateInt(link.Creation))
+		obj.AddItemToObject("Redirects", sandbox.Deps.Serializables.CreateInt(link.Redirects))
+		array.AddItemToArray(obj)
 	}
+	dataStr := sandbox.Deps.Serializables.SerializeToJson(array)
+	data := []byte(dataStr)
 
 	response.SetHeader("Content-Type", "application/json")
 	response.SetStatus(api.StatusOk)

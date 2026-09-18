@@ -2,6 +2,7 @@ package appdatabase
 
 import (
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps"
 )
 
 type UrlItem struct {
@@ -18,6 +19,7 @@ type FiltrageProps struct {
 }
 
 type AppDatabase struct {
+	deps               *deps.Deps
 	InnerDatabase      database.DatabaseHandle
 	AddUrlLink         func(alias string, link string) error
 	FindUrlLinkByAlias func(alias string) *UrlItem
