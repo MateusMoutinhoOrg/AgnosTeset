@@ -1,0 +1,11 @@
+adapters:
+    - argvdeps
+    - database
+    - embeddeps
+    - hashdeps
+    - serializables
+    - serverdeps
+    - sortdeps
+    - std
+    - stringsdeps
+    - templatedeps

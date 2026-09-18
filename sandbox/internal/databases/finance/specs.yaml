@@ -1,0 +1,13 @@
+name: finance
+prefix: finance
+tables:
+    - fields:
+        - name: amount
+          type: float
+        - name: description
+          type: string
+        - name: type
+          type: string
+        - name: date
+          type: string
+      name: transactions

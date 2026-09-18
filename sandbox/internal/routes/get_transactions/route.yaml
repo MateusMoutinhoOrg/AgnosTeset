@@ -1,0 +1,5 @@
+method: GET
+paths:
+  - identifier: "/transactions"
+category: "Transactions"
+help: "List transactions"

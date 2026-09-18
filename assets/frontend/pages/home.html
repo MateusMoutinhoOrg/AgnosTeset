@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Finance Dashboard for tracking income and expenses." />
+  <title>Finance Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    
+    :root {
+      --bg: #0f172a;
+      --surface: rgba(30, 41, 59, 0.7);
+      --primary: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+      background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.2), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.15), transparent 400px);
+      background-attachment: fixed;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      animation: fadeIn 0.8s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #60a5fa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card h3 {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .card .amount {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    
+    .amount.income { color: var(--success); }
+    .amount.expense { color: var(--danger); }
+    
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+    
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+    
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.1s ease;
+    }
+    
+    button:hover {
+      background: #2563eb;
+    }
+    
+    button:active {
+      transform: scale(0.98);
+    }
+    
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      transition: background 0.3s ease;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .transaction-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .transaction-info h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.2rem;
+    }
+    
+    .transaction-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .transaction-amount {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--success);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Finance Flow</h1>
+      <p style="color: var(--text-muted);">Manage your wealth beautifully</p>
+    </header>
+
+    <div class="summary">
+      <div class="card">
+        <h3>Total Balance</h3>
+        <div class="amount" id="balance">$0.00</div>
+      </div>
+      <div class="card">
+        <h3>Income</h3>
+        <div class="amount income" id="income">$0.00</div>
+      </div>
+      <div class="card">
+        <h3>Expenses</h3>
+        <div class="amount expense" id="expense">$0.00</div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div class="card">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text); font-size: 1.2rem;">New Transaction</h3>
+        <form id="tx-form">
+          <div class="form-group">
+            <label for="desc">Description</label>
+            <input type="text" id="desc" required placeholder="e.g. Salary, Groceries" />
+          </div>
+          <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" id="amount" step="0.01" required placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" required>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" required />
+          </div>
+          <button type="submit">Add Transaction</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text); font-size: 1.2rem;">Recent Transactions</h3>
+        <div class="transaction-list" id="tx-list">
+          <p style="color: var(--text-muted); text-align: center; padding: 2rem 0;">No transactions yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast">Transaction Added!</div>
+
+  <script>
+    document.getElementById('date').valueAsDate = new Date();
+
+    const formatCurrency = (num) => {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+    };
+
+    const loadTransactions = async () => {
+      try {
+        const res = await fetch('/transactions');
+        const data = await res.json();
+        
+        let income = 0;
+        let expense = 0;
+        
+        const list = document.getElementById('tx-list');
+        list.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+          list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem 0;">No transactions yet.</p>';
+        } else {
+          data.sort((a,b) => b.Id - a.Id).forEach(tx => {
+            if (tx.Type === 'income') income += tx.Amount;
+            if (tx.Type === 'expense') expense += tx.Amount;
+            
+            const div = document.createElement('div');
+            div.className = 'transaction-item';
+            div.innerHTML = `
+              <div class="transaction-info">
+                <h4>${tx.Description}</h4>
+                <p>${tx.Date}</p>
+              </div>
+              <div class="transaction-amount ${tx.Type}">
+                ${tx.Type === 'income' ? '+' : '-'}${formatCurrency(tx.Amount)}
+              </div>
+            `;
+            list.appendChild(div);
+          });
+        }
+        
+        document.getElementById('income').textContent = formatCurrency(income);
+        document.getElementById('expense').textContent = formatCurrency(expense);
+        document.getElementById('balance').textContent = formatCurrency(income - expense);
+      } catch (err) {
+        console.error("Failed to load transactions", err);
+      }
+    };
+
+    document.getElementById('tx-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const payload = {
+        Description: document.getElementById('desc').value,
+        Amount: parseFloat(document.getElementById('amount').value),
+        Type: document.getElementById('type').value,
+        Date: document.getElementById('date').value
+      };
+      
+      try {
+        const res = await fetch('/transactions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        if (res.ok) {
+          document.getElementById('tx-form').reset();
+          document.getElementById('date').valueAsDate = new Date();
+          loadTransactions();
+          
+          const toast = document.getElementById('toast');
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+      } catch (err) {
+        console.error("Failed to add transaction", err);
+      }
+    });
+
+    loadTransactions();
+  </script>
+</body>
+</html>
