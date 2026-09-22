@@ -1,5 +1,0 @@
-method: POST
-paths:
-  - identifier: "/transactions"
-category: "Transactions"
-help: "Create a transaction"

@@ -1,5 +1,0 @@
-dep: argvdeps
-help: Argv parser over strings, strconv and time
-module: ""
-name: argvdeps
-origin: catalog
