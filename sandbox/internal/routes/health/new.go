@@ -2,7 +2,6 @@ package health
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
 )
 
 // NewRoute builds this route's declaration — the whole of what its route.yaml
@@ -16,36 +15,12 @@ func NewRoute(sandbox *api.Sandbox) api.Route {
 	route := api.Route{}
 
 	route.Name = "health"
-	route.Method = "GET"
+	route.AcceptMethods = []string{"GET"}
 	route.Priority = 0
-	route.Pattern = "/health"
 	route.Category = "Server"
 	route.Help = "Reports that the server is up"
 	route.LongDescription = ""
 	route.Examples = []string{"curl localhost:8080/health"}
-	route.Hidden = false
 
-	route.Paths = []api.RoutePath{
-		{
-			Identifier: "/health",
-		},
-	}
-
-	route.Headers = []api.RouteField{}
-
-	route.Params = []api.RouteField{}
-
-	route.Body = api.RouteBody{
-		Type:        "none",
-		Required:    false,
-		MaxBytes:    1048576,
-		ContentType: "",
-		Schema:      "",
-	}
-
-	route.Handler = func(bound *api.Route) error {
-		return RouteHandler(sandbox, bound, routeio.ResponseOf(bound))
-	}
-
-	return *route
+	return route
 }
