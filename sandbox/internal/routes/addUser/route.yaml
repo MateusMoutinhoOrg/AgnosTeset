@@ -1,0 +1,16 @@
+method: GET
+paths:
+  - 
+    Name: AddUser
+    start: 0 
+    end: -1
+    trigger: 
+      type : equal
+      value : "/add-user"
+
+
+
+category: Server
+help: Reports that the server is up
+examples:
+  - "curl localhost:8080/health"
