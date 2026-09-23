@@ -15,12 +15,37 @@ type Trigger struct {
 	Value string
 }
 type Path struct {
-	Star    int
-	End     int
-	Name    string
-	Trigger Trigger
+	Star        int
+	End         int
+	Description string
+	Name        string
+	Trigger     Trigger
 }
+type ParamenterFont int
 
+const (
+	HeaderParam ParamenterFont = iota
+	QueryParam
+	PathParam
+	BodyParam
+)
+
+type ParamenterType int
+
+const (
+	StringType ParamenterType = iota
+	NumberType
+	BooleanType
+	DateTimeType
+	StringArrayType
+)
+
+type Parameter struct {
+	Name     string
+	Font     ParamenterFont
+	Required bool
+	Type     ParamenterType
+}
 type Route struct {
 	Name            string
 	AcceptMethods   []string
@@ -28,7 +53,7 @@ type Route struct {
 	Category        string
 	Help            string
 	LongDescription string
-
-	Paths    []Path
-	Examples []string
+	Parameters      []Parameter
+	Paths           []Path
+	Examples        []string
 }
