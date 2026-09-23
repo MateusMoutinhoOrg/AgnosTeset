@@ -1,5 +1,7 @@
 package api
 
+import "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
+
 type TriggerType int
 
 const (
@@ -45,12 +47,6 @@ type Parameter struct {
 	Type     ParamenterType
 }
 
-type Response struct {
-	SetStatus  func(status int)
-	SetHeaders func(headers map[string]string)
-	WriteBody  func(content []byte)
-}
-
 type Header struct {
 	Key   string
 	Value string
@@ -65,6 +61,8 @@ type Route struct {
 	LongDescription string
 	Parameters      []Parameter
 	Paths           []Path
+	IsActionable    func(entries *serverdeps.Request) bool
+	Handler         func(entries *serverdeps.Request, response *serverdeps.Response) error
 	Examples        []string
 }
 
