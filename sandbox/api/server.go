@@ -62,6 +62,7 @@ type Route struct {
 	Parameters      []Parameter
 	Paths           []Path
 	IsActionable    func(entries *serverdeps.Request) bool
+	PureHandler     func(entries any, response *serverdeps.Response) error
 	Handler         func(entries *serverdeps.Request, response *serverdeps.Response) error
 	Examples        []string
 }
@@ -73,21 +74,10 @@ type Server struct {
 	// Serve is the generated route-and-dispatch entry point (see
 	// sandbox/internal/server/servermain.go). It blocks until the server
 	// stops.
-	Serve func(props ServeProps) error
-	// Routes is every http route the project declares, in run order —
-	// lowest `priority` first, then most specific — each built by the
-	// generated NewRoute of its own package. The dispatch reads a request
-	// against these declarations; a caller holding the sandbox reads the
-	// same surface without one.
-	Routes []Route
-	// Fail answers one failure with the project's own handler for it: it
-	// reads route.Failure and calls the matching Handle* of
-	// sandbox/internal/server/. It is a field rather than a call because a
-	// route package may not import sandbox/internal/server — that package
-	// imports every route — so this is how a generated ReadBody, or any
-	// handler, reaches a file the project owns. Raise a failure through
-	// routeio.Fail rather than calling this directly.
-	Fail func(route *Route) error
+	Serve        func(props ServeProps) error
+	Routes       []Route
+	NewRouteBase func() Route
+	AddRoute     func(route *Route)
 }
 
 // ServeProps describes one run of the http server: the address to listen on

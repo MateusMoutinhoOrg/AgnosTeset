@@ -2,8 +2,6 @@ package server
 
 import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
-	routes_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/health"
 )
 
 // NewServer builds the http surface of the sandbox: Routes, one entry per
@@ -15,40 +13,14 @@ import (
 func NewServer(sandbox *api.Sandbox) api.Server {
 	server := api.Server{}
 
-	server.Routes = []api.Route{
-		routes_health.NewRoute(sandbox),
-	}
+	server.Routes = []api.Route{}
 
 	server.Serve = func(props api.ServeProps) error {
 		return ServerMain(sandbox, props)
 	}
 
-	// One failure, one file of this package. The switch is the whole of the
-	// routing: every Handle* below is written once by `agnos server-init`
-	// and is the project's from then on, so changing what a 404 looks like is
-	// editing handle_not_found.go and nothing else.
-	//
-	// A Handle* answers a failure; it never raises one. Calling routeio.Fail
-	// from inside one comes back here and runs it again.
-	server.Fail = func(route *api.Route) error {
-		response := routeio.ResponseOf(route)
-
-		if route.Failure != nil {
-			switch route.Failure.Status {
-			case api.StatusNotFound:
-				return HandleNotFound(sandbox, route, response)
-			case api.StatusMethodNotAllowed:
-				return HandleMethodNotAllowed(sandbox, route, response)
-			case api.StatusBadRequest:
-				return HandleBadRequest(sandbox, route, response)
-			case api.StatusPayloadTooLarge:
-				return HandleTooLarge(sandbox, route, response)
-			case api.StatusUnsupportedMedia:
-				return HandleWrongContentType(sandbox, route, response)
-			}
-		}
-
-		return HandleServerError(sandbox, route, response)
+	server.NewRouteBase = func() api.Route {
+		return
 	}
 
 	return server
