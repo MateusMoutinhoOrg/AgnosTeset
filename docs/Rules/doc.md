@@ -101,6 +101,92 @@ makes each kind of change is in [Workflow](../Workflow/doc.md).
   adapter `reflectsort`). The two are separate names because one dep may have several adapters.
 - Reusable logic goes in `sandbox/internal/<pkg>/`, one directory per concern.
 
+## Handlers
+
+- A command is `sandbox/internal/commands/<name>/`, holding `entries.yaml` (the declaration),
+  `new.go` (generated) and `handler.go` (hand-written), snake_case for a kebab-case name.
+- Only `CommandHandler(sandbox *api.Sandbox, command *api.Command) int` is exported. Every flag
+  and arg of `entries.yaml` is read off `command` by id (`command.GetString("path")`), already
+  typed, defaulted and range-checked.
+- Import nothing outside `sandbox/`, the stdlib included. Every effect and every helper goes
+  through `sandbox.Deps.<Contract>` — see [PublicApi](../PublicApi/doc.md).
+- Return `api.ExitOk` or `api.ExitFailure`, never `api.ExitUsage`: the dispatch rejects bad
+  input before the handler runs.
+- Reusable logic goes in `sandbox/internal/<pkg>/`, not in the handler.
+- A command's `entries.yaml` is written by `add-flag` / `add-arg` / `set-command`, never by
+  hand: they re-render it with keys in alphabetical order and drop comments.
+- `Cli.Commands` is the whole command surface, one `api.Command` per declared command, built by
+  `sandbox/internal/cli/new.go` from each package's generated `NewCommand`. The dispatch and
+  both help screens read it; nothing about the command set is generated per command anywhere
+  else. Each run binds to its own copy of the declaration, made by `api.BindCommand`, so what
+  the slice holds is never written to.
+
+## Routes
+
+- A route is `sandbox/internal/routes/<name>/`, holding `route.yaml` (the declaration),
+  `new.go` (generated) and `handler.go` (hand-written) — the server layer's mirror of a
+  command package, snake_case for a kebab-case name. **(verify)**
+- Only `RouteHandler(sandbox *api.Sandbox, route *api.Route, response serverdeps.Response) error`
+  is exported from a route. **(verify)**
+- Setting a status on the response is what answers a request and ends the chain. A handler that
+  writes none has declined, and the next route matching that request runs; a handler that
+  returns a non-nil error without answering has failed, and `handle_server_error.go` answers
+  for it. What a handler returns is never the status.
+- A route's `route.yaml` is written by `add-route` and rewritten by `set-route`,
+  `add-segment` / `set-segment` / `remove-segment`, `add-header` / `set-header` /
+  `remove-header`, `add-param` / `set-param` / `remove-param`, `set-body` and
+  `add-body-field` / `set-body-field` / `remove-body-field` / `import-body` — one editor per
+  place the file holds something and one `set-` per `add-`, so a bound that was forgotten is
+  never a remove-and-declare-again, and never by hand: they re-render it with keys in
+  alphabetical order and drop comments. `show-route` reads it and writes nothing.
+- Every `identifier` of `paths` starts with `/` and spells exactly one segment; `/` alone is
+  the root. A route declares at least one literal segment, and every entry of `paths` carries
+  exactly one of `identifier`, `starts-with-identifier` and `name`. **(verify)**
+- A `starts-with-identifier` starts with `/` too, may spell more than one segment, and is the
+  last entry of `paths`: everything after it is unmatched by definition. A route declares one
+  of it and an `array` capture, never both — each already takes every segment left. **(verify)**
+- A header or a query parameter may carry one value condition, `identifier` or
+  `starts-with-identifier` and never both, which decides whether the route runs at all. A
+  request that fails one is not a bad request: that route is simply not the one for it.
+  **(verify)**
+- `priority` is the rung a route runs on, lowest first, and is never negative. **(verify)**
+- A captured segment is always `required: true` and never defaulted: it is present whenever
+  the route matched. `array: true` on it takes every segment left in the path into a `[]T`
+  list, which only the last entry of `paths` may do, and which needs at least one segment to
+  match — so its name is declared nowhere else. **(verify)**
+- A name is declared once per origin, and the origins declaring the same name agree on its
+  type — one name binds one entry of `Route.Items`. **(verify)**
+- No two routes declare the same method and path pattern *on the same rung*. Sharing a pattern
+  across rungs is what a middleware in front of a route is; sharing a rung as well would leave
+  the order between them undeclared. **(verify)**
+- A `json-schema` is declared on a `type: json` body alone, and only with the keywords of the
+  subset — `$ref`, `oneOf`, `allOf`, `anyOf` and `patternProperties` fail the build. **(verify)**
+- `Server.Routes` is the whole http surface, one `api.Route` per declared route, built by
+  `sandbox/internal/server/new.go` from each package's generated `NewRoute`. The dispatch reads it and
+  nothing about the route set is generated per route anywhere else; each request runs on its
+  copy of the declaration, made by `api.BindRoute`, so nothing bound is ever shared.
+- Run order is the collector's, not the directory's: the lowest `priority` first, then — within
+  one rung — most `identifier`s, then the longest ones, then the routes of fixed length before
+  the ones taking the rest of the path, then the pattern alphabetically. Without it a route on
+  `/` would swallow one on `/home`.
+- Nothing in the dispatch writes a response. Every way a request ends without a route answering
+  it is handed to one of the six `sandbox/internal/server/handle_*.go` — one per status, each
+  holding a function with the route handler's own signature. They are written **once**, by the
+  first `build` that finds the server layer, and no build rewrites them: what a project answers
+  when nothing matches is the project's. **(verify)**
+- A failure is raised with `routeio.Fail` — from the dispatch, from a generated `ReadBody` or
+  from a handler — which reaches the right file through the `Fail` field of `api.Server`,
+  because a route package may not import `sandbox/internal/server`. A `Handle*` file answers a
+  failure and never raises one.
+- A failure the dispatch raises with nothing to add — nothing matched, method not allowed —
+  carries no message, so the wording is the one its `Handle*` file spells. One that knows
+  something that file could not — which field would not bind, and why — carries its own.
+  `routeio.FailureOf` is the one reading of that rule.
+- A response body for a failure is written by `routeio.WriteError` alone, so every route answers
+  one JSON shape.
+
+Every key of a declaration is in [RouteYaml](../RouteYaml/doc.md).
+
 ## Output channels
 
 | Channel | Stream | Carries | `--quiet` |
@@ -132,6 +218,7 @@ Never `fmt.Printf`.
   family, and only its literal head has to exist. Drop the entry when the path goes. **(verify)**
 - A generated page is changed at its source, never on the page:
   [PublicApi](../PublicApi/doc.md) from the doc comments of `sandbox/api/` and `sandbox/deps/`,
+  [Commands](../Commands/doc.md) from each `entries.yaml`,
   [Structure](../Structure/doc.md) from
   `AgnosConfig/structure.yaml`, `README.md` from
   `AgnosConfig/docs/ReadmeHeader.md` and every `props.yaml`.
@@ -144,8 +231,9 @@ Never `fmt.Printf`.
 
 ## Examples
 
-- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`. Create and delete them with `add-lib-example` /
-  `remove-lib-example`,
+- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`
+  or one `example.sh` under `cli/`. Create and delete them with `add-lib-example` /
+  `remove-lib-example` and `add-cli-example` / `remove-cli-example`,
   never by hand — the same rule as `add-doc` / `remove-doc`.
 - An example runs with its own directory as the working directory and writes only inside its own
   `TestDir`, which `exec-test` removes before every run.
@@ -158,6 +246,12 @@ Never `fmt.Printf`.
   whole suite with `exec-test --update`, or delete it; never edit one.
 - An example's output carries no absolute path other than its own directory, no timestamp and no
   resolved version: those are normalized away or make the golden machine-specific.
+- An `example.sh` types the project's `name` exactly as `AgnosConfig/project.yaml` spells it —
+  that name is the alias `exec-test` puts on the PATH, and a case mismatch passes on macOS and
+  fails on Linux.
+- A `<name>` declared on both sides leaves the same `tree` and exits the same way — so the two
+  sides copy the same set into `AssertDir`; `cli-output` is compared per side only.
 
-Details: [LibExamples](../LibExamples/doc.md).
+Details: [LibExamples](../LibExamples/doc.md) and
+[CliExamples](../CliExamples/doc.md).
 
