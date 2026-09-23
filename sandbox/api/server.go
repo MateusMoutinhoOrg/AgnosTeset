@@ -51,6 +51,17 @@ type Header struct {
 	Key   string
 	Value string
 }
+type RouteProps struct {
+	Name            string
+	AcceptMethods   []string
+	Priority        int
+	Category        string
+	Help            string
+	LongDescription string
+	Parameters      []Parameter
+	Paths           []Path
+	Examples        []string
+}
 
 type Route struct {
 	Name            string
