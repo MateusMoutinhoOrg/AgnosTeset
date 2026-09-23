@@ -19,9 +19,5 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		return ServerMain(sandbox, props)
 	}
 
-	server.NewRouteBase = func() api.Route {
-		return
-	}
-
 	return server
 }
