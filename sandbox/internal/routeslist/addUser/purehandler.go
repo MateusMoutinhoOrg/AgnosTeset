@@ -5,8 +5,8 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 )
 
-func PureHandler(sandbox *api.Sandbox, entries any, response *serverdeps.Response) error {
+func PureHandler(sandbox *api.Sandbox, route *api.Route, entries *Entries, response *serverdeps.Response) error {
 	response.SetStatus(200)
-	response.WriteBody([]byte("Hello World"))
+	response.Write([]byte("Hello World"))
 	return nil
 }
