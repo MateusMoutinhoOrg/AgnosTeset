@@ -1,5 +1,10 @@
 package api
 
+type Path struct {
+	Star int
+	End  int
+}
+
 type Route struct {
 	Name            string
 	AcceptMethods   []string
@@ -7,5 +12,7 @@ type Route struct {
 	Category        string
 	Help            string
 	LongDescription string
-	Examples        []string
+
+	Paths    []Path
+	Examples []string
 }

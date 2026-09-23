@@ -1,6 +1,12 @@
 method: GET
 paths:
-  - identifier: "/health"
+  - 
+    var-name: Health
+    start: 0 
+    end: -1
+    
+
+
 category: Server
 help: Reports that the server is up
 examples:
