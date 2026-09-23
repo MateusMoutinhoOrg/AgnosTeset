@@ -101,113 +101,6 @@ makes each kind of change is in [Workflow](../Workflow/doc.md).
   adapter `reflectsort`). The two are separate names because one dep may have several adapters.
 - Reusable logic goes in `sandbox/internal/<pkg>/`, one directory per concern.
 
-## Handlers
-
-- A command is `sandbox/internal/commands/<name>/`, holding `entries.yaml` (the declaration),
-  `new.go` (generated) and `handler.go` (hand-written), snake_case for a kebab-case name.
-- Only `CommandHandler(sandbox *api.Sandbox, command *api.Command) int` is exported. Every flag
-  and arg of `entries.yaml` is read off `command` by id (`command.GetString("path")`), already
-  typed, defaulted and range-checked.
-- Import nothing outside `sandbox/`, the stdlib included. Every effect and every helper goes
-  through `sandbox.Deps.<Contract>` — see [PublicApi](../PublicApi/doc.md).
-- Return `api.ExitOk` or `api.ExitFailure`, never `api.ExitUsage`: the dispatch rejects bad
-  input before the handler runs.
-- Reusable logic goes in `sandbox/internal/<pkg>/`, not in the handler.
-- A command's `entries.yaml` is written by `add-flag` / `add-arg` / `set-command`, never by
-  hand: they re-render it with keys in alphabetical order and drop comments.
-- `Cli.Commands` is the whole command surface, one `api.Command` per declared command, built by
-  `sandbox/internal/cli/new.go` from each package's generated `NewCommand`. The dispatch and
-  both help screens read it; nothing about the command set is generated per command anywhere
-  else. Each run binds to its own copy of the declaration, made by `api.BindCommand`, so what
-  the slice holds is never written to.
-
-## Routes
-
-- A route is `sandbox/internal/routes/<name>/`, holding `route.yaml` (the declaration),
-  `new.go` (generated) and `handler.go` (hand-written) — the server layer's mirror of a
-  command package, snake_case for a kebab-case name. **(verify)**
-- Only `RouteHandler(sandbox *api.Sandbox, route *api.Route, response serverdeps.Response) int` is
-  exported from a route. It returns the status it answered with, and reaches `400`/`413`/`415`
-  only by propagating one from `ReadBody`: the dispatch settles everything but the body before
-  the handler runs. **(verify)**
-- A route's `route.yaml` is written by `add-route` and rewritten by `set-route`,
-  `add-segment` / `set-segment` / `remove-segment`, `add-header` / `set-header` /
-  `remove-header`, `add-param` / `set-param` / `remove-param`, `set-body` and
-  `add-body-field` / `set-body-field` / `remove-body-field` / `import-body` — one editor per
-  place the file holds something and one `set-` per `add-`, so a bound that was forgotten is
-  never a remove-and-declare-again, and never by hand: they re-render it with keys in
-  alphabetical order and drop comments. `show-route` reads it and writes nothing.
-- Every `identifier` of `paths` starts with `/` and spells exactly one segment; `/` alone is
-  the root. A route declares at least one of them, and every entry of `paths` carries an
-  `identifier` or a `name`, never both. **(verify)**
-- A captured segment is always `required: true` and never defaulted: it is present whenever
-  the route matched. `array: true` on it takes every segment left in the path into a `[]T`
-  list, which only the last entry of `paths` may do, and which needs at least one segment to
-  match — so its name is declared nowhere else. **(verify)**
-- A name is declared once per origin, and the origins declaring the same name agree on its
-  type — one name binds one entry of `Route.Items`. **(verify)**
-- No two routes declare the same method and path pattern. **(verify)**
-- A `json-schema` is declared on a `type: json` body alone, and only with the keywords of the
-  subset — `$ref`, `oneOf`, `allOf`, `anyOf` and `patternProperties` fail the build. **(verify)**
-- `Server.Routes` is the whole http surface, one `api.Route` per declared route, built by
-  `sandbox/internal/server/new.go` from each package's generated `NewRoute`. The dispatch reads it and
-  nothing about the route set is generated per route anywhere else; each request runs on its
-  copy of the declaration, made by `api.BindRoute`, so nothing bound is ever shared.
-- Match order is the collector's, not the directory's: most `identifier`s first, then the
-  longest ones, then the routes of fixed length before the ones taking the rest of the path,
-  then the pattern alphabetically. Without it a route on `/` would swallow one on `/home`.
-- A failure is written by `routeio.WriteError` alone, so every route answers one JSON shape.
-
-Every key of a declaration is in [RouteYaml](../RouteYaml/doc.md).
-
-## Pages
-
-- A page is a route with an html template beside it: `assets/frontend/pages/<page>.html` is
-  the whole of what tells one from any other route, and `add-page` / `remove-page` are its
-  editors — `remove-route` refuses a route that has one, so no html is ever orphaned.
-- A page's route and its html are written once and then the project's, `add-page` keeping an
-  html that is already there. Only `sandbox/internal/pageio/` is rewritten by every build, so
-  a fix to the scaffolded route or page reaches a project by
-  `remove-page <p> && add-page <p>`, never on its own.
-- Everything under `assets/frontend/` is hand-written content and survives `front-purge`; the
-  routes reading it do not, because their handlers import `pageio`.
-- A page renders through `pageio.Render` alone, which is what registers `staticref`, `cssref`,
-  `jsref`, `dirref`, `inline` and `include`. A helper pointed at an asset that is not there
-  fails the render, so a dead link is a `500` and never a silent `404`.
-- `pageio.StaticMount` is generated from the `identifier` of the first segment of the `static`
-  route: the mount is declared in one place, and renaming it moves every link.
-- Whoever edits `sandbox/internal/routes/static/handler.go` keeps `safeSegments`: it is the
-  only thing between a caller's path and the rest of the embedded asset tree.
-
-Every helper and every var is in [FrontUsage](../FrontUsage/doc.md).
-
-## Databases
-
-- A database is `sandbox/internal/databases/<db>/`, declared by `specs.yaml` and generated
-  whole from it. `add-database`, `add-table`, `add-table-field`, their `set-` editors and
-  their inverses are its only editors — never by hand. **(verify)**
-- `api.go`, `new.go` and `methods.go` are rewritten by every build. `methods_custom.go` is the
-  one escape: hand-written, in the same package, read and rewritten by nothing. A name it
-  shares with a generated one is a violation. **(verify)**
-- A database is **not** a surface of `sandbox/api/`: its methods are typed by table, so there
-  is no `[]Database` standing where `Cli.Commands` stands. Whoever needs one builds it with
-  `<db>.New(sandbox)`, which touches no key — building one is free and creates nothing until
-  the first record is written.
-- A `Find<T>By<Field>` is generated for a `key` field and for no other: it is the only field
-  the storage indexes. Every other plain field is reached through `List<T>` and its
-  `<T>Filtrage`, so a scan is never sold with the face of an indexed lookup.
-- A search answers `(<T>Item, bool)` and a write answers `error`: what failed is an error,
-  what is absent is a `false`, and no single `nil` ever stands for both.
-- No stored value is asserted into a type without `ok`. A value of the wrong type is an error;
-  a field a record never carried reads as the zero value of its type.
-- Every `link` names a `target` that is a table of the same database, and every `database`
-  field carries `fields` of its own and nests no further — one level is what is generated.
-  **(verify)**
-- No table declares a field named `id`: every record already carries its permanent one.
-  **(verify)**
-
-Every key of a declaration is in [Databases](../Databases/doc.md).
-
 ## Output channels
 
 | Channel | Stream | Carries | `--quiet` |
@@ -239,7 +132,6 @@ Never `fmt.Printf`.
   family, and only its literal head has to exist. Drop the entry when the path goes. **(verify)**
 - A generated page is changed at its source, never on the page:
   [PublicApi](../PublicApi/doc.md) from the doc comments of `sandbox/api/` and `sandbox/deps/`,
-  [Commands](../Commands/doc.md) from each `entries.yaml`,
   [Structure](../Structure/doc.md) from
   `AgnosConfig/structure.yaml`, `README.md` from
   `AgnosConfig/docs/ReadmeHeader.md` and every `props.yaml`.
@@ -252,9 +144,8 @@ Never `fmt.Printf`.
 
 ## Examples
 
-- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`
-  or one `example.sh` under `cli/`. Create and delete them with `add-lib-example` /
-  `remove-lib-example` and `add-cli-example` / `remove-cli-example`,
+- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`. Create and delete them with `add-lib-example` /
+  `remove-lib-example`,
   never by hand — the same rule as `add-doc` / `remove-doc`.
 - An example runs with its own directory as the working directory and writes only inside its own
   `TestDir`, which `exec-test` removes before every run.
@@ -267,12 +158,6 @@ Never `fmt.Printf`.
   whole suite with `exec-test --update`, or delete it; never edit one.
 - An example's output carries no absolute path other than its own directory, no timestamp and no
   resolved version: those are normalized away or make the golden machine-specific.
-- An `example.sh` types the project's `name` exactly as `AgnosConfig/project.yaml` spells it —
-  that name is the alias `exec-test` puts on the PATH, and a case mismatch passes on macOS and
-  fails on Linux.
-- A `<name>` declared on both sides leaves the same `tree` and exits the same way — so the two
-  sides copy the same set into `AssertDir`; `cli-output` is compared per side only.
 
-Details: [LibExamples](../LibExamples/doc.md) and
-[CliExamples](../CliExamples/doc.md).
+Details: [LibExamples](../LibExamples/doc.md).
 

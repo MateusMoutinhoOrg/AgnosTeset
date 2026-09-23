@@ -1,4 +1,4 @@
-description: "Use FinanceApp as a Go module: wire the deps, build the sandbox, call its API"
+description: "Use NewRoutes as a Go module: wire the deps, build the sandbox, call its API"
 name: "LibUsage"
 order: 1
 themes:
