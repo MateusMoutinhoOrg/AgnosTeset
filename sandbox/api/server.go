@@ -61,6 +61,7 @@ type RouteProps struct {
 	Parameters      []Parameter
 	Paths           []Path
 	Examples        []string
+	PureHandler     func(entries any, response *serverdeps.Response) error
 }
 
 type Route struct {
@@ -73,7 +74,6 @@ type Route struct {
 	Parameters      []Parameter
 	Paths           []Path
 	IsActionable    func(entries *serverdeps.Request) bool
-	PureHandler     func(entries any, response *serverdeps.Response) error
 	Handler         func(entries *serverdeps.Request, response *serverdeps.Response) error
 	Examples        []string
 }
