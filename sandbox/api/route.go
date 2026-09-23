@@ -1,8 +1,24 @@
 package api
 
+type TriggerType int
+
+const (
+	EqualTrigger TriggerType = iota
+	PrefixTrigger
+	SuffixTrigger
+	RegexTrigger
+)
+
+type Trigger struct {
+	Exist bool
+	Type  TriggerType
+	Value string
+}
 type Path struct {
-	Star int
-	End  int
+	Star    int
+	End     int
+	Name    string
+	Trigger Trigger
 }
 
 type Route struct {
