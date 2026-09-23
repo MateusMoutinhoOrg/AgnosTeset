@@ -26,8 +26,6 @@ type ParamenterFont int
 const (
 	HeaderParam ParamenterFont = iota
 	QueryParam
-	PathParam
-	BodyParam
 )
 
 type ParamenterType int
@@ -42,7 +40,7 @@ const (
 
 type Parameter struct {
 	Name     string
-	Font     ParamenterFont
+	Font     []ParamenterFont
 	Required bool
 	Type     ParamenterType
 }

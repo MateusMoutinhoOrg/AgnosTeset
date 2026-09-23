@@ -8,7 +8,23 @@ paths:
       type : equal
       value : "/add-user"
 
-
+parameters:
+  - 
+    name: "name"
+    type: string
+    fonts: [query]
+    required: true
+  - 
+    name: "email"
+    type: string
+    fonts: [query]
+    required: true
+  - 
+    name: "password"
+    type: string
+    fonts: [header,query]
+    required: true
+    
 
 category: Server
 help: Reports that the server is up
