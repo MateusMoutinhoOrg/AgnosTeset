@@ -1,7 +1,7 @@
 method: GET
 paths:
   - 
-    Name: AddUser
+    Id: AddUser
     start: 0 
     end: -1
     trigger: 
@@ -10,22 +10,24 @@ paths:
 
 parameters:
   - 
-    name: "name"
+    id: "Name"
     type: string
     fonts: [query]
     required: true
   - 
-    name: "email"
+    id: "Email"
     type: string
     fonts: [query]
     required: true
   - 
-    name: "password"
+    id: "Password"
     type: string
     fonts: [header,query]
     required: true
     
-
+response:
+  type: application/json
+  
 category: Server
 help: Reports that the server is up
 examples:

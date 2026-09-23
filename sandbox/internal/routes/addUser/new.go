@@ -1,4 +1,4 @@
-package health
+package adduser
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
