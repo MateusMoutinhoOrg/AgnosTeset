@@ -7,18 +7,18 @@ import (
 )
 
 func NewRoute(sandbox *api.Sandbox) *api.Route {
-	props := api.RouteProps{}
+	self := route.NewRoute(sandbox)
 
-	props.Name = "addUser"
-	props.AcceptMethods = []string{"POST"}
-	props.Priority = 1
-	props.Category = "Server"
-	props.Help = "Add a user to the system"
-	props.LongDescription = "Add a user to the system"
-	props.Examples = []string{"curl -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"John Doe\",\"email\":\"[EMAIL_ADDRESS]\",\"password\":\"password\"}' http://localhost:8080/addUser"}
-	props.PureHandler = func(entries *Entries, response *serverdeps.Response) error {
-		return PureHandler(sandbox, routes, entries, response)
+	self.Name = "addUser"
+	self.AcceptMethods = []string{"POST"}
+	self.Priority = 1
+	self.Category = "Server"
+	self.Help = "Add a user to the system"
+	self.LongDescription = "Add a user to the system"
+	self.Examples = []string{"curl -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"John Doe\",\"email\":\"[EMAIL_ADDRESS]\",\"password\":\"password\"}' http://localhost:8080/addUser"}
+	self.InternalPurehandler = func(entries *Entries, response *serverdeps.Response) error {
+		return InternalPureHandler(sandbox, self, entries, response)
 	}
 
-	return route.NewRoute(sandbox, &props)
+	return self
 }

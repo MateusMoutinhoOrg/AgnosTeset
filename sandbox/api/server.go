@@ -51,31 +51,21 @@ type Header struct {
 	Key   string
 	Value string
 }
-type RouteProps struct {
-	Name            string
-	AcceptMethods   []string
-	Priority        int
-	Category        string
-	Help            string
-	LongDescription string
-	Parameters      []Parameter
-	Paths           []Path
-	Examples        []string
-	PureHandler     func(entries any, response *serverdeps.Response) error
-}
 
 type Route struct {
-	Name            string
-	AcceptMethods   []string
-	Priority        int
-	Category        string
-	Help            string
-	LongDescription string
-	Parameters      []Parameter
-	Paths           []Path
-	IsActionable    func(entries *serverdeps.Request) bool
-	Handler         func(entries *serverdeps.Request, response *serverdeps.Response) error
-	Examples        []string
+	Name                string
+	AcceptMethods       []string
+	Priority            int
+	Category            string
+	Help                string
+	LongDescription     string
+	Parameters          []Parameter
+	Paths               []Path
+	Examples            []string
+	InternalPurehandler any
+
+	IsActionable   func(request *serverdeps.Request) bool
+	RequestHandler func(request *serverdeps.Request, response *serverdeps.Response) error
 }
 
 // Server is the http surface of the sandbox: every route the project declares,
