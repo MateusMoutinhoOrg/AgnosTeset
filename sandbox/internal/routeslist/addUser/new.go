@@ -3,7 +3,7 @@ package adduser
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/route"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/route"
 )
 
 func NewRoute(sandbox *api.Sandbox) *api.Route {
