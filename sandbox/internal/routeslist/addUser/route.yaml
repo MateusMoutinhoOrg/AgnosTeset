@@ -27,7 +27,8 @@ parameters:
     
 response:
   type: application/json
-  
+
+priority: 0
 category: Server
 help: Reports that the server is up
 examples:
