@@ -5,7 +5,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 )
 
-func InternalPureHandler(sandbox *api.Sandbox, self *api.Route, entries *Entries, response *serverdeps.Response) error {
+func InternalPureHandler(sandbox *api.Sandbox, route *api.Route, entries *Entries, response *serverdeps.Response) error {
 	response.SetStatus(200)
 	response.Write([]byte("User added successfully"))
 	return nil
