@@ -4,7 +4,6 @@ import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
-	routeslist_static "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/static"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
 )
 
@@ -19,7 +18,6 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 
 	server.Routes = []*api.Route{
 		routeslist_health.NewRoute(sandbox),
-		routeslist_static.NewRoute(sandbox),
 	}
 
 	server.Serve = func(props api.ServeProps) error {

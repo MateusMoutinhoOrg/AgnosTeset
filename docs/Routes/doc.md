@@ -18,10 +18,4 @@ Every parameter of a route is bound and converted before the handler runs — a 
 | --- | --- | --- |
 | [`GET /health`](health.md) | Reports that the server is up | `health` |
 
-## Assets
-
-| Route | Answers | Package |
-| --- | --- | --- |
-| [`GET /static/{*Item}`](static.md) | Serves one file from the embedded static assets | `static` |
-
 Statuses and who answers each one are in [RouteYaml](../RouteYaml/doc.md#failures).
