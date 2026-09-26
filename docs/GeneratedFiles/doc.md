@@ -59,6 +59,7 @@
 | `docs/FrontUsage/` | `build` | always. Both `doc.md` and `props.yaml` |
 | `sandbox/internal/routeslist/frontend/{route.yaml,InternalPureHandler.go}` | `front-init` | once. `spaFallback` is yours to turn on |
 | `assets/frontend/index.html` | `front-init` | once. Kept if already there |
+| `assets/frontend/404.html` | `front-init` | once. Kept if already there |
 | `assets/frontend/<page>.html` | `add-page` | once. Refused if already there |
 | `docs/<Name>/{props.yaml,doc.md}` | `add-doc` | once |
 | `examples/cli/<name>/example.sh` | `add-cli-example` | once. A stub that already runs |
