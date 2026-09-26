@@ -45,8 +45,6 @@ func InternalPureHandler(sandbox *api.Sandbox, route *api.Route, entries *Entrie
 	}
 
 	if err != nil {
-		response.SetStatus(api.StatusNotFound)
-		response.Write([]byte("Not Found"))
 		return nil
 	}
 

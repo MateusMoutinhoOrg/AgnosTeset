@@ -1,10 +1,13 @@
 category: Routes
 help: ""
 methods:
-    - GET
+    - ANY
 paths:
     - end: -1
-      id: Rest
+      id: Route
       start: 0
-priority: 0
+      trigger:
+        type: prefix
+        value: /test
+priority: 1
 response-type: application/json

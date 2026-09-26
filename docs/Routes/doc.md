@@ -23,5 +23,7 @@ Every parameter of a route is bound and converted before the handler runs — a 
 | Route | Answers | Package |
 | --- | --- | --- |
 | [`GET /{*Rest}`](home.md) |  | `home` |
+| [`ANY /*`](not_found.md) |  | `not_found` |
+| [`ANY /test/*`](test_middle.md) |  | `test_middle` |
 
 Statuses and who answers each one are in [RouteYaml](../RouteYaml/doc.md#failures).

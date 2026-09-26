@@ -1,4 +1,4 @@
-package home
+package test_middle
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -17,13 +17,13 @@ import (
 func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
-	self.Name = "home"
-	self.AcceptMethods = []string{"GET"}
-	self.Priority = 0
+	self.Name = "test_middle"
+	self.AcceptMethods = []string{"ANY"}
+	self.Priority = 1
 	self.ResponseType = "application/json"
 	self.Segments = 0
 	self.After = false
-	self.Pattern = "/{*Rest}"
+	self.Pattern = "/test/*"
 	self.Category = "Routes"
 	self.Help = ""
 	self.LongDescription = ""
@@ -32,12 +32,12 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 
 	self.Paths = []api.Path{
 		{
-			Id:          "Rest",
+			Id:          "Route",
 			Start:       0,
 			End:         -1,
 			Type:        api.StringPath,
 			Description: "",
-			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.PrefixTrigger, Value: "/test", Negate: false, IgnoreCase: false},
 		},
 	}
 

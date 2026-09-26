@@ -5,6 +5,8 @@ import (
 	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
 	routeslist_home "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/home"
+	routeslist_not_found "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/not_found"
+	routeslist_test_middle "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/test_middle"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
 )
 
@@ -18,8 +20,10 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 	server := api.Server{}
 
 	server.Routes = []*api.Route{
-		routeslist_health.NewRoute(sandbox),
 		routeslist_home.NewRoute(sandbox),
+		routeslist_test_middle.NewRoute(sandbox),
+		routeslist_health.NewRoute(sandbox),
+		routeslist_not_found.NewRoute(sandbox),
 	}
 
 	server.Serve = func(props api.ServeProps) error {
