@@ -1,6 +1,0 @@
-description: "Index of every runnable example of the NewRoutes cli"
-name: "CliExamples"
-order: 4
-themes:
-  - cli-usage
-  - reference

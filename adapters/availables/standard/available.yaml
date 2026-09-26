@@ -1,7 +1,0 @@
-adapters:
-    - argvdeps
-    - serializables
-    - serverdeps
-    - sortdeps
-    - std
-    - stringsdeps

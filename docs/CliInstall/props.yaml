@@ -1,5 +1,0 @@
-description: "Install NewRoutes: a released binary per platform, or a build from source"
-name: "CliInstall"
-order: 0
-themes:
-  - cli-usage
