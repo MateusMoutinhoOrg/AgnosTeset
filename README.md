@@ -10,6 +10,26 @@ Place your description in AgnosConfig/docs/ReadmeHeader.md
 
 ## Documentation
 
+### CliUsage
+
+Driving the CLI from a terminal - install, commands, flags, exit codes
+
+| Doc | Description |
+| --- | --- |
+| [CliInstall](docs/CliInstall/doc.md) | Install teste: a released binary per platform, or a build from source |
+| [Commands](docs/Commands/doc.md) | Every command of teste, generated from the command declarations |
+| [CliExamples](docs/CliExamples/doc.md) | Index of every runnable example of the teste cli |
+
+### ServerUsage
+
+Serving http - bring the server up, declare routes, read a body
+
+| Doc | Description |
+| --- | --- |
+| [ServerUsage](docs/ServerUsage/doc.md) | Serve http from teste: bring the layer up, declare routes, read a body |
+| [FrontUsage](docs/FrontUsage/doc.md) | Serve a website from teste: bring the front layer up, drop files in assets/frontend, add pages |
+| [Routes](docs/Routes/doc.md) | Every route of teste, generated from the route declarations |
+
 ### LibUsage
 
 Using the project as a Go module - wiring the deps, calling the sandbox
@@ -50,6 +70,8 @@ Lookup tables - schemas, file formats, generated file listings
 | [DepList](docs/DepList/doc.md) | Every dep `agnos add-dep` can add, the adapters that fill it, and what backs each one |
 | [GeneratedFiles](docs/GeneratedFiles/doc.md) | Every file agnos writes into this project and whether build overwrites it |
 | [LibExamples](docs/LibExamples/doc.md) | Index of every runnable example of teste as a Go module |
+| [CliExamples](docs/CliExamples/doc.md) | Index of every runnable example of the teste cli |
+| [RouteYaml](docs/RouteYaml/doc.md) | Every key of a route's route.yaml and what the generated code does with it |
 
 ## License
 

@@ -101,6 +101,118 @@ makes each kind of change is in [Workflow](../Workflow/doc.md).
   adapter `reflectsort`). The two are separate names because one dep may have several adapters.
 - Reusable logic goes in `sandbox/internal/<pkg>/`, one directory per concern.
 
+## Handlers
+
+- A command is `sandbox/internal/commands/<name>/`, holding `entries.yaml` (the declaration),
+  `new.go` (generated) and `handler.go` (hand-written), snake_case for a kebab-case name.
+- Only `CommandHandler(sandbox *api.Sandbox, command *api.Command) int` is exported. Every flag
+  and arg of `entries.yaml` is read off `command` by id (`command.GetString("path")`), already
+  typed, defaulted and range-checked.
+- Import nothing outside `sandbox/`, the stdlib included. Every effect and every helper goes
+  through `sandbox.Deps.<Contract>` — see [PublicApi](../PublicApi/doc.md).
+- Return `api.ExitOk` or `api.ExitFailure`, never `api.ExitUsage`: the dispatch rejects bad
+  input before the handler runs.
+- Reusable logic goes in `sandbox/internal/<pkg>/`, not in the handler.
+- A command's `entries.yaml` is written by `add-flag` / `add-arg` / `set-command`, never by
+  hand: they re-render it with keys in alphabetical order and drop comments.
+- `Cli.Commands` is the whole command surface, one `api.Command` per declared command, built by
+  `sandbox/internal/cli/new.go` from each package's generated `NewCommand`. The dispatch and
+  both help screens read it; nothing about the command set is generated per command anywhere
+  else. Each run binds to its own copy of the declaration, made by `api.BindCommand`, so what
+  the slice holds is never written to.
+
+## Routes
+
+- A route is `sandbox/internal/routeslist/<name>/`, holding `route.yaml` (the declaration),
+  `new.go` and `entries.go` (generated) and `InternalPureHandler.go` (hand-written) — the
+  server layer's mirror of a command package, snake_case for a kebab-case name. **(verify)**
+- Only `InternalPureHandler(sandbox *api.Sandbox, route *api.Route, entries *Entries, response *serverdeps.Response) error`
+  is exported from a route's hand-written half. **(verify)**
+- `new.go` is a 1:1 image of `route.yaml`, built on the generic
+  `sandbox/internal/server/route.NewRoute`; `entries.go` is the `Entries` struct — `FullRoute`,
+  one field per path, one per parameter, each tagged `id:"<id>"` — plus the `ReadBody` a body
+  calls for. The generic `RequestHandler` fills `Entries` by those tags through
+  `Deps.Reflectdeps`.
+- Setting a status or writing a byte on the response is what answers a request and ends the
+  chain — a write sends a `200` ahead of it. A handler that does neither has declined, and the
+  next route matching that request runs; a handler that returns a non-nil error without
+  answering has failed, and `handle_server_error.go` answers for it. What a handler returns is
+  never the status. `SetHeader` alone answers nothing.
+- Every route of one request shares `route.Locals`; a middleware hands what it learned to the
+  routes after it there, through `routeio.SetLocal` / `routeio.GetLocal`.
+- A route of the `after` phase runs once the request has been answered, on a frozen response:
+  it never answers, and it declares no body. **(verify)**
+- A route's `route.yaml` is written by `add-route` and rewritten by `set-route`,
+  `add-path` / `set-path` / `remove-path`, `add-parameter` / `set-parameter` /
+  `remove-parameter`, `set-body` and `add-body-field` / `set-body-field` / `remove-body-field` /
+  `import-body` — one editor per place the file holds something and one `set-` per `add-`, and
+  never by hand: they re-render it with keys in alphabetical order and drop comments.
+  `rename-route` and `rebalance-routes` rewrite whole routes; `show-route`, `list-routes` and
+  `explain-route` read them and write nothing.
+- `methods`, `priority` and `response-type` are required on every route; `priority` is never
+  negative, and `methods` holds known methods only — or `ANY`, alone. `segments`, when
+  declared, is at least `1`; `phase` is `before` or `after`. **(verify)**
+- `add-route` lands a route on rung `100` and a `--middleware` on `10`, so a guard goes in front
+  of the routes it guards without renumbering them; `--before` / `--after` place one next to
+  another, and `rebalance-routes` makes room again.
+- A route declares at least one path. A path's `start` is never negative and its `end` is `-1`
+  or not before `start`; its `type` is `string`, `integer`, `number` or `uuid`, and anything but
+  `string` reads one segment (`start == end`); a `trigger` has a known type (`equal`, `prefix`,
+  `text-prefix`, `suffix`, `regex`), a value, and — for a regex — one that compiles. **(verify)**
+- On a path a `prefix` holds on a segment boundary — `/admin` is `/admin` or `/admin/…`, never
+  `/administrator`; `text-prefix` is the plain one. On a parameter value the two are the same.
+- Every `id` of `paths` and `parameters` is an exported Go name, unique across both and never
+  `FullRoute` or `Body`: each one names one field of `Entries`. **(verify)**
+- A parameter declares a known type and at least one known font; it is never both `required`
+  and defaulted, and a `boolean` is never `required`. **(verify)**
+- A trigger — and a path's type — decides whether the route runs at all. A request that fails
+  one is not a bad request: that route is simply not the one for it.
+- A `405` is answered when a route with explicit `methods` matched the path under another method
+  and no route with explicit `methods` ran; an `ANY` route running does not hide it. A `HEAD`
+  nothing declares runs the chain again as a `GET`.
+- No two routes declare the same method and path pattern *on the same rung of the same phase*.
+  Sharing a pattern across rungs is what a middleware in front of a route is; sharing a rung as
+  well would leave the order between them undeclared. **(verify)**
+- A `json-schema` is declared on a `type: json` body alone, and only with the keywords of the
+  subset — `$ref`, `oneOf`, `allOf`, `anyOf` and `patternProperties` fail the build. **(verify)**
+- `Server.Routes` is the whole http surface, one `*api.Route` per declared route, built by
+  `sandbox/internal/server/server/new.go` from each package's generated `NewRoute`. The dispatch
+  reads it and nothing about the route set is generated per route anywhere else; each request
+  runs on its copy of the declaration, made by `api.BindRoute`, so nothing bound is ever shared.
+- Run order is the collector's, not the directory's: the `before` phase, then the `after` one,
+  each lowest `priority` first, then by name.
+- Nothing in the dispatch writes a response. Every way a request ends without a route answering
+  it is handed to one of the eight `sandbox/internal/server/errors/handle_*.go` — one per status.
+  They are written **once**, by the first `build` that finds the server layer, and no build
+  rewrites them: what a project answers when nothing matches is the project's. **(verify)**
+- A failure is raised with `routeio.Fail` — from the dispatch, from a generated `ReadBody` or
+  from a handler — which reaches the right file through the `Fail` field of `api.Server`,
+  because a route package may not import `sandbox/internal/server/server`. A `Handle*` file
+  answers a failure and never raises one.
+- A failure the dispatch raises with nothing to add — nothing matched, method not allowed —
+  carries no message, so the wording is the one its `Handle*` file spells. One that knows
+  something that file could not — which parameter would not bind, and why — carries its own.
+  `routeio.FailureOf` is the one reading of that rule.
+- A response body for a failure is written by `routeio.WriteError` alone, so every route answers
+  one JSON shape.
+
+Every key of a declaration is in [RouteYaml](../RouteYaml/doc.md).
+
+## Front
+
+- A page is a file of `assets/frontend/` and nothing else. The `frontend` route serves the
+  whole tree, so a file dropped there by hand or by a bundler is as much a page as one
+  `add-page` wrote; `add-page` / `remove-page` only write and delete the html.
+- Everything under `assets/frontend/` is the project's content: no build writes there,
+  `add-page` refuses an existing file, and `front-purge` leaves the tree whole.
+- The `frontend` route is written once and then the project's. Only
+  `sandbox/internal/frontio/` is rewritten by every build, and `frontio.SafePath` is what keeps
+  a caller's path inside `assets/frontend/`: the handler resolves every path through it.
+- The `frontend` route runs at priority `1000`, after every api route, and declines a path
+  that names no file, so the `404` stays `handle_not_found.go`'s.
+
+How a path is resolved, and a bundler's build, is in [FrontUsage](../FrontUsage/doc.md).
+
 ## Output channels
 
 | Channel | Stream | Carries | `--quiet` |
@@ -132,6 +244,7 @@ Never `fmt.Printf`.
   family, and only its literal head has to exist. Drop the entry when the path goes. **(verify)**
 - A generated page is changed at its source, never on the page:
   [PublicApi](../PublicApi/doc.md) from the doc comments of `sandbox/api/` and `sandbox/deps/`,
+  [Commands](../Commands/doc.md) from each `entries.yaml`,
   [Structure](../Structure/doc.md) from
   `AgnosConfig/structure.yaml`, `README.md` from
   `AgnosConfig/docs/ReadmeHeader.md` and every `props.yaml`.
@@ -144,8 +257,9 @@ Never `fmt.Printf`.
 
 ## Examples
 
-- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`. Create and delete them with `add-lib-example` /
-  `remove-lib-example`,
+- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`
+  or one `example.sh` under `cli/`. Create and delete them with `add-lib-example` /
+  `remove-lib-example` and `add-cli-example` / `remove-cli-example`,
   never by hand — the same rule as `add-doc` / `remove-doc`.
 - An example runs with its own directory as the working directory and writes only inside its own
   `TestDir`, which `exec-test` removes before every run.
@@ -158,6 +272,12 @@ Never `fmt.Printf`.
   whole suite with `exec-test --update`, or delete it; never edit one.
 - An example's output carries no absolute path other than its own directory, no timestamp and no
   resolved version: those are normalized away or make the golden machine-specific.
+- An `example.sh` types the project's `name` exactly as `AgnosConfig/project.yaml` spells it —
+  that name is the alias `exec-test` puts on the PATH, and a case mismatch passes on macOS and
+  fails on Linux.
+- A `<name>` declared on both sides leaves the same `tree` and exits the same way — so the two
+  sides copy the same set into `AssertDir`; `cli-output` is compared per side only.
 
-Details: [LibExamples](../LibExamples/doc.md).
+Details: [LibExamples](../LibExamples/doc.md) and
+[CliExamples](../CliExamples/doc.md).
 
