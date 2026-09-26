@@ -23,7 +23,7 @@ sandbox-server: false
 | `sandbox-deps` | `sandbox/deps/deps.go`, each available's `new.go`; `add-dep` and the rest of the dependency commands |
 | `sandbox-cli` | `cmd/main`, the dispatch, `help`, `version`, `sandbox/api/{cli,command}.go`; `add-command` and the rest |
 | `sandbox-server` | `sandbox/internal/{server,routeslist,routeio}`, `sandbox/api/{server,route}.go`; `add-route` and the rest |
-| `sandbox-front` | `sandbox/internal/pageio`; `add-page` and `remove-page` |
+| `sandbox-front` | `sandbox/internal/frontio` and the `frontend` route serving `assets/frontend/`; `add-page` and `remove-page` |
 | `sandbox-database` | `sandbox/internal/{databaseio,databases}`; `add-database`, `add-table`, `add-table-field` and the rest |
 | `sandbox-example` | the `examples/` suite; `add-cli-example`, `add-lib-example`, `exec-test`, `update-test` |
 | `doc` | the `docs/` tree and every `Index.md`; `add-doc` and `remove-doc` |
@@ -46,8 +46,8 @@ touch it. Deleting those files is what an `<x>-purge` is for — and that is the
 that writes the `false`:
 
 ```bash
-agnos cli-init                         # sandbox-cli: true, plus the deps the layer needs
-agnos cli-purge                        # removes the files and writes sandbox-cli: false
+agnos deps-init                        # sandbox-deps: true
+agnos deps-purge                       # removes the files and writes sandbox-deps: false
 ```
 
 A mechanic that needs another one gets it: `server-init` runs `cli-init` first when the

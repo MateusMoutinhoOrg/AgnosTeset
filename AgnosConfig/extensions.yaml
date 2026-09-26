@@ -1,9 +1,9 @@
 doc: true
 readme: true
 sandbox: true
-sandbox-cli: true
+sandbox-cli: false
 sandbox-database: false
-sandbox-deps: true
+sandbox-deps: false
 sandbox-example: true
 sandbox-front: false
-sandbox-server: true
+sandbox-server: false

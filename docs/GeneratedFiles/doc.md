@@ -21,42 +21,13 @@
 | `docs/**/Index.md` | `build` | always, for every doc that has sub-docs |
 | `docs/PublicApi/<contract>.md` | `build` | always. One page per file of `sandbox/api/` and per contract of `sandbox/deps/`; `docs/PublicApi/doc.md` indexes them by the symbols each declares |
 | `docs/LibExamples/` | `build` | always. Both `doc.md` and `props.yaml` |
-| `sandbox/deps/deps.go` | `build` | always. One `<Title> <dir>.Sandbox` per dir of `sandbox/deps/` |
-| `adapters/availables/<name>/new.go` | `build` | always. One `<adapter>.Bind(&deps)` per entry of that available's `available.yaml`; an available with no `available.yaml` is hand-written and left alone |
 | `adapters/availables/<name>/available.yaml` | `deps-init` | once, then rewritten by `add-dep` / `remove-dep` — never by hand |
 | `sandbox/deps/<dep>/*.go`, `adapters/libs/<adapter>/*.go` | `add-dep` | once |
 | `adapters/libs/<adapter>/adapter.yaml` | `add-dep` | once |
 | `sandbox/deps/<dep>/*.go` of a remote dep | `add-dep <module>` | rewritten by `set-dep`; a copy of that module's `sandbox/api/` |
 | `adapters/libs/<dep>/<dep>.go` of a remote dep | `add-dep <module>` | rewritten by `set-dep`; the generated shim |
 | `assets/asset.go` | `add-dep embeddeps` | once |
-| `cmd/main/main.go` | `build` | always |
-| `docs/{CliInstall,Commands}/` | `build` | always. Both `doc.md` and `props.yaml` |
-| `docs/Commands/<command>.md` | `build` | always. One page per visible command; `docs/Commands/doc.md` indexes them |
-| `docs/CliExamples/` | `build` | always. Both `doc.md` and `props.yaml` |
-| `sandbox/api/cli.go`, `sandbox/api/command.go` | `build` | always |
-| `sandbox/internal/cli/new.go` | `build` | always. `NewCli` builds `Cli.Commands` from every command's `NewCommand` |
-| `sandbox/internal/cli/climain.go` | `build` | always. `CliMain`, the one dispatch every command goes through |
-| `sandbox/internal/commands/help/{entries.yaml,handler.go}` | `build` | always |
-| `sandbox/internal/commands/version/{entries.yaml,handler.go}` | `build` | always |
-| `sandbox/internal/commands/<name>/new.go` | `build` | always. `NewCommand`, that command's `api.Command` |
-| `sandbox/internal/commands/<name>/entries.yaml` | `add-command` | once, then rewritten by `add-flag` / `add-arg` / `set-command` — never by hand |
-| `sandbox/internal/commands/<name>/handler.go` | `add-command` | once. A stub; the command's whole hand-written half |
-| `sandbox/api/{server.go,route.go}` | `build` | always |
-| `sandbox/internal/server/server/new.go` | `build` | always. `NewServer` builds `Server.Routes` from every route's `NewRoute` |
-| `sandbox/internal/server/server/servermain.go` | `build` | always. `ServerMain` + the one dispatch that runs `Server.Routes` as a chain |
-| `sandbox/internal/server/route/{new.go,IsActionable.go,RequestHandler.go}` | `build` | always. The generic base every route is built on: the matcher and the `Entries` binder |
-| `sandbox/internal/routeio/*.go` | `build` | always |
-| `sandbox/internal/routeslist/health/{route.yaml,InternalPureHandler.go}` | `build` | always |
-| `sandbox/internal/routeslist/<name>/new.go` | `build` | always. `NewRoute`, that route's `api.Route`, a 1:1 image of `route.yaml` |
-| `sandbox/internal/routeslist/<name>/entries.go` | `build` | always. `Entries`, and the `ReadBody` a body calls for |
-| `docs/{RouteYaml,Routes,ServerUsage}/` | `build` | always. Both `doc.md` and `props.yaml` |
-| `docs/Routes/<route>.md` | `build` | always. One page per visible route; `docs/Routes/doc.md` indexes them |
-| `sandbox/internal/routeslist/<name>/route.yaml` | `add-route` | once, then rewritten by `set-route` / `add-path` / `add-parameter` / `set-body` / `add-body-field` / `import-body`, their `set-` editors and their inverses — never by hand |
-| `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | `add-route` | once. A stub; the route's whole hand-written half |
-| `sandbox/internal/commands/start_server/{entries.yaml,handler.go}` | `server-init` | once |
-| `sandbox/internal/server/errors/handle_*.go` | `build` | once. Eight files, one per failure — what this project answers when no route does |
 | `docs/<Name>/{props.yaml,doc.md}` | `add-doc` | once |
-| `examples/cli/<name>/example.sh` | `add-cli-example` | once. A stub that already runs |
 | `examples/lib/<name>/example.go` | `add-lib-example` | once. A stub that already runs |
 | `examples/<side>/<name>/result.yaml` | `exec-test` | on `update-test <name>`, on `--update` or when absent — never by hand |
 
