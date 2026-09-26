@@ -1,0 +1,10 @@
+category: Routes
+help: ""
+methods:
+    - GET
+paths:
+    - end: -1
+      id: Rest
+      start: 0
+priority: 100
+response-type: application/json

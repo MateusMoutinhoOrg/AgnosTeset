@@ -18,4 +18,10 @@ Every parameter of a route is bound and converted before the handler runs — a 
 | --- | --- | --- |
 | [`GET /health`](health.md) | Reports that the server is up | `health` |
 
+## Routes
+
+| Route | Answers | Package |
+| --- | --- | --- |
+| [`GET /{*Rest}`](home.md) |  | `home` |
+
 Statuses and who answers each one are in [RouteYaml](../RouteYaml/doc.md#failures).
