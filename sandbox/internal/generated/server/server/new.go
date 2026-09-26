@@ -2,7 +2,7 @@ package server
 
 import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
+	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"

@@ -2,7 +2,7 @@ package start_server
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/server"
+	server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/server/server"
 )
 
 func CommandHandler(sandbox *api.Sandbox, command *api.Command) int {

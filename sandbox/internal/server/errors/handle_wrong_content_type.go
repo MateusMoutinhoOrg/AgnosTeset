@@ -3,7 +3,7 @@ package errors
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 )
 
 // HandleWrongContentType answers a request whose Content-Type is not the

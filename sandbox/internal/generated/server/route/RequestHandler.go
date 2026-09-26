@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 )
 
 // entriesArgument is the position of the Entries pointer among the parameters

@@ -3,7 +3,7 @@ package frontend
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/frontio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/frontio"
 )
 
 // spaFallback answers a path that names no file, and has no extension, with

@@ -3,7 +3,7 @@ package errors
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 )
 
 // HandleTooLarge answers a request body longer than the `max-bytes` its

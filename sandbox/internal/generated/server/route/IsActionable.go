@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 )
 
 // IsActionable reports whether one bound route — its Request set — is for the

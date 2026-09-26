@@ -143,7 +143,7 @@ Route is one http route of the project, as the sandbox offers it: the whole of w
 
 | Function | Description |
 | --- | --- |
-| `NewRoute() *Route` | NewRoute returns an empty Route with every slice open. The generic sandbox/internal/server/route.NewRoute fills the matcher and the handler on top of it, and a route's generated NewRoute its declaration. |
+| `NewRoute() *Route` | NewRoute returns an empty Route with every slice open. The generic sandbox/internal/generated/server/route.NewRoute fills the matcher and the handler on top of it, and a route's generated NewRoute its declaration. |
 | `BindRoute(route *Route) *Route` | BindRoute copies one declaration into the route a single request runs on: the same declared fields — the slices are read-only and shared — with no request, response or failure yet. The dispatch calls it once per request, so two requests in flight never share a bound value. |
 
 [every contract](doc.md)

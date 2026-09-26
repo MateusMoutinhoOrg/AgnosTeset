@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 )
 
 // ServerMain opens the port through sandbox.Deps.Serverdeps — which routes
@@ -16,7 +16,7 @@ import (
 // taken, and the ones in flight get ShutdownTimeoutMs to finish, after which
 // Listen returns nil.
 // Nothing here is generated per route: every route is one declaration built by
-// its own NewRoute and collected by sandbox/internal/server/server/new.go, so
+// its own NewRoute and collected by sandbox/internal/generated/server/server/new.go, so
 // this file is the same in every project.
 func ServerMain(sandbox *api.Sandbox, props api.ServeProps) error {
 	host, first, last, err := parseAddr(sandbox, props.Addr)
