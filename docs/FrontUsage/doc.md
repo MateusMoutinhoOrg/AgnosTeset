@@ -1,0 +1,80 @@
+# FrontUsage
+
+The front layer answers html. A **page** is a route with a template beside it:
+`sandbox/internal/routeslist/<page>/` declares and handles it,
+`assets/frontend/pages/<page>.html` is what it renders. `sandbox/internal/pageio` is the
+render layer both sides go through, and it is the directory `build` reads the layer from.
+
+## Bring it up
+
+```bash
+agnos front-init                       # installs the deps, renders pageio, writes the static route
+agnos add-page home --trigger /        # a page answering GET /
+agnos add-page about --title "About"   # a page answering GET /about
+agnos remove-page about                # drops the route and the html
+agnos front-purge                      # drops the layer, keeps assets/frontend/
+```
+
+Then `teste start-server` serves them.
+
+`front-init` runs `server-init` first when the project has no server layer. A page is a
+route, so `docs/Routes` lists it and every route editor (`set-route`, `add-parameter`,
+`add-path`, …) works on its `route.yaml`.
+
+## Generated vs yours
+
+| Path | Written by | Rewrite |
+|---|---|---|
+| `sandbox/internal/pageio/templates.go` | `build` | always |
+| `docs/FrontUsage/` | `build` | always |
+| `sandbox/internal/routeslist/static/{route.yaml,InternalPureHandler.go}` | `front-init` | once |
+| `assets/frontend/static/styles/main.css`, `.../scripts/main.js` | `front-init` | once |
+| `sandbox/internal/routeslist/<page>/{route.yaml,InternalPureHandler.go}` | `add-page` | once |
+| `assets/frontend/pages/<page>.html` | `add-page` | once |
+| `sandbox/internal/routeslist/<page>/{new.go,entries.go}` | `build` | always |
+
+`once` files are a starting point and yours from the moment they exist. To go back to the
+scaffolded one: `agnos remove-route static && agnos front-init` for
+the static route, `agnos remove-page <page> && agnos add-page <page>`
+for a page — that one deletes the html too. `agnos front-purge` followed by
+`front-init` returns the whole layer without touching `assets/frontend/`.
+
+Whoever edits `sandbox/internal/routeslist/static/InternalPureHandler.go` keeps `safeSegments`: it is the only
+thing between a caller's `/static/<path>` and the rest of the embedded asset tree.
+
+## Helpers
+
+Every page is rendered through `pageio.Render`, which registers these. A path is
+slash-separated and relative to `assets/frontend/static`; one that cannot be read fails the
+render, so a broken link is a 500 on the page that carries it and never a 404 in the browser.
+
+| Helper | Returns |
+|---|---|
+| `{{ staticref "styles/main.css" }}` | the url, stamped `?sha=` with the digest of the current bytes |
+| `{{ cssref "styles/main.css" }}` | the whole `<link rel="stylesheet">` tag |
+| `{{ jsref "scripts/main.js" }}` | the whole deferred `<script>` tag |
+| `{{ dirref "styles" }}` | every `.css` then every `.js`/`.mjs` at or below the directory, sorted; `""` and `"."` name the root |
+| `{{ inline "styles/critical.css" }}` | the file's bytes, written straight into the page |
+| `{{ include "frontend/pages/nav.html" }}` | another template, rendered over the same vars (path relative to the assets root) |
+
+`?sha=` is a cache key and never an input: the static route serves the file the path names
+whatever the sha says, and answers `immutable` when the two agree, `no-cache` when they do not.
+So a stale link is slow, never broken.
+
+## Page vars
+
+A page's handler declares `pageVars`, and every `{{ .Field }}` of its html is one
+exported field of it — a new variable in the page is a new field, checked by the compiler
+rather than discovered at request time.
+
+```go
+content, err := pageio.Render(deps, pageAsset, pageVars{Title: "Home"})
+```
+
+## The mount
+
+`pageio.StaticMount` is generated from the trigger `value` of the first path of
+`sandbox/internal/routeslist/static/route.yaml`, which is `/static` as scaffolded. Move it with
+`agnos set-path Mount --route static --trigger /assets` and the next build
+moves every link the helpers write. Editing the constant instead does nothing: it is rewritten
+from the declaration.

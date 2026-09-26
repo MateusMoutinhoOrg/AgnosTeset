@@ -141,17 +141,29 @@ rewrites: they are where a 404, a 405, a 401 or a 500 is worded.
 [ServerUsage](../ServerUsage/doc.md) is the whole recipe.
 
 
-## Add the front layer
+## Change the page surface
 
 ```bash
-agnos front-init                  # pageio, the static route, assets/frontend/
-agnos add-page home --trigger /   # a page answering GET /
-teste start-server             # serves it
+agnos add-page <name> --trigger /<path> --title "One Line"
+agnos remove-page <name>                             # the route and the html both
 ```
 
-From there `agnos add-page <name>` declares a page and `remove-page` drops it,
-html included. A project with no server layer gets one first: a page is answered over http.
-`agnos front-purge` removes the layer again, leaving `assets/frontend/` alone.
+`add-page` writes the route that answers the page (`route.yaml` + a `handler.go` rendering
+through `pageio`) and `assets/frontend/pages/<name>.html`, then generates its `new.go` like
+any other route's. A page **is** a route, so every editor of
+[RouteYaml](../RouteYaml/doc.md) works on its declaration and [Routes](../Routes/doc.md)
+documents it.
+
+Then write the html, naming assets rather than hardcoding links:
+
+```html
+{{ dirref "styles" }}
+<h1>{{ .Title }}</h1>
+```
+
+Every `{{ .Field }}` of the page is one exported field of the `pageVars` struct in its
+handler, so a new variable is a compile error until it is declared.
+[FrontUsage](../FrontUsage/doc.md) is the whole recipe.
 
 ## Add the database layer
 
@@ -253,6 +265,7 @@ prints what it changes before writing. Details in [LibExamples](../LibExamples/d
 | --- | --- |
 | `sandbox/internal/commands/<name>/handler.go` | a command does something |
 | `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | a route answers something |
+| `assets/frontend/pages/<page>.html`, `assets/frontend/static/**` | a page looks like something |
 | `sandbox/internal/<pkg>/*.go` | logic worth reusing |
 | `sandbox/api/<x>.go` + `sandbox/internal/<x>/new.go` | a new api surface |
 | `sandbox/constructors/<x>/constructor.go` | how a field of the `Sandbox` is built |

@@ -5,5 +5,5 @@ sandbox-cli: true
 sandbox-database: false
 sandbox-deps: true
 sandbox-example: true
-sandbox-front: false
+sandbox-front: true
 sandbox-server: true

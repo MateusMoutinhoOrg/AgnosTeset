@@ -55,6 +55,12 @@
 | `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | `add-route` | once. A stub; the route's whole hand-written half |
 | `sandbox/internal/commands/start_server/{entries.yaml,handler.go}` | `server-init` | once |
 | `sandbox/internal/server/errors/handle_*.go` | `build` | once. Eight files, one per failure — what this project answers when no route does |
+| `sandbox/internal/pageio/templates.go` | `build` | always. `Render` + the asset helpers; `StaticMount` from the `static` route's first path |
+| `docs/FrontUsage/` | `build` | always. Both `doc.md` and `props.yaml` |
+| `sandbox/internal/routeslist/static/{route.yaml,InternalPureHandler.go}` | `front-init` | once. Keep `safeSegments` if you edit it |
+| `assets/frontend/static/{styles/main.css,scripts/main.js}` | `front-init` | once |
+| `sandbox/internal/routeslist/<page>/{route.yaml,InternalPureHandler.go}` | `add-page` | once |
+| `assets/frontend/pages/<page>.html` | `add-page` | once. Kept as is by a second `add-page` |
 | `docs/<Name>/{props.yaml,doc.md}` | `add-doc` | once |
 | `examples/cli/<name>/example.sh` | `add-cli-example` | once. A stub that already runs |
 | `examples/lib/<name>/example.go` | `add-lib-example` | once. A stub that already runs |

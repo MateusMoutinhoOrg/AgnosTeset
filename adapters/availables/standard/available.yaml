@@ -1,5 +1,7 @@
 adapters:
     - argvdeps
+    - embeddeps
+    - hashdeps
     - reflectdeps
     - serializables
     - serverdeps
@@ -7,3 +9,4 @@ adapters:
     - sortdeps
     - std
     - stringsdeps
+    - templatedeps

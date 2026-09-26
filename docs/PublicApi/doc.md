@@ -38,6 +38,8 @@ field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&
 | Page | Declares |
 | --- | --- |
 | [`deps.Argvdeps`](deps.argvdeps.md) | `Sandbox`, `Parser` |
+| [`deps.Embeddeps`](deps.embeddeps.md) | `Sandbox` |
+| [`deps.Hashdeps`](deps.hashdeps.md) | `Sandbox` |
 | [`deps.Reflectdeps`](deps.reflectdeps.md) | `Sandbox` |
 | [`deps.Serializables`](deps.serializables.md) | `SerializibleObject`, `Sandbox` |
 | [`deps.Serverdeps`](deps.serverdeps.md) | `Sandbox`, `ServerProps`, `Server`, `Request`, `Response` |
@@ -45,3 +47,4 @@ field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&
 | [`deps.Sortdeps`](deps.sortdeps.md) | `Sandbox` |
 | [`deps.Std`](deps.std.md) | `Sandbox` |
 | [`deps.Stringsdeps`](deps.stringsdeps.md) | `Sandbox` |
+| [`deps.Templatedeps`](deps.templatedeps.md) | `Sandbox`, `RenderProps` |
