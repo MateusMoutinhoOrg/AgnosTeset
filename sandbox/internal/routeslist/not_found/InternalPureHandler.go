@@ -16,8 +16,15 @@ import (
 // routeio.GetLocal. Return a failure you did not answer yourself with
 // routeio.Fail; nil means "done" or "not mine".
 func InternalPureHandler(sandbox *api.Sandbox, route *api.Route, entries *Entries, response *serverdeps.Response) error {
-	response.SetStatus(api.StatusNotFound)
-	response.Write([]byte("Not Found"))
+	content, err := sandbox.Deps.Embeddeps.ReadFile("frontend/404.html")
+	if err != nil {
+		response.SetStatus(api.StatusNotFound)
+		response.Write([]byte("Not Found"))
+		return nil
+	}
 
+	response.SetHeader("Content-Type", "text/html")
+	response.SetStatus(api.StatusNotFound)
+	response.Write(content)
 	return nil
 }
