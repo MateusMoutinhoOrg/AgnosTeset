@@ -1,0 +1,9 @@
+adapters:
+    - argvdeps
+    - reflectdeps
+    - serializables
+    - serverdeps
+    - signaldeps
+    - sortdeps
+    - std
+    - stringsdeps
