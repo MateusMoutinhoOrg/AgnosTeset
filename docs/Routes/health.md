@@ -7,7 +7,7 @@ Reports that the server is up
 | `Route` | segments 0..-1 | path | string, equal `/health` |  |  |
 
 ```bash
-curl localhost:8080/health
+curl localhost:3000/health
 ```
 
 `sandbox/internal/routeslist/health/` · Server · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

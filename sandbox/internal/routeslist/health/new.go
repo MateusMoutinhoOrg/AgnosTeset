@@ -27,7 +27,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Category = "Server"
 	self.Help = "Reports that the server is up"
 	self.LongDescription = ""
-	self.Examples = []string{"curl localhost:8080/health"}
+	self.Examples = []string{"curl localhost:3000/health"}
 	self.Hidden = false
 
 	self.Paths = []api.Path{

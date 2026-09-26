@@ -20,7 +20,7 @@ func NewCommand(sandbox *api.Sandbox) api.Command {
 	command.Category = "Server"
 	command.Help = "Starts the http server"
 	command.LongDescription = "Opens the port and serves every route declared under\nsandbox/internal/routeslist, until the process is stopped. An interrupt\n(Ctrl+C) or a termination request stops it gracefully: no new request is\ntaken, and the ones in flight get --shutdown-timeout-ms to finish.\n"
-	command.Examples = []string{"start-server", "start-server --addr :3000"}
+	command.Examples = []string{"start-server", "start-server --addr 4000:5000"}
 	command.Hidden = false
 
 	command.Flags = []api.CommandFlag{
@@ -29,9 +29,9 @@ func NewCommand(sandbox *api.Sandbox) api.Command {
 			Type:        "string",
 			Required:    false,
 			Array:       false,
-			Description: "the address the server listens on",
-			Examples:    []string{"start-server --addr :3000"},
-			Default:     ":8080",
+			Description: "the port the server listens on, or a range of ports it takes the first free one of, with or without a host (8080, 4000:5000, 127.0.0.1:4000:5000, :8080)",
+			Examples:    []string{"start-server --addr 4000:5000", "start-server --addr 8080"},
+			Default:     "3000:4000",
 			HasDefault:  true,
 			Identifiers: []string{"--addr"},
 		},
