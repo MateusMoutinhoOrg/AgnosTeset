@@ -4,9 +4,9 @@ A **database** is `sandbox/internal/databases/<db>/`, declared by `specs.yaml` a
 whole from it — the same relation `commands/<x>/command.yaml` and `routeslist/<x>/route.yaml` have
 with the `new.go` they render.
 
-No database is declared yet. Run `agnos add-database <name>`, then
-`agnos add-table <table> --database <name>`, and every database lands on this page
-on the next build.
+| Database | Package | Keys under |
+| --- | --- | --- |
+| [`MainDatabase`](main_database.md) | `main_database` | `main-database` |
 
 ## The files
 
