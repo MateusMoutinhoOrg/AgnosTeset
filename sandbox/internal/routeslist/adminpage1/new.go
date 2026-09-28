@@ -23,7 +23,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.ResponseType = "application/json"
 	self.Segments = 2
 	self.After = false
-	self.Pattern = "/adimin/page1"
+	self.Pattern = "/admin/page1"
 	self.Category = "Routes"
 	self.Help = ""
 	self.LongDescription = ""
@@ -37,7 +37,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			End:         1,
 			Type:        api.StringPath,
 			Description: "",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/adimin/page1", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/admin/page1", Negate: false, IgnoreCase: false},
 		},
 	}
 

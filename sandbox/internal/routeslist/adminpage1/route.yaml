@@ -8,7 +8,7 @@ paths:
       start: 0
       trigger:
         type: equal
-        value: /adimin/page1
+        value: /admin/page1
 priority: 100
 response-type: application/json
 segments: 2

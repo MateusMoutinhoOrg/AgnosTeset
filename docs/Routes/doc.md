@@ -16,13 +16,13 @@ Every parameter of a route is bound and converted before the handler runs — a 
 
 | Route | Answers | Package |
 | --- | --- | --- |
-| [`ANY /adimin/{*Rest}`](adminmiddleware.md) |  | `adminmiddleware` |
+| [`ANY /admin/{*Rest}`](adminmiddleware.md) |  | `adminmiddleware` |
 
 ## Routes
 
 | Route | Answers | Package |
 | --- | --- | --- |
-| [`GET /adimin/page1`](adminpage1.md) |  | `adminpage1` |
+| [`GET /admin/page1`](adminpage1.md) |  | `adminpage1` |
 
 ## Assets
 

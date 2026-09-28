@@ -8,7 +8,7 @@ paths:
       start: 0
       trigger:
         type: equal
-        value: /adimin
+        value: /admin
     - end: -1
       id: Rest
       start: 1
