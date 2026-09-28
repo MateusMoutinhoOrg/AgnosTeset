@@ -4,11 +4,11 @@ methods:
     - GET
 paths:
     - end: 1
-      id: AdminPage1
+      id: ApiAddUser
       start: 0
       trigger:
         type: equal
-        value: /admin/page1
+        value: /api/add-user
 priority: 100
 response-type: application/json
 segments: 2

@@ -1,11 +1,11 @@
-package page1
+package apiadduser
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 )
 
-// InternalPureHandler answers GET /admin/page1. Every value the route
+// InternalPureHandler answers GET /api/add-user. Every value the route
 // declares is already on entries, read off the request by the generic
 // RequestHandler, and the response already carries the route's response-type.
 //
@@ -17,7 +17,7 @@ import (
 // by returning routeio.Fail; nil means "done" or "not mine".
 func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	response.SetStatus(api.StatusOk)
-	response.Write([]byte("page1 called\n"))
+	response.Write([]byte("apiadduser called\n"))
 
 	return nil
 }

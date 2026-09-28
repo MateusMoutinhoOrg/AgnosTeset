@@ -32,6 +32,14 @@ def main():
     os.system("agnos start --project-name teste --module github.com/MateusMoutinhoOrg/AgnosTeset")
     os.system("agnos front-init")
     os.system('agnos add-route adminmiddlware --pattern "/admin/{*rest}" --middleware  ')
-    os.system('agnos add-route page1 --pattern "/admin/page1" ')
+    ## front route
+    os.system('agnos add-route users --pattern "/admin/users" ')
+    os.system('agnos add-route userconfig --pattern "/admin/user/{user:integer}" ')
+
+    ## Api 
+    os.system('agnos add-route apiadduser  --pattern "/api/add-user" ')
+    
+
+
 if __name__ == '__main__':
     main()
