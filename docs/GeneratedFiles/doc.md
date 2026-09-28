@@ -21,13 +21,32 @@
 | `docs/**/Index.md` | `build` | always, for every doc that has sub-docs |
 | `docs/PublicApi/<contract>.md` | `build` | always. One page per file of `sandbox/api/` and per contract of `sandbox/deps/`; `docs/PublicApi/doc.md` indexes them by the symbols each declares |
 | `docs/LibExamples/` | `build` | always. Both `doc.md` and `props.yaml` |
+| `sandbox/deps/deps.go` | `build` | always. One `<Title> <dir>.Sandbox` per dir of `sandbox/deps/` |
+| `adapters/availables/<name>/new.go` | `build` | always. One `<adapter>.Bind(&deps)` per entry of that available's `available.yaml`; an available with no `available.yaml` is hand-written and left alone |
 | `adapters/availables/<name>/available.yaml` | `deps-init` | once, then rewritten by `add-dep` / `remove-dep` — never by hand |
 | `sandbox/deps/<dep>/*.go`, `adapters/libs/<adapter>/*.go` | `add-dep` | once |
 | `adapters/libs/<adapter>/adapter.yaml` | `add-dep` | once |
 | `sandbox/deps/<dep>/*.go` of a remote dep | `add-dep <module>` | rewritten by `set-dep`; a copy of that module's `sandbox/api/` |
 | `adapters/libs/<dep>/<dep>.go` of a remote dep | `add-dep <module>` | rewritten by `set-dep`; the generated shim |
 | `assets/asset.go` | `add-dep embeddeps` | once |
+| `cmd/main/main.go` | `build` | always |
+| `docs/{CliInstall,Commands}/` | `build` | always. Both `doc.md` and `props.yaml` |
+| `docs/Commands/<command>.md` | `build` | always. One page per visible command; `docs/Commands/doc.md` indexes them |
+| `docs/CliExamples/` | `build` | always. Both `doc.md` and `props.yaml` |
+| `sandbox/api/cli.go`, `sandbox/api/command.go` | `build` | always |
+| `sandbox/internal/generated/cli/cli/new.go` | `build` | always. `NewCli` builds `Cli.Commands` from every command's `NewCommand` |
+| `sandbox/internal/generated/cli/cli/climain.go` | `build` | always. `CliMain`, the one dispatch every command goes through |
+| `sandbox/internal/generated/cli/command/*.go` | `build` | always. The generic base every command is built on: the matcher and the `Entries` binder |
+| `sandbox/internal/generated/cliio/*.go` | `build` | always |
+| `sandbox/internal/commands/{help,version,help_flag}/{command.yaml,InternalPureHandler.go}` | `build` | always |
+| `sandbox/internal/commands/<name>/new.go` | `build` | always. `NewCommand`, that command's `api.Command`, a 1:1 image of `command.yaml` |
+| `sandbox/internal/commands/<name>/entries.go` | `build` | always. `Entries`, one field per arg and flag |
+| `sandbox/internal/commands/<name>/command.yaml` | `add-command` | once, then rewritten by `add-flag` / `add-arg` / `set-command`, their `set-` editors and their inverses — never by hand |
+| `sandbox/internal/commands/<name>/InternalPureHandler.go` | `add-command` | once. A stub; the command's whole hand-written half |
+| `sandbox/internal/cli/errors/handle_*.go` | `build` | once. Five files, one per failure — what this project answers when no command does |
+| `sandbox/api/commandprops.go` | `build` | once. `api.CommandProps`, what one command line's chain of commands shares |
 | `docs/<Name>/{props.yaml,doc.md}` | `add-doc` | once |
+| `examples/cli/<name>/example.sh` | `add-cli-example` | once. A stub that already runs |
 | `examples/lib/<name>/example.go` | `add-lib-example` | once. A stub that already runs |
 | `examples/<side>/<name>/result.yaml` | `exec-test` | on `update-test <name>`, on `--update` or when absent — never by hand |
 

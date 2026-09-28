@@ -1,7 +1,8 @@
 # PublicApi
 
 Every exported symbol of `github.com/MateusMoutinhoOrg/AgnosTeset`, read straight from the contract sources on
-every build: `sandbox/api/` is the surface `sandbox.New` returns. Each description is the
+every build: `sandbox/api/` is the surface `sandbox.New` returns, `sandbox/deps/`
+the contracts an adapter fills and a caller may replace. Each description is the
 doc comment of the declaration itself — change the comment, run `build`, and the page
 follows.
 
@@ -12,7 +13,8 @@ rather than reading the whole surface.
 
 | Symbol | Signature |
 | --- | --- |
-| `sandbox.New` | `func() *api.Sandbox` |
+| `sandbox.New` | `func(deps *deps.Deps) *api.Sandbox` |
+| `standard.New` | `func() deps.Deps` (`adapters/availables/standard`) |
 
 Implementations live under `sandbox/internal` and are unreachable: every contract is a
 struct of function fields, filled by a binder.
@@ -22,5 +24,19 @@ struct of function fields, filled by a binder.
 | Page | Declares |
 | --- | --- |
 | [`sandbox/api/sandbox.go`](api.sandbox.md) | `Sandbox` |
+| [`sandbox/api/cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
+| [`sandbox/api/command.go`](api.command.md) | `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Error`, `NewCommand`, `BindCommand` |
 | [`sandbox/api/config.go`](api.config.md) | `Config` |
 | [`sandbox/api/trigger.go`](api.trigger.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `TriggerType`, `Trigger` |
+
+## Dependency contracts
+
+`deps.Deps` has one field per directory of `sandbox/deps/`, named by title-casing it. Each
+field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&deps)`.
+
+| Page | Declares |
+| --- | --- |
+| [`deps.Argvdeps`](deps.argvdeps.md) | `Sandbox`, `Parser` |
+| [`deps.Reflectdeps`](deps.reflectdeps.md) | `Sandbox` |
+| [`deps.Std`](deps.std.md) | `Sandbox` |
+| [`deps.Stringsdeps`](deps.stringsdeps.md) | `Sandbox` |

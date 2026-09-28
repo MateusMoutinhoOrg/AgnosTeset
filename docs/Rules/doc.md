@@ -106,6 +106,29 @@ makes each kind of change is in [Workflow](../Workflow/doc.md).
   adapter `reflectsort`). The two are separate names because one dep may have several adapters.
 - Reusable logic goes in `sandbox/internal/<pkg>/`, one directory per concern.
 
+## Handlers
+
+- A command is `sandbox/internal/commands/<name>/`, holding `command.yaml` (the declaration),
+  `new.go` and `entries.go` (generated) and `InternalPureHandler.go` (hand-written), snake_case
+  for a kebab-case name. A `handler.go` is an old declaration. **(verify)**
+- Only `InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries *Entries, response *api.CommandResponse) error`
+  is exported. Every flag and arg of `command.yaml` is a field of `Entries` (`entries.Name`),
+  already typed, defaulted and range-checked.
+- Import nothing outside `sandbox/`, the stdlib included. Every effect and every helper goes
+  through `sandbox.Deps.<Contract>` — see [PublicApi](../PublicApi/doc.md).
+- `response.Printf` (stdout) answers the command line with `api.ExitOk`; `response.Error` and
+  `response.Log` (stderr) answer nothing. Refuse a command line by returning `cliio.Fail` — a
+  returned error fails it even after a print. A strict command that returns `nil` without
+  printing has run and exits `0`; only a middleware declines.
+- Reusable logic goes in `sandbox/internal/<pkg>/`, not in the handler.
+- A command's `command.yaml` is written by `add-flag` / `add-arg` / `set-command`, never by
+  hand: they re-render it with keys in alphabetical order and drop comments.
+- `Cli.Commands` is the whole command surface, one `api.Command` per declared command, built by
+  `sandbox/internal/generated/cli/cli/new.go` from each package's generated `NewCommand`. The dispatch and
+  both help screens read it; nothing about the command set is generated per command anywhere
+  else. Each run binds to its own copy of the declaration, made by `api.BindCommand`, so what
+  the slice holds is never written to.
+
 ## Output channels
 
 | Channel | Stream | Carries | Silenced |
@@ -138,6 +161,7 @@ Never `fmt.Printf`. A generated cli declares no `--quiet`: add it as a
   family, and only its literal head has to exist. Drop the entry when the path goes. **(verify)**
 - A generated page is changed at its source, never on the page:
   [PublicApi](../PublicApi/doc.md) from the doc comments of `sandbox/api/` and `sandbox/deps/`,
+  [Commands](../Commands/doc.md) from each `command.yaml`,
   [Structure](../Structure/doc.md) from
   `AgnosConfig/structure.yaml`, `README.md` from
   `AgnosConfig/docs/ReadmeHeader.md` and every `props.yaml`.
@@ -150,8 +174,9 @@ Never `fmt.Printf`. A generated cli declares no `--quiet`: add it as a
 
 ## Examples
 
-- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`. Create and delete them with `add-lib-example` /
-  `remove-lib-example`,
+- An example is `examples/<side>/<name>/`, holding exactly one `example.go` under `lib/`
+  or one `example.sh` under `cli/`. Create and delete them with `add-lib-example` /
+  `remove-lib-example` and `add-cli-example` / `remove-cli-example`,
   never by hand — the same rule as `add-doc` / `remove-doc`.
 - An example runs with its own directory as the working directory and writes only inside its own
   `TestDir`, which `exec-test` removes before every run.
@@ -164,6 +189,12 @@ Never `fmt.Printf`. A generated cli declares no `--quiet`: add it as a
   whole suite with `exec-test --update`, or delete it; never edit one.
 - An example's output carries no absolute path other than its own directory, no timestamp and no
   resolved version: those are normalized away or make the golden machine-specific.
+- An `example.sh` types the project's `name` exactly as `AgnosConfig/project.yaml` spells it —
+  that name is the alias `exec-test` puts on the PATH, and a case mismatch passes on macOS and
+  fails on Linux.
+- A `<name>` declared on both sides leaves the same `tree` and exits the same way — so the two
+  sides copy the same set into `AssertDir`; `cli-output` is compared per side only.
 
-Details: [LibExamples](../LibExamples/doc.md).
+Details: [LibExamples](../LibExamples/doc.md) and
+[CliExamples](../CliExamples/doc.md).
 

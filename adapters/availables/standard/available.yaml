@@ -1,0 +1,5 @@
+adapters:
+    - argvdeps
+    - reflectdeps
+    - std
+    - stringsdeps

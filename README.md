@@ -9,6 +9,16 @@ Place your description in AgnosConfig/docs/ReadmeHeader.md
 
 ## Documentation
 
+### CliUsage
+
+Driving the CLI from a terminal - install, commands, flags, exit codes
+
+| Doc | Description |
+| --- | --- |
+| [CliInstall](docs/CliInstall/doc.md) | Install backoffice: a released binary per platform, or a build from source |
+| [Commands](docs/Commands/doc.md) | Every command of backoffice, generated from the command declarations |
+| [CliExamples](docs/CliExamples/doc.md) | Index of every runnable example of the backoffice cli |
+
 ### LibUsage
 
 Using the project as a Go module - wiring the deps, calling the sandbox
@@ -44,6 +54,7 @@ Lookup tables - schemas, file formats, generated file listings
 
 | Doc | Description |
 | --- | --- |
+| [CommandYaml](docs/CommandYaml/doc.md) | Every key of a command's command.yaml and what the generated code does with it |
 | [Extensions](docs/Extensions/doc.md) | The generation mechanics this project turns on, and what each one writes |
 | [DepList](docs/DepList/doc.md) | Every dep `agnos add-dep` can add, the adapters that fill it, and what backs each one |
 | [GeneratedFiles](docs/GeneratedFiles/doc.md) | Every file agnos writes into this project and whether build overwrites it |

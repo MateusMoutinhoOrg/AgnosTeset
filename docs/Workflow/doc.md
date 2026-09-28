@@ -11,7 +11,7 @@ agnos build      # verify + regenerate every generated file + go mod tidy + comp
 agnos verify     # the schema check alone, writes nothing
 ```
 
-`build` is the only thing that regenerates the wiring,
+`build` is the only thing that regenerates the dispatch, the wiring,
 `README.md` and `docs/`, so run it after every hand edit. It is idempotent: a second run leaves
 the tree unchanged. Every command below takes `--path <dir>` (default `.`) and `-q`, and runs
 `build` for you.
@@ -31,14 +31,42 @@ agnos disable-extension doc       # stop generating docs/, keep what is there
 mechanic off stops the generation and removes nothing: the files stay, and they are yours to
 edit. Every key is in [Extensions](../Extensions/doc.md).
 
-## Add the CLI layer
+## Change the command surface
 
 ```bash
-agnos cli-init     # sandbox/internal/generated/cli, cmd/main, help, version and help-flag, argvdeps + std + reflectdeps
+agnos add-command <name> --help "one line" [--category "Core"] [--pattern 'route add {name}']
+agnos add-command <name> --middleware --help "..."      # runs in front of every command line
+agnos add-arg  <name> --command <cmd> [--type integer] [--required] [--start 1 --end -1]
+agnos add-flag <name> --command <cmd> [--key --out --key -o] [--type integer --min 1] [--enum a --enum b]
+agnos set-command <cmd> --long-description "..." --example "<cmd> --flag v" --identifier <alias>
+agnos set-arg <name> --command <cmd> ... / set-flag <name> --command <cmd> ...
+agnos remove-arg <name> --command <cmd> / remove-flag <name> --command <cmd> / remove-command <cmd>
+agnos list-commands / show-command <cmd> / explain-command -- <argv…>
 ```
 
-From there `agnos add-command <name> --help "..." --category "..."` declares a command and
-`agnos add-flag` / `add-arg` its fields. `agnos cli-purge` removes the layer again.
+`add-command` writes `sandbox/internal/commands/<name>/command.yaml` (the declaration) and a
+stub `InternalPureHandler.go` (yours), then generates `new.go` — the `api.Command` that joins
+`Cli.Commands` — and `entries.go`, the `Entries` it is handed. Every key these editors write is
+in [CommandYaml](../CommandYaml/doc.md); never edit `command.yaml` by hand.
+
+Then write `InternalPureHandler.go` — the whole hand-written half of a command:
+
+```go
+func InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries *Entries, response *api.CommandResponse) error {
+	result, err := something(sandbox, entries.Name)
+	if err != nil {
+		return cliio.Fail(sandbox, api.ExitFailure, "", err.Error())
+	}
+	response.Printf("%s\n", result)
+	return nil
+}
+```
+
+Every value arrives typed, defaulted and checked: bad input was answered with exit 2 before the
+handler ran. Printing through `response` answers the line with exit 0; a returned error fails it
+with exit 1, even after a print. A command that prints nothing has still run — only a
+`--middleware` that answers nothing hands the line to the next command of the chain. [Commands](../Commands/doc.md) documents the command on the
+next build.
 
 
 ## Add the server layer
@@ -129,8 +157,6 @@ from anywhere inside `sandbox/`.
 
 One contract may have several adapters — see [Adapters](../Adapters/doc.md).
 
-This project has no `sandbox/deps/` yet: `agnos deps-init` creates it (`deps-purge` removes it).
-
 ## Add a doc
 
 ```bash
@@ -146,23 +172,27 @@ file is what renders [Structure](../Structure/doc.md).
 ## Add an example
 
 ```bash
+agnos add-cli-example <name>       # examples/cli/<name>/example.sh
 agnos add-lib-example <name>       # examples/lib/<name>/example.go
 agnos exec-test                    # run them all, check each against its golden
 agnos exec-test --only <name>      # one example, both sides
 agnos update-test <name>           # rewrite that one golden with what it produces now
 agnos exec-test --update           # rewrite every golden at once
+agnos remove-cli-example <name>
 agnos remove-lib-example <name>
 ```
 
 Write the example itself, ending with the copy out of `TestDir` into `AssertDir` that says what
 it asserts: `result.yaml` records `AssertDir`, and an example that copies nothing out fails.
 The golden is written by the first `exec-test` and refreshed with `update-test <name>`, which
-prints what it changes before writing. Details in [LibExamples](../LibExamples/doc.md).
+prints what it changes before writing. Details in [LibExamples](../LibExamples/doc.md) and
+[CliExamples](../CliExamples/doc.md).
 
 ## Hand-written code
 
 | File | Written when |
 | --- | --- |
+| `sandbox/internal/commands/<name>/InternalPureHandler.go` | a command does something |
 | `sandbox/internal/<pkg>/*.go` (never under `generated/`) | logic worth reusing |
 | `sandbox/api/<x>.go` + `sandbox/internal/<x>/new.go` | a new api surface |
 | `sandbox/constructors/<x>/constructor.go` | how a field of the `Sandbox` is built |
@@ -179,6 +209,12 @@ and `sandbox/internal/server/{route,server}` it holds, and point every hand-writ
 
 ## Ship
 
-This project has no `cmd/main` to compile: it ships as the Go module other programs import
-(see [LibUsage](../LibUsage/doc.md)). Bump `version` in `AgnosConfig/project.yaml` and tag
-the repository; `agnos cli-init` adds a binary if you want one.
+```bash
+agnos compile --target all   # cross-compile ./cmd/main into release/
+agnos publish                # build, compile, then a gh release
+```
+
+`go build -o release/backoffice ./cmd/main` is the plain local binary.
+`publish` names the release after `version` in `AgnosConfig/project.yaml`; bump it there
+first. `compile` targets: `linux86`, `linuxarm64`, `linuxi32`, `mac86`, `macarm64`,
+`windows86`, `windowsi32`, or `all`.

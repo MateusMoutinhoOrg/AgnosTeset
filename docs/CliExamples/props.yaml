@@ -1,0 +1,5 @@
+description: "Index of every runnable example of the backoffice cli"
+name: "CliExamples"
+order: 4
+themes:
+  - cli-usage
