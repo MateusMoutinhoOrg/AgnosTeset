@@ -5,19 +5,19 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 )
 
-// InternalPureHandler runs in front of every ANY /adimin/{*Rest} on a
-// lower rung of the chain: it is a middleware. Returning nil without answering
-// hands the request to the next route; answering — a status, or a byte —
-// ends the chain here.
+// InternalPureHandler answers GET /adimin/page1. Every value the route
+// declares is already on entries, read off the request by the generic
+// RequestHandler, and the response already carries the route's response-type.
 //
-// Refuse a request with routeio.Fail, which answers it through the project's
-// own handler for that status:
-//
-//	return routeio.Fail(sandbox, route, api.StatusUnauthorized, "authorization", "invalid token")
-//
-// Hand what you learned to the routes after it through route.Locals:
-//
-//	routeio.SetLocal(route, "user", user)
+// Answering — setting a status, or writing a byte, which sends a 200 — is what
+// ends the chain. A handler that does neither has declined, and the next route
+// matching this request runs — which is how a route becomes a middleware.
+// What a middleware in front set on props — the request's api.RouteProps,
+// declared in sandbox/api/routeprops.go — is there to read. Refuse a request
+// by returning routeio.Fail; nil means "done" or "not mine".
 func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+	response.SetStatus(api.StatusOk)
+	response.Write([]byte("adminmiddleware called\n"))
+
 	return nil
 }

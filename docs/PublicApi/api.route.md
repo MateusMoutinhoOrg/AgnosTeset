@@ -102,7 +102,7 @@ RouteBody is the request body a route declares — the parsed form of `body:` in
 
 ## `RouteFailure`
 
-RouteFailure is one way a request did not get answered: what the dispatch would have written, and why. Every failure the server layer raises — a header that will not bind, a body the schema rejected, a handler that returned an error, a path nothing matched — arrives at one of the project's own Handle* files as this, read off the Failure of the route it is handed.
+RouteFailure is one way a request did not get answered: what the dispatch would have written, and why. Every failure the server layer raises — a header that will not bind, a body the schema rejected, a handler that returned an error, a path nothing matched — arrives at one of the project's own Handle* files as this, read off the Failure of the route it is handed. It is an error too: an InternalPureHandler refuses a request by returning one, built by routeio.Fail, and the dispatch answers it through the Handle* file of its Status.
 
 | Field | Type | Description |
 | --- | --- | --- |
@@ -132,17 +132,20 @@ Route is one http route of the project, as the sandbox offers it: the whole of w
 | `Paths` | `[]Path` | Paths are the slices of the request path it reads, in declaration order. |
 | `Parameters` | `[]Parameter` | Parameters are the headers and query parameters it reads, in declaration order. |
 | `Body` | `RouteBody` | Body is the request body declaration. |
-| `InternalPurehandler` | `any` | InternalPurehandler is the route package's own InternalPureHandler, closed over the sandbox: a func(route *Route, entries *Entries, response *serverdeps.Response) error whose Entries is that package's generated struct. It is held as any because every route's Entries is a type of its own; RequestHandler builds and fills one through Deps.Reflectdeps and calls it. |
+| `ReadBody` | `func(bound *Route) (any, error)` | ReadBody reads, validates and converts the request body of one bound copy — the route package's own generated ReadBody, closed over the sandbox. RequestHandler calls it before the handler runs and binds what it returns onto Entries.Body; it is nil on a route whose body is `none`. A body that fails has been answered already. |
+| `InternalPurehandler` | `any` | InternalPurehandler is the route package's own InternalPureHandler, closed over the sandbox: a func(props *RouteProps, entries *Entries, response *serverdeps.Response) error whose Entries is that package's generated struct. It is held as any because every route's Entries is a type of its own; RequestHandler builds and fills one through Deps.Reflectdeps and calls it. |
 | `Request` | `any` | Request is the http request this copy was bound from and Response the one being written. Both are handed over as any: sandbox/api may name no type of sandbox/deps, so the server layer reads them back through routeio.RequestOf and routeio.ResponseOf. |
 | `Response` | `any` |  |
-| `Locals` | `map[string]any` | Locals is one request's scratch space, shared by every route of the chain that runs for it: what a middleware stores there, the routes after it read. Read and write it through routeio.SetLocal and routeio.GetLocal. |
-| `Failure` | `*RouteFailure` | Failure is why this route is being handed to one of the project's Handle* files, nil on a normal run. It is set by routeio.Fail, which is the one way any part of the server layer raises a failure. |
+| `Props` | `*RouteProps` | Props is one request's RouteProps, shared by every route of the chain that runs for it and handed to each InternalPureHandler as its first argument: what a middleware sets on it, the routes after it read. |
+| `AnsweredStatus` | `int` | AnsweredStatus is the status the request was answered with, set by the dispatch before the routes of the `after` phase run and bound onto their Entries.AnsweredStatus; 0 on every other run. |
+| `Failure` | `*RouteFailure` | Failure is why this route is being handed to one of the project's Handle* files, nil on a normal run. It is set by routeio.Raise, which is the one way any part of the server layer raises a failure. |
 | `IsActionable` | `func(bound *Route) bool` | IsActionable reports whether one bound copy — its Request set — is for this route: the method is accepted, and every path slice and every parameter declaring a trigger matches it. |
 | `MatchesPath` | `func(bound *Route) bool` | MatchesPath reports whether one bound copy's request path is for this route whatever its method — what tells a 405 from a 404. |
 | `RequestHandler` | `func(bound *Route) error` | RequestHandler binds one bound copy's request onto a fresh Entries and runs InternalPurehandler with it. It returns the failure the handler did not answer itself, nil otherwise; what it answered with is the status it wrote, and a handler writing none hands the request to the next route of the chain. |
 
 | Function | Description |
 | --- | --- |
+| `Error() string` | Error is the failure's Message, which is what makes a RouteFailure an error a handler can return. |
 | `NewRoute() *Route` | NewRoute returns an empty Route with every slice open. The generic sandbox/internal/generated/server/route.NewRoute fills the matcher and the handler on top of it, and a route's generated NewRoute its declaration. |
 | `BindRoute(route *Route) *Route` | BindRoute copies one declaration into the route a single request runs on: the same declared fields — the slices are read-only and shared — with no request, response or failure yet. The dispatch calls it once per request, so two requests in flight never share a bound value. |
 

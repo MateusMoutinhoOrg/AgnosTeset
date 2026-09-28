@@ -32,7 +32,7 @@ Server is the http surface of the sandbox: every route the project declares, and
 | --- | --- | --- |
 | `Serve` | `func(props ServeProps) error` | Serve is the generated route-and-dispatch entry point (see sandbox/internal/generated/server/server/servermain.go). It blocks until the server stops. |
 | `Routes` | `[]*Route` | Routes is every http route the project declares, in run order — lowest `priority` first, then by name — each built by the generated NewRoute of its own package. The dispatch reads a request against these declarations; a caller holding the sandbox reads the same surface without one. |
-| `Fail` | `func(route *Route) error` | Fail answers one failure with the project's own handler for it: it reads route.Failure and calls the matching Handle* of sandbox/internal/server/errors/. It is a field rather than a call because a route package may not import sandbox/internal/generated/server/server — that package imports every route — so this is how a generated ReadBody, or any handler, reaches a file the project owns. Raise a failure through routeio.Fail rather than calling this directly. |
+| `Fail` | `func(route *Route) error` | Fail answers one failure with the project's own handler for it: it reads route.Failure and calls the matching Handle* of sandbox/internal/server/errors/. It is a field rather than a call because a route package may not import sandbox/internal/generated/server/server — that package imports every route — so this is how a generated ReadBody, or the dispatch, reaches a file the project owns. Raise a failure through routeio.Raise — or, from a handler, return one built by routeio.Fail — rather than calling this directly. |
 
 ## `ServeProps`
 

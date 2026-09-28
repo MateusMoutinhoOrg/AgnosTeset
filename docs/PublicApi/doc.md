@@ -27,7 +27,8 @@ struct of function fields, filled by a binder.
 | [`sandbox/api/cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
 | [`sandbox/api/command.go`](api.command.md) | `CommandArg`, `CommandFlag`, `Command`, `NewCommand`, `BindCommand` |
 | [`sandbox/api/config.go`](api.config.md) | `Config` |
-| [`sandbox/api/route.go`](api.route.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `TriggerType`, `Trigger`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `NewRoute`, `BindRoute` |
+| [`sandbox/api/route.go`](api.route.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `TriggerType`, `Trigger`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Error`, `NewRoute`, `BindRoute` |
+| [`sandbox/api/routeprops.go`](api.routeprops.md) | `RouteProps` |
 | [`sandbox/api/server.go`](api.server.md) | `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `Server`, `ServeProps` |
 
 ## Dependency contracts
