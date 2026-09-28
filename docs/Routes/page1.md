@@ -1,13 +1,28 @@
 # `GET /admin/page1`
 
+## Try it
 
+```bash
+curl localhost:3000/admin/page1
+```
 
-| Entries | Read from | In | Type | Default | Description | From |
-| --- | --- | --- | --- | --- | --- | --- |
-| `AdminPage1` | segments 0..1 | path | string, equal `/admin/page1` |  |  | — |
+## What comes back
 
-| Runs in front of it | When |
+| Status | Means |
+| --- | --- |
+| `200` | It worked. The answer comes as `application/json`. |
+
+Any route may also answer `404`, `405` or `500`: see [when something goes wrong](doc.md#when-something-goes-wrong).
+
+## Runs first
+
+These routes run before this one, on the same request. Any of them may refuse it — with `401`
+or `403`, for example — or let it through to this route.
+
+| Route | When |
 | --- | --- |
 | [`adminmiddlware`](adminmiddlware.md) | always |
 
-`sandbox/internal/routeslist/page1/` · Routes · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+---
+
+For developers: `sandbox/internal/routeslist/page1/` · Routes · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

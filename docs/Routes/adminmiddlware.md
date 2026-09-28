@@ -1,10 +1,25 @@
 # `ANY /admin/{*Rest}`
 
+## Try it
 
+```bash
+curl localhost:3000/admin/my-rest
+```
 
-| Entries | Read from | In | Type | Default | Description | From |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Admin` | segments 0..0 | path | string, equal `/admin` |  |  | — |
-| `Rest` | segments 1..-1 | path | string |  |  | — |
+## In the address
 
-`sandbox/internal/routeslist/adminmiddlware/` · Middleware · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+| Part | What goes there | Example | Description |
+| --- | --- | --- | --- |
+| `{*Rest}` | the rest of the address — one part or more, like `a/b.png` | `my-rest` |  |
+
+## What comes back
+
+| Status | Means |
+| --- | --- |
+| `200` | It worked. The answer comes as `text/plain`. |
+
+Any route may also answer `404`, `405` or `500`: see [when something goes wrong](doc.md#when-something-goes-wrong).
+
+---
+
+For developers: `sandbox/internal/routeslist/adminmiddlware/` · Middleware · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

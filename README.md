@@ -28,7 +28,7 @@ Serving http - bring the server up, declare routes, read a body
 | --- | --- |
 | [ServerUsage](docs/ServerUsage/doc.md) | Serve http from teste: bring the layer up, declare routes, read a body |
 | [FrontUsage](docs/FrontUsage/doc.md) | Serve a website from teste: bring the front layer up, drop files in assets/frontend, add pages |
-| [Routes](docs/Routes/doc.md) | Every route of teste, generated from the route declarations |
+| [Routes](docs/Routes/doc.md) | Every address teste answers: what to send, a request to run and what comes back |
 
 ### LibUsage
 
