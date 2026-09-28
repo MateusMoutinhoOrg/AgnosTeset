@@ -28,6 +28,7 @@ def remove_all_files():
 
 def main():
     remove_all_files()
+    return 
     ## runs a terminal command 
     os.system("agnos start --project-name teste --module github.com/MateusMoutinhoOrg/AgnosTeset")
     os.system("agnos front-init")
@@ -39,6 +40,7 @@ def main():
     ## Api 
     os.system('agnos add-route apiadduser  --pattern "/api/add-user" ')
     
+
 
 
 if __name__ == '__main__':
