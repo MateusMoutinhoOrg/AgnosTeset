@@ -3,7 +3,7 @@
 Display help for a command
 
 ```bash
-backoffice help [Name…] [--help]
+teste help [Name…] [--help]
 ```
 
 When called without arguments, lists every available command grouped by category. When called with a command name, shows detailed usage, arguments, flags, and examples for that command.
@@ -21,8 +21,8 @@ When called without arguments, lists every available command grouped by category
 | [`help-flag`](help-flag.md) | always |
 
 ```bash
-backoffice help
-backoffice help start
+teste help
+teste help start
 ```
 
 Info · [every command](doc.md) · [CommandYaml](../CommandYaml/doc.md)

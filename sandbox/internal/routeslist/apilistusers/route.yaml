@@ -1,0 +1,14 @@
+category: Routes
+help: ""
+methods:
+    - GET
+paths:
+    - end: 2
+      id: ApiAdminListUsers
+      start: 0
+      trigger:
+        type: equal
+        value: /api/admin/list-users
+priority: 100
+response-type: application/json
+segments: 3

@@ -3,7 +3,7 @@
 Print the installed version
 
 ```bash
-backoffice version [--help]
+teste version [--help]
 ```
 
 Prints the current version of the installed binary and exits.
@@ -17,7 +17,7 @@ Prints the current version of the installed binary and exits.
 | [`help-flag`](help-flag.md) | always |
 
 ```bash
-backoffice version
+teste version
 ```
 
 Info · [every command](doc.md) · [CommandYaml](../CommandYaml/doc.md)

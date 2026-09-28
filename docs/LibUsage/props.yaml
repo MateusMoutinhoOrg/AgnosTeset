@@ -1,4 +1,4 @@
-description: "Use backoffice as a Go module: wire the deps, build the sandbox, call its API"
+description: "Use teste as a Go module: wire the deps, build the sandbox, call its API"
 name: "LibUsage"
 order: 1
 themes:

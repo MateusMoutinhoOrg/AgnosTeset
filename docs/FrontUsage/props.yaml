@@ -1,4 +1,4 @@
-description: "Serve a website from backoffice: bring the front layer up, drop files in assets/frontend, add pages"
+description: "Serve a website from teste: bring the front layer up, drop files in assets/frontend, add pages"
 name: "FrontUsage"
 order: 2
 themes:

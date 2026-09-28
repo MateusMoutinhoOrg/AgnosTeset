@@ -3,7 +3,7 @@
 Every address this server answers. Open one to see what to send, a request you can run as it is,
 and what comes back.
 
-The requests call `localhost:3000`, where `backoffice start-server` listens when that port is free —
+The requests call `localhost:3000`, where `teste start-server` listens when that port is free —
 it prints the address it took. Change it to wherever your server runs.
 
 ## How to read an address
@@ -17,6 +17,23 @@ it prints the address it took. Change it to wherever your server runs.
 | `{*name}` | the rest of the address, one part or more | `/files/{*file}` -> `/files/a/b.png` |
 | `*` | anything else, or nothing | `/admin/*` -> `/admin`, `/admin/users` |
 | `(a\|b)` | one of these words | `/(en\|pt)` -> `/en` |
+
+## Middleware
+
+| Route | What it does |
+| --- | --- |
+| [`ANY /admin/{*Rest}`](adminmiddlware.md) |  |
+
+## Routes
+
+| Route | What it does |
+| --- | --- |
+| [`GET /api/admin/add-user`](apiadduser.md) |  |
+| [`GET /api/admin/remove-user`](apieremoveuser.md) |  |
+| [`GET /api/admin/list-users`](apilistusers.md) |  |
+| [`GET /api/admin/update-user`](apiupdateuser.md) |  |
+| [`GET /admin/user/{User:integer}`](userconfig.md) |  |
+| [`GET /admin/users`](users.md) |  |
 
 ## Assets
 

@@ -1,8 +1,8 @@
 # CliExamples
 
-Every example of the backoffice cli. Each one is a shell session that runs with its own
+Every example of the teste cli. Each one is a shell session that runs with its own
 directory as the working directory and writes only into its own `TestDir`, so it can be read
-as documentation and copied line by line. The script types `backoffice`, which `exec-test`
+as documentation and copied line by line. The script types `teste`, which `exec-test`
 resolves to the code in this tree. It ends by copying out of `TestDir` into `AssertDir` the
 paths it asserts — `mkdir -p AssertDir/<path>` then `cp -R TestDir/<path>/. AssertDir/<path>/`,
 each keeping the place it holds in the tree.

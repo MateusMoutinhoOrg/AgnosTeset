@@ -1,0 +1,14 @@
+category: Routes
+help: ""
+methods:
+    - GET
+paths:
+    - end: 2
+      id: ApiAdminRemoveUser
+      start: 0
+      trigger:
+        type: equal
+        value: /api/admin/remove-user
+priority: 100
+response-type: application/json
+segments: 3

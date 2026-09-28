@@ -1,6 +1,6 @@
 # Commands
 
-`backoffice <command> [args] [flags]`. `backoffice help <command>`, or `backoffice <command> --help`,
+`teste <command> [args] [flags]`. `teste help <command>`, or `teste <command> --help`,
 prints the same for one command; an empty command line prints the general help and exits 0.
 A command declaring a `--help` flag of its own keeps it, and is described through `help` alone.
 

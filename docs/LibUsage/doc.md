@@ -1,6 +1,6 @@
 # LibUsage
 
-`backoffice` is a Go module before it is anything else: every feature lives in `sandbox/`
+`teste` is a Go module before it is anything else: every feature lives in `sandbox/`
 and is reachable from any Go program that imports it.
 
 ```bash
@@ -80,7 +80,6 @@ The contracts available to patch:
 | Field | Contract package |
 | --- | --- |
 | `deps.Argvdeps` | `sandbox/deps/argvdeps` |
-| `deps.Database` | `sandbox/deps/database` |
 | `deps.Embeddeps` | `sandbox/deps/embeddeps` |
 | `deps.Reflectdeps` | `sandbox/deps/reflectdeps` |
 | `deps.Serializables` | `sandbox/deps/serializables` |
@@ -96,7 +95,6 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | Adapter lib | Binder |
 | --- | --- |
 | `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
-| `adapters/libs/database` | `database.Bind(&deps)` |
 | `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
 | `adapters/libs/reflectdeps` | `reflectdeps.Bind(&deps)` |
 | `adapters/libs/serializables` | `serializables.Bind(&deps)` |

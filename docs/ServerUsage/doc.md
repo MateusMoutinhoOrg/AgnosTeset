@@ -21,8 +21,8 @@ a route what `sandbox/internal/commands/<name>/` is to a command, and `route.yam
 
 ```bash
 agnos server-init  # serverdeps, signaldeps, the server layer, the health route, start-server
-backoffice start-server  # listens on the first free port of 3000..4000; Ctrl+C shuts it down gracefully
-backoffice start-server --addr 4000:5000 --read-timeout-ms 30000 --shutdown-timeout-ms 5000
+teste start-server  # listens on the first free port of 3000..4000; Ctrl+C shuts it down gracefully
+teste start-server --addr 4000:5000 --read-timeout-ms 30000 --shutdown-timeout-ms 5000
 curl localhost:3000/health
 ```
 

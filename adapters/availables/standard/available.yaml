@@ -1,6 +1,5 @@
 adapters:
     - argvdeps
-    - database
     - embeddeps
     - reflectdeps
     - serializables

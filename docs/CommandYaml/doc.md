@@ -33,7 +33,7 @@ examples: ["greet bob -t 2"]
 
 A command line is its **segments** — every token before the first flag (a token starting with
 `-` that is not a number, so `-1` is a segment), plus every token after a bare `--` — and its
-**flags**, everything between. `backoffice route add foo --force -- a b` has the segments
+**flags**, everything between. `teste route add foo --force -- a b` has the segments
 `route add foo a b`; a segment after a flag is not read, so args come first. A flag takes its
 value as the next token or after `=` (`--name bob`, `--name=bob`).
 

@@ -15,7 +15,7 @@ agnos remove-page about             # deletes the html
 agnos front-purge                   # drops the layer, keeps assets/frontend/
 ```
 
-Then `backoffice start-server` serves them. `front-init` runs `server-init` first when the
+Then `teste start-server` serves them. `front-init` runs `server-init` first when the
 project has no server layer. Any file put in `assets/frontend/` by hand is served the same
 way as one `add-page` wrote: `add-page` is a scaffold, not a declaration.
 
@@ -37,7 +37,7 @@ unknown ones as `application/octet-stream`) and `Cache-Control: no-cache`.
 ## A bundler's build
 
 Point the bundler's output at `assets/frontend/` (Vite: `build.outDir`, `emptyOutDir: true`),
-build it, then build backoffice: the binary embeds whatever is there. Links stay relative to
+build it, then build teste: the binary embeds whatever is there. Links stay relative to
 `/`, because the tree is served from the root.
 
 For a single-page app whose router owns the url, set `spaFallback = true` in

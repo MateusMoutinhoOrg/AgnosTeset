@@ -3,8 +3,15 @@ package server
 import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
+	routeslist_adminmiddlware "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/adminmiddlware"
+	routeslist_apiadduser "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apiadduser"
+	routeslist_apieremoveuser "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apieremoveuser"
+	routeslist_apilistusers "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apilistusers"
+	routeslist_apiupdateuser "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apiupdateuser"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
+	routeslist_userconfig "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/userconfig"
+	routeslist_users "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/users"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
 )
 
@@ -18,7 +25,14 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 	server := api.Server{}
 
 	server.Routes = []*api.Route{
+		routeslist_adminmiddlware.NewRoute(sandbox),
+		routeslist_apiadduser.NewRoute(sandbox),
+		routeslist_apieremoveuser.NewRoute(sandbox),
+		routeslist_apilistusers.NewRoute(sandbox),
+		routeslist_apiupdateuser.NewRoute(sandbox),
 		routeslist_health.NewRoute(sandbox),
+		routeslist_userconfig.NewRoute(sandbox),
+		routeslist_users.NewRoute(sandbox),
 		routeslist_frontend.NewRoute(sandbox),
 	}
 

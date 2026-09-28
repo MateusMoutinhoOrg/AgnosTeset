@@ -3,7 +3,7 @@
 Starts the http server
 
 ```bash
-backoffice start-server [--addr <addr>] [--read-timeout-ms <read-timeout-ms>] [--write-timeout-ms <write-timeout-ms>] [--shutdown-timeout-ms <shutdown-timeout-ms>] [--help]
+teste start-server [--addr <addr>] [--read-timeout-ms <read-timeout-ms>] [--write-timeout-ms <write-timeout-ms>] [--shutdown-timeout-ms <shutdown-timeout-ms>] [--help]
 ```
 
 Opens the port and serves every route declared under sandbox/internal/routeslist, until the process is stopped. An interrupt (Ctrl+C) or a termination request stops it gracefully: no new request is taken, and the ones in flight get --shutdown-timeout-ms to finish.
@@ -21,8 +21,8 @@ Opens the port and serves every route declared under sandbox/internal/routeslist
 | [`help-flag`](help-flag.md) | always |
 
 ```bash
-backoffice start-server
-backoffice start-server --addr 4000:5000
+teste start-server
+teste start-server --addr 4000:5000
 ```
 
 Server · [every command](doc.md) · [CommandYaml](../CommandYaml/doc.md)

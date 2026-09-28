@@ -1,6 +1,6 @@
 # LibExamples
 
-Every example of backoffice used as a Go module. Each one is a `package main` program that
+Every example of teste used as a Go module. Each one is a `package main` program that
 runs with its own directory as the working directory and writes only into its own `TestDir`,
 so it can be read as documentation and copied as a starting point. It ends by copying out of
 `TestDir` into `AssertDir` the paths it asserts — `os.CopyFS(dst, os.DirFS(src))`, one call per
