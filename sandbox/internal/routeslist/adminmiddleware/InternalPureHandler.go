@@ -18,6 +18,6 @@ import (
 // Hand what you learned to the routes after it through route.Locals:
 //
 //	routeio.SetLocal(route, "user", user)
-func InternalPureHandler(sandbox *api.Sandbox, route *api.Route, entries *Entries, response *serverdeps.Response) error {
+func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	return nil
 }

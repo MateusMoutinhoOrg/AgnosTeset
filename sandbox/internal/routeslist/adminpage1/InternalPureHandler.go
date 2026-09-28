@@ -15,7 +15,7 @@ import (
 // What a middleware in front stored is on route.Locals, read with
 // routeio.GetLocal. Return a failure you did not answer yourself with
 // routeio.Fail; nil means "done" or "not mine".
-func InternalPureHandler(sandbox *api.Sandbox, route *api.Route, entries *Entries, response *serverdeps.Response) error {
+func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	response.SetStatus(api.StatusOk)
 	response.Write([]byte("adminpage1 called\n"))
 
