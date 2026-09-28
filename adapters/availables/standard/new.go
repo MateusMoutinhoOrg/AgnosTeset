@@ -2,6 +2,7 @@ package standard
 
 import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/argvdeps"
+	database "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/embeddeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serializables"
@@ -16,6 +17,7 @@ import (
 func New() deps.Deps {
 	deps := deps.Deps{}
 	argvdeps.Bind(&deps)
+	database.Bind(&deps)
 	embeddeps.Bind(&deps)
 	reflectdeps.Bind(&deps)
 	serializables.Bind(&deps)
