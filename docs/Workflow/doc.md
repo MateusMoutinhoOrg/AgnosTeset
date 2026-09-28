@@ -69,17 +69,76 @@ with exit 1, even after a print. A command that prints nothing has still run —
 next build.
 
 
-## Add the server layer
+## Change the route surface
 
 ```bash
-agnos server-init      # serverdeps, signaldeps, sandbox/internal/server, the health route, start-server
-backoffice start-server  # listens on the first free port of 3000..4000
+agnos add-route <name> --pattern '/users/{id:integer}' --method POST --help "one line" --category "Users"
+agnos add-route <name> --trigger /admin --trigger-type prefix   # /admin and under, never /administrator
+agnos add-route <name> --middleware --trigger /admin --before <route>
+agnos set-route <route> --method PUT --response-type text/plain --example "curl localhost:8080/users"
+agnos add-path <id> --route <route> --start 1 --end 1 --type integer   # one slice of the path
+agnos add-path <id> --route <route> --start 0 --end 0 --trigger /v1
+agnos add-parameter <name> --route <route> --font header --required
+agnos add-parameter <name> --route <route> --type integer --default 1
+agnos set-body <route> --type json --required --max-bytes 2097152
+agnos add-body-field <dotted.name> --route <route> --format email --required
+agnos import-body <route> --file payload.json --required --infer-format
+agnos set-path <id> --route <route> --end -1                  # and set-parameter
+agnos set-body-field <dotted.name> --route <route> --max 130 --clear format
+agnos show-route <route>                                      # the whole declaration as a tree
+agnos list-routes                                             # the chain, in run order
+agnos explain-route GET /admin/users --header authorization=x   # which routes one request reaches
+agnos rename-route <route> <name>
+agnos rebalance-routes --step 10                              # room between the rungs again
+agnos remove-parameter <name> --route <route>                 # and remove-path
+agnos remove-body-field <dotted.name> --route <route>
+agnos remove-route <route>
 ```
 
-From there `agnos add-route <name> --pattern '/<path>/{id}'` declares a
-route and `agnos add-path` / `add-parameter` / `add-body-field` what it reads. A
-project with no CLI gets one first: a server needs a command that starts it.
-`agnos server-purge` removes the layer again.
+`add-route` writes `sandbox/internal/routeslist/<name>/route.yaml` (the declaration, `priority`
+and `response-type` always included — `100` for a route, `10` for a `--middleware`) and a stub
+`InternalPureHandler.go` (yours), then
+generates `new.go` — the `api.Route` that lands in `Server.Routes`, a 1:1 image of the yaml —
+and `entries.go` — the `Entries` the handler is handed.
+One editor per place the declaration holds something, so every key of
+[RouteYaml](../RouteYaml/doc.md) is reachable from the command line and `route.yaml` is never
+edited by hand. `add-body-field` takes a dotted path (`address.city`) and creates the objects
+it passes through; `set-body` covers the envelope around the schema — how the body is read,
+whether it is required, its size limit and its content-type.
+
+Each `add-` has a `set-` beside it, so a key that was forgotten is added to the declaration
+that is there instead of removing it and declaring it again: the keys given are written over
+the ones already declared, `--clear <key>` takes one off, and the result goes through the same
+constructor the `add-` side calls. `import-body` is `add-body-field` run once per key of an
+example payload — a document pasted with `--json` or read with `--file`, inferring a type per
+key, the objects and lists around them and, with `--infer-format`, the four formats a string
+may spell; it never writes over a property already declared, and `--replace` starts the schema
+over. `show-route` prints the whole declaration as a tree, `list-routes` the chain, and
+`explain-route` which routes one request reaches and why the others are skipped — the three
+write nothing, and `explain-route` is the first step when a route does not run.
+
+Then write `InternalPureHandler.go` — the whole hand-written half of a route:
+
+```go
+func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+	response.SetStatus(api.StatusCreated)
+	response.Write(payload(sandbox, create(sandbox, props.User, entries.Tenant, entries.Body)))
+	return nil
+}
+```
+
+`entries` arrives bound and converted — one field per path and per parameter, named by its id,
+and the body on `Body` — so a bad request was already answered `400` before the handler ran.
+
+Setting a status or writing a byte is what answers the request. Several routes may match one
+request; they run in `priority` order and stop at the first one that answers, so a handler that
+does neither has declined and the next one runs — that is the whole of what a middleware is, and
+`props` — the request's `api.RouteProps`, typed in `sandbox/api/routeprops.go` — carries what it
+learned to the routes after it. A handler refuses a request by returning `routeio.Fail`. What no route answers is answered
+by the eight `sandbox/internal/server/errors/handle_*.go`, which `build` writes once and no build
+rewrites: they are where a 404, a 405, a 401 or a 500 is worded.
+[Routes](../Routes/doc.md) documents the route on the next build, and
+[ServerUsage](../ServerUsage/doc.md) is the whole recipe.
 
 
 ## Add the front layer
@@ -193,6 +252,7 @@ prints what it changes before writing. Details in [LibExamples](../LibExamples/d
 | File | Written when |
 | --- | --- |
 | `sandbox/internal/commands/<name>/InternalPureHandler.go` | a command does something |
+| `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | a route answers something |
 | `sandbox/internal/<pkg>/*.go` (never under `generated/`) | logic worth reusing |
 | `sandbox/api/<x>.go` + `sandbox/internal/<x>/new.go` | a new api surface |
 | `sandbox/constructors/<x>/constructor.go` | how a field of the `Sandbox` is built |

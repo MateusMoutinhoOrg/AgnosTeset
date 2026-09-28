@@ -129,6 +129,85 @@ makes each kind of change is in [Workflow](../Workflow/doc.md).
   else. Each run binds to its own copy of the declaration, made by `api.BindCommand`, so what
   the slice holds is never written to.
 
+## Routes
+
+- A route is `sandbox/internal/routeslist/<name>/`, holding `route.yaml` (the declaration),
+  `new.go` and `entries.go` (generated) and `InternalPureHandler.go` (hand-written) — the
+  server layer's mirror of a command package, snake_case for a kebab-case name. **(verify)**
+- Only `InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error`
+  is exported from a route's hand-written half. **(verify)**
+- `new.go` is a 1:1 image of `route.yaml`, built on the generic
+  `sandbox/internal/generated/server/route.NewRoute`; `entries.go` is the `Entries` struct — `FullRoute`,
+  one field per path, one per parameter and `Body` when a body is declared, each tagged
+  `id:"<id>"` — plus the `ReadBody` a body calls for. The generic
+  `RequestHandler` reads the body before the handler runs and fills `Entries` by those tags
+  through `Deps.Reflectdeps`. A handler is handed no request: what it reads is declared.
+- Setting a status or writing a byte on the response is what answers a request and ends the
+  chain — a write sends a `200` ahead of it. A handler that does neither has declined, and the
+  next route matching that request runs; a handler that returns a non-nil error without
+  answering has failed, and `handle_server_error.go` answers for it. What a handler returns is
+  never the status. `SetHeader` alone answers nothing.
+- Every route of one request is handed the same `props *api.RouteProps`, built empty per
+  request; a middleware hands what it learned to the routes after it by setting a field of it.
+  `sandbox/api/routeprops.go` declares those fields: `build` writes it **once**, then it is the
+  project's.
+- A route's `route.yaml` is written by `add-route` and rewritten by `set-route`,
+  `add-path` / `set-path` / `remove-path`, `add-parameter` / `set-parameter` /
+  `remove-parameter`, `set-body` and `add-body-field` / `set-body-field` / `remove-body-field` /
+  `import-body` — one editor per place the file holds something and one `set-` per `add-`, and
+  never by hand: they re-render it with keys in alphabetical order and drop comments.
+  `rename-route` and `rebalance-routes` rewrite whole routes; `show-route`, `list-routes` and
+  `explain-route` read them and write nothing.
+- `methods`, `priority` and `response-type` are required on every route; `priority` is never
+  negative, and `methods` holds known methods only — or `ANY`, alone. `segments`, when
+  declared, is at least `1`; a `phase` key is an old declaration. **(verify)**
+- `add-route` lands a route on rung `100` and a `--middleware` on `10`, so a guard goes in front
+  of the routes it guards without renumbering them; `--before` / `--after` place one next to
+  another, and `rebalance-routes` makes room again.
+- A route declares at least one path. A path's `start` is never negative and its `end` is `-1`
+  or not before `start`; its `type` is `string`, `integer`, `number` or `uuid`, and anything but
+  `string` reads one segment (`start == end`); a `trigger` has a known type (`equal`, `prefix`,
+  `text-prefix`, `suffix`, `regex`, `one-of`), a value — `values` for a `one-of` — and — for a
+  regex — one that compiles. **(verify)**
+- On a path a `prefix` holds on a segment boundary — `/admin` is `/admin` or `/admin/…`, never
+  `/administrator`; `text-prefix` is the plain one. On a parameter value the two are the same.
+- Every `id` of `paths` and `parameters` is an exported Go name, unique across both and never
+  `FullRoute` or `Body`: each one names one field of `Entries`. **(verify)**
+- A parameter declares a known type and at least one known font; it is never both `required`
+  and defaulted, and a `boolean` is never `required`. **(verify)**
+- A trigger — and a path's type — decides whether the route runs at all. A request that fails
+  one is not a bad request: that route is simply not the one for it.
+- A `405` is answered when a route with explicit `methods` matched the path under another method
+  and no route with explicit `methods` ran; an `ANY` route running does not hide it. A `HEAD`
+  nothing declares runs the chain again as a `GET`.
+- No two routes declare the same method and path pattern *on the same rung*.
+  Sharing a pattern across rungs is what a middleware in front of a route is; sharing a rung as
+  well would leave the order between them undeclared. **(verify)**
+- A `json-schema` is declared on a `type: json` body alone, and only with the keywords of the
+  subset — `$ref`, `oneOf`, `allOf`, `anyOf` and `patternProperties` fail the build. **(verify)**
+- `Server.Routes` is the whole http surface, one `*api.Route` per declared route, built by
+  `sandbox/internal/generated/server/server/new.go` from each package's generated `NewRoute`. The dispatch
+  reads it and nothing about the route set is generated per route anywhere else; each request
+  runs on its copy of the declaration, made by `api.BindRoute`, so nothing bound is ever shared.
+- Run order is the collector's, not the directory's: lowest `priority` first, then by name.
+- Nothing in the dispatch writes a response. Every way a request ends without a route answering
+  it is handed to one of the eight `sandbox/internal/server/errors/handle_*.go` — one per status.
+  They are written **once**, by the first `build` that finds the server layer, and no build
+  rewrites them: what a project answers when nothing matches is the project's. **(verify)**
+- A handler refuses a request by returning `routeio.Fail`, a `*api.RouteFailure`; the dispatch
+  raises it. The server layer raises a failure with `routeio.Raise` — from the dispatch, from a
+  generated `ReadBody`, from what a handler returned — which reaches the right file through the
+  `Fail` field of `api.Server`, because a route package may not import
+  `sandbox/internal/generated/server/server`. A `Handle*` file answers a failure and never raises one.
+- A failure the dispatch raises with nothing to add — nothing matched, method not allowed —
+  carries no message, so the wording is the one its `Handle*` file spells. One that knows
+  something that file could not — which parameter would not bind, and why — carries its own.
+  `routeio.FailureOf` is the one reading of that rule.
+- A response body for a failure is written by `routeio.WriteError` alone, so every route answers
+  one JSON shape.
+
+Every key of a declaration is in [RouteYaml](../RouteYaml/doc.md).
+
 ## Output channels
 
 | Channel | Stream | Carries | Silenced |
@@ -168,6 +247,10 @@ Never `fmt.Printf`. A generated cli declares no `--quiet`: add it as a
 - Docs are short, objective and dense: tables, commands, file paths and rules — no prose, no
   narrative, no tutorials, no motivation sections. One page per topic; no sub-doc unless the
   content is a real list of independent items.
+- [Routes](../Routes/doc.md) is the exception: it is read by whoever calls the server, a person,
+  so it speaks plain words and every page carries requests that run as they are. It is
+  generated from each `route.yaml`: a `help`, a `description` or an `examples` entry is what
+  changes a page.
 - Say a rule once, in this page, and link to it. Links are relative to the file that carries
   them: `../X/doc.md` inside `docs/`, `docs/X/doc.md` in `README.md` and `ReadmeHeader.md`.
 

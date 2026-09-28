@@ -5,6 +5,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/cli/errors"
 	help "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/help"
 	help_flag "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/help_flag"
+	start_server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/start_server"
 	version "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/version"
 )
 
@@ -19,6 +20,7 @@ func NewCli(sandbox *api.Sandbox) api.Cli {
 	cli.Commands = []*api.Command{
 		help_flag.NewCommand(sandbox),
 		help.NewCommand(sandbox),
+		start_server.NewCommand(sandbox),
 		version.NewCommand(sandbox),
 	}
 

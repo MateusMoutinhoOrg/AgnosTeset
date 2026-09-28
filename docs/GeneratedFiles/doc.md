@@ -45,6 +45,21 @@
 | `sandbox/internal/commands/<name>/InternalPureHandler.go` | `add-command` | once. A stub; the command's whole hand-written half |
 | `sandbox/internal/cli/errors/handle_*.go` | `build` | once. Five files, one per failure — what this project answers when no command does |
 | `sandbox/api/commandprops.go` | `build` | once. `api.CommandProps`, what one command line's chain of commands shares |
+| `sandbox/api/{server.go,route.go}` | `build` | always |
+| `sandbox/internal/generated/server/server/new.go` | `build` | always. `NewServer` builds `Server.Routes` from every route's `NewRoute` |
+| `sandbox/internal/generated/server/server/servermain.go` | `build` | always. `ServerMain` + the one dispatch that runs `Server.Routes` as a chain |
+| `sandbox/internal/generated/server/route/{new.go,IsActionable.go,RequestHandler.go}` | `build` | always. The generic base every route is built on: the matcher and the `Entries` binder |
+| `sandbox/internal/generated/routeio/*.go` | `build` | always |
+| `sandbox/internal/routeslist/health/{route.yaml,InternalPureHandler.go}` | `build` | always |
+| `sandbox/internal/routeslist/<name>/new.go` | `build` | always. `NewRoute`, that route's `api.Route`, a 1:1 image of `route.yaml` |
+| `sandbox/internal/routeslist/<name>/entries.go` | `build` | always. `Entries`, and the `ReadBody` a body calls for |
+| `docs/{RouteYaml,Routes,ServerUsage}/` | `build` | always. Both `doc.md` and `props.yaml` |
+| `docs/Routes/<route>.md` | `build` | always. One page per visible route; `docs/Routes/doc.md` indexes them |
+| `sandbox/internal/routeslist/<name>/route.yaml` | `add-route` | once, then rewritten by `set-route` / `add-path` / `add-parameter` / `set-body` / `add-body-field` / `import-body`, their `set-` editors and their inverses — never by hand |
+| `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | `add-route` | once. A stub; the route's whole hand-written half |
+| `sandbox/internal/commands/start_server/{command.yaml,InternalPureHandler.go}` | `server-init` | once |
+| `sandbox/internal/server/errors/handle_*.go` | `build` | once. Eight files, one per failure — what this project answers when no route does |
+| `sandbox/api/routeprops.go` | `build` | once. `api.RouteProps`, what one request's chain of routes shares — declare its fields there |
 | `docs/<Name>/{props.yaml,doc.md}` | `add-doc` | once |
 | `examples/cli/<name>/example.sh` | `add-cli-example` | once. A stub that already runs |
 | `examples/lib/<name>/example.go` | `add-lib-example` | once. A stub that already runs |

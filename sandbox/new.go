@@ -4,6 +4,7 @@ import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	cli "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/constructors/cli"
 	config "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/constructors/config"
+	server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/constructors/server"
 	deps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps"
 )
 
@@ -17,6 +18,7 @@ func New(deps *deps.Deps) *api.Sandbox {
 
 	cli.Constructor(&self)
 	config.Constructor(&self)
+	server.Constructor(&self)
 
 	return &self
 }

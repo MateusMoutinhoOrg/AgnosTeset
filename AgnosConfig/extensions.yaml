@@ -6,4 +6,4 @@ sandbox-database: false
 sandbox-deps: true
 sandbox-example: true
 sandbox-front: false
-sandbox-server: false
+sandbox-server: true

@@ -14,6 +14,7 @@ Runs in front of every command line. Without --help it hands the line on. With i
 | Runs in front of | When |
 | --- | --- |
 | [`help`](help.md) | always |
+| [`start-server`](start-server.md) | always |
 | [`version`](version.md) | always |
 
 Middlewares · [every command](doc.md) · [CommandYaml](../CommandYaml/doc.md)

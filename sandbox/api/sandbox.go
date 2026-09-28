@@ -19,4 +19,5 @@ type Sandbox struct {
 	Deps   *deps.Deps
 	Cli    Cli
 	Config Config
+	Server Server
 }

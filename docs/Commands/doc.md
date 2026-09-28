@@ -17,6 +17,12 @@ lists the flags of the middlewares in front of it too.
 | [`help`](help.md) | Display help for a command |
 | [`version`](version.md) | Print the installed version |
 
+## Server
+
+| Command | Does |
+| --- | --- |
+| [`start-server`](start-server.md) | Starts the http server |
+
 ## Middlewares
 
 Run in front of the commands they match, lowest `priority` first; typed by nobody.

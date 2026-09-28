@@ -39,12 +39,21 @@ Everything callable from Go is behind one of them.
 | --- | --- |
 | `lib.Cli` | `api.Cli` |
 | `lib.Config` | `api.Config` |
+| `lib.Server` | `api.Server` |
 
 `lib.Cli.Commands` (`[]api.Command`) is the command surface itself: every command
 the project declares, each carrying its flags, its args and the `Handler` that runs it.
 `api.BindCommand(&command)` copies one into the command a single run binds to, so a caller
 drives a command without a command line — bind the values into the copy's `Items` and call
 `copy.Handler(copy)`.
+
+`lib.Server.Routes` (`[]*api.Route`) is the http surface the same way:
+every route the project declares, in run order — lowest `Priority` first — each carrying its
+`paths`, its parameters, its body and the `IsActionable` / `RequestHandler` that match and
+answer it. `api.BindRoute(route)` copies one into the route a single request runs on, so a
+caller drives a route without a socket — set the copy's `Request` and `Response` and call
+`copy.RequestHandler(copy)`, which returns the failure it did not answer itself and `nil`
+otherwise. What it answered with is the status it wrote on the response, never what it returned.
 
 [PublicApi](../PublicApi/doc.md) lists every one of them — signatures, props structs and
 dependency contracts — generated from `sandbox/api/` itself on every build.
@@ -72,6 +81,10 @@ The contracts available to patch:
 | --- | --- |
 | `deps.Argvdeps` | `sandbox/deps/argvdeps` |
 | `deps.Reflectdeps` | `sandbox/deps/reflectdeps` |
+| `deps.Serializables` | `sandbox/deps/serializables` |
+| `deps.Serverdeps` | `sandbox/deps/serverdeps` |
+| `deps.Signaldeps` | `sandbox/deps/signaldeps` |
+| `deps.Sortdeps` | `sandbox/deps/sortdeps` |
 | `deps.Std` | `sandbox/deps/std` |
 | `deps.Stringsdeps` | `sandbox/deps/stringsdeps` |
 
@@ -82,6 +95,10 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | --- | --- |
 | `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
 | `adapters/libs/reflectdeps` | `reflectdeps.Bind(&deps)` |
+| `adapters/libs/serializables` | `serializables.Bind(&deps)` |
+| `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |
+| `adapters/libs/signaldeps` | `signaldeps.Bind(&deps)` |
+| `adapters/libs/sortdeps` | `sortdeps.Bind(&deps)` |
 | `adapters/libs/std` | `std.Bind(&deps)` |
 | `adapters/libs/stringsdeps` | `stringsdeps.Bind(&deps)` |
 

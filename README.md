@@ -19,6 +19,15 @@ Driving the CLI from a terminal - install, commands, flags, exit codes
 | [Commands](docs/Commands/doc.md) | Every command of backoffice, generated from the command declarations |
 | [CliExamples](docs/CliExamples/doc.md) | Index of every runnable example of the backoffice cli |
 
+### ServerUsage
+
+Serving http - bring the server up, declare routes, read a body
+
+| Doc | Description |
+| --- | --- |
+| [ServerUsage](docs/ServerUsage/doc.md) | Serve http from backoffice: bring the layer up, declare routes, read a body |
+| [Routes](docs/Routes/doc.md) | Every address backoffice answers: what to send, a request to run and what comes back |
+
 ### LibUsage
 
 Using the project as a Go module - wiring the deps, calling the sandbox
@@ -58,6 +67,7 @@ Lookup tables - schemas, file formats, generated file listings
 | [Extensions](docs/Extensions/doc.md) | The generation mechanics this project turns on, and what each one writes |
 | [DepList](docs/DepList/doc.md) | Every dep `agnos add-dep` can add, the adapters that fill it, and what backs each one |
 | [GeneratedFiles](docs/GeneratedFiles/doc.md) | Every file agnos writes into this project and whether build overwrites it |
+| [RouteYaml](docs/RouteYaml/doc.md) | Every key of a route's route.yaml and what the generated code does with it |
 
 ## License
 
