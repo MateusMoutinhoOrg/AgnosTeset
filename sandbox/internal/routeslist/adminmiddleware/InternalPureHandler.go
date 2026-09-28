@@ -21,6 +21,6 @@ import (
 //	props.User = user
 func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	props.User = "user injected by middleware"
-
+	sandbox.Deps.Std.Printf("chamou o admin\n")
 	return nil
 }

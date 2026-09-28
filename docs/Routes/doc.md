@@ -16,7 +16,7 @@ Every parameter of a route is bound and converted before the handler runs — a 
 
 | Route | Answers | Package |
 | --- | --- | --- |
-| [`ANY /adimin/{*Rest}`](adminmiddleware.md) |  | `adminmiddleware` |
+| [`ANY /adimin/*`](adminmiddleware.md) |  | `adminmiddleware` |
 
 ## Routes
 

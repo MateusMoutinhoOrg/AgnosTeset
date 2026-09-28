@@ -7,10 +7,11 @@ paths:
       id: Adimin
       start: 0
       trigger:
-        type: equal
+        type: prefix
         value: /adimin
     - end: -1
       id: Rest
       start: 1
 priority: 10
 response-type: text/plain
+
