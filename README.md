@@ -1,7 +1,6 @@
 # teste
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/MateusMoutinhoOrg/Agnos.svg)](https://pkg.go.dev/github.com/MateusMoutinhoOrg/Agnos)
-[![Release](https://img.shields.io/github/v/release/MateusMoutinhoOrg/Agnos)](https://github.com/MateusMoutinhoOrg/Agnos/releases/latest)
+[![Go Reference](https://pkg.go.dev/badge/github.com/MateusMoutinhoOrg/AgnosTeset.svg)](https://pkg.go.dev/github.com/MateusMoutinhoOrg/AgnosTeset)
 [![Go Version](https://img.shields.io/badge/go-%3E%3D1.25-blue)](go.mod)
 
 Place your description in AgnosConfig/docs/ReadmeHeader.md
@@ -69,8 +68,6 @@ Lookup tables - schemas, file formats, generated file listings
 | [Extensions](docs/Extensions/doc.md) | The generation mechanics this project turns on, and what each one writes |
 | [DepList](docs/DepList/doc.md) | Every dep `agnos add-dep` can add, the adapters that fill it, and what backs each one |
 | [GeneratedFiles](docs/GeneratedFiles/doc.md) | Every file agnos writes into this project and whether build overwrites it |
-| [LibExamples](docs/LibExamples/doc.md) | Index of every runnable example of teste as a Go module |
-| [CliExamples](docs/CliExamples/doc.md) | Index of every runnable example of the teste cli |
 | [RouteYaml](docs/RouteYaml/doc.md) | Every key of a route's route.yaml and what the generated code does with it |
 
 ## License

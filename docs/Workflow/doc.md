@@ -63,8 +63,9 @@ func InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries 
 ```
 
 Every value arrives typed, defaulted and checked: bad input was answered with exit 2 before the
-handler ran. Printing through `response` answers the line; a handler that answers nothing hands
-it to the next command of the chain. [Commands](../Commands/doc.md) documents the command on the
+handler ran. Printing through `response` answers the line with exit 0; a returned error fails it
+with exit 1, even after a print. A command that prints nothing has still run — only a
+`--middleware` that answers nothing hands the line to the next command of the chain. [Commands](../Commands/doc.md) documents the command on the
 next build.
 
 
@@ -249,7 +250,7 @@ prints what it changes before writing. Details in [LibExamples](../LibExamples/d
 
 | File | Written when |
 | --- | --- |
-| `sandbox/internal/commands/<name>/handler.go` | a command does something |
+| `sandbox/internal/commands/<name>/InternalPureHandler.go` | a command does something |
 | `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | a route answers something |
 | `assets/frontend/**` | the site looks like something |
 | `sandbox/internal/<pkg>/*.go` (never under `generated/`) | logic worth reusing |

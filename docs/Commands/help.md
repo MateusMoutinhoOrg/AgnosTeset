@@ -14,7 +14,7 @@ When called without arguments, lists every available command grouped by category
 
 | Flag | Type | Default | Description | From |
 | --- | --- | --- | --- | --- |
-| `--help` | boolean |  | Print the help of the command this command line is for | [help-flag](help-flag.md) |
+| `--help`, `-h` | boolean |  | Print the help of the command this command line is for | [help-flag](help-flag.md) |
 
 | Runs in front of it | When |
 | --- | --- |

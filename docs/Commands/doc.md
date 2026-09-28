@@ -1,7 +1,7 @@
 # Commands
 
 `teste <command> [args] [flags]`. `teste help <command>`, or `teste <command> --help`,
-prints the same for one command; an empty command line prints the general help and exits 2.
+prints the same for one command; an empty command line prints the general help and exits 0.
 A command declaring a `--help` flag of its own keeps it, and is described through `help` alone.
 
 One page per command, each rendered from that command's `command.yaml`
@@ -29,6 +29,6 @@ Run in front of the commands they match, lowest `priority` first; typed by nobod
 
 | Middleware | Runs before | Priority | Flags it adds |
 | --- | --- | --- | --- |
-| [`help-flag`](help-flag.md) | `*` | 5 | `--help` |
+| [`help-flag`](help-flag.md) | `*` | 5 | `--help`, `-h` |
 
 Output channels and exit codes are in [Rules](../Rules/doc.md#output-channels).
