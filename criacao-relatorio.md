@@ -1,5 +1,5 @@
 ### objetivo:
-Use o agnos cli, e crie diversos projetos com ele, desde servidores, clis, etc .. entao crie um relatorio apontando tudo que deve mudar no projeto para se aproximar dos vetores guia.
+Use o agnos cli (ja esta instalado), e crie diversos projetos com ele, desde servidores, clis, etc .. entao crie um relatorio apontando tudo que deve mudar no projeto para se aproximar dos vetores guia.
 
 ### Vetores Guia 
 - o agnos deve ser projetado para ser usado primariamente por LLMs.
