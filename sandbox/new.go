@@ -1,0 +1,19 @@
+package sandbox
+
+import (
+	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	config "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/constructors/config"
+)
+
+// New builds the whole library: one call per package under
+// sandbox/constructors/, each filling the field of the Sandbox it owns. The
+// list is the directories themselves, so a constructor written by hand is
+// called exactly like a generated one — this file is rendered around what is
+// there, never the other way round.
+func New() *api.Sandbox {
+	self := api.Sandbox{}
+
+	config.Constructor(&self)
+
+	return &self
+}
