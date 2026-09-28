@@ -1,0 +1,16 @@
+category: Middleware
+help: ""
+methods:
+    - ANY
+paths:
+    - end: 1
+      id: ApiAdmin
+      start: 0
+      trigger:
+        type: equal
+        value: /api/admin
+    - end: -1
+      id: Rest
+      start: 2
+priority: 10
+response-type: text/plain

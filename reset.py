@@ -37,6 +37,7 @@ def main():
     os.system('agnos add-route userconfig --pattern "/admin/user/{user:integer}" --category frontend --method GET -- response-type "text/html"')
 
     ## Api 
+    os.system('agnos add-route apimiddleware --pattern "/api/admin/{*rest}" --middleware  ')
     os.system('agnos add-route apiadduser  --pattern "/api/admin/add-user" --category api --method POST --response-type "application/json" ')
     os.system('agnos add-route apieremoveuser  --pattern "/api/admin/remove-user" --category api --method POST --response-type "application/json"')
     os.system('agnos add-route apiupdateuser  --pattern "/api/admin/update-user" --category api --method POST --response-type "application/json"')

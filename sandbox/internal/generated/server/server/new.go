@@ -7,6 +7,7 @@ import (
 	routeslist_apiadduser "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apiadduser"
 	routeslist_apieremoveuser "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apieremoveuser"
 	routeslist_apilistusers "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apilistusers"
+	routeslist_apimiddleware "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apimiddleware"
 	routeslist_apiupdateuser "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apiupdateuser"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
@@ -24,6 +25,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 
 	server.Routes = []*api.Route{
 		routeslist_adminmiddlware.NewRoute(sandbox),
+		routeslist_apimiddleware.NewRoute(sandbox),
 		routeslist_apiadduser.NewRoute(sandbox),
 		routeslist_apieremoveuser.NewRoute(sandbox),
 		routeslist_apilistusers.NewRoute(sandbox),
