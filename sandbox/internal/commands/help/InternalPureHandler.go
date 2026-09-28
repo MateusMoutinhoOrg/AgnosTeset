@@ -4,16 +4,12 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 )
 
-// help is a command like any other — entries.yaml, generated new.go, and this
-// handler.go — except that `agnos build` writes all three instead
-// of the user writing two of them. Nothing about the command set is baked in
-// here: the screens below are printed from Cli.Commands, the same
-// declarations the dispatch binds a command line against.
-
-const (
-	exitOk    = 0
-	exitUsage = 2
-)
+// help is a command like any other — command.yaml, generated new.go and
+// entries.go, and this InternalPureHandler.go — except that
+// `agnos build` writes them instead of the user writing two of
+// them. Nothing about the command set is baked in here: the screens below are
+// printed from Cli.Commands, the same declarations the dispatch binds a command
+// line against.
 
 // identifiedBy reports whether name is one of the identifiers a command
 // answers to, its aliases included.
@@ -51,53 +47,63 @@ const (
 
 // ─── Entry points ───────────────────────────────────────────────────────────
 
-// CommandHandler backs the `help` / `--help` verb: with no argument it prints
-// the general help screen, with a command name it prints that command's
-// detailed help.
-func CommandHandler(sandbox *api.Sandbox, command *api.Command) int {
-	name := command.GetString("command")
+// InternalPureHandler backs `help`: with no argument it prints the general help
+// screen, with a command name it prints that command's detailed help.
+func InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries *Entries, response *api.CommandResponse) error {
+	name := sandbox.Deps.Stringsdeps.Join(entries.Name, " ")
 	if name == "" {
-		PrintGeneralHelp(sandbox)
-		return exitOk
+		PrintGeneralHelp(sandbox, response)
+		return nil
 	}
 
-	for _, declared := range sandbox.Cli.Commands {
-		if identifiedBy(declared.Identifiers, name) {
-			printCommandHelp(sandbox, declared)
-			return exitOk
-		}
+	if declared := FindCommand(sandbox, name); declared != nil {
+		PrintCommandHelp(sandbox, response, declared)
+		return nil
 	}
 
-	e := sandbox.Deps.Std.Error
+	response.SetStatus(api.ExitUsage)
+	e := response.Error
 	e("\n")
 	e("  %s%s✘%s Unknown command: %s%s%s\n", bold, red, reset, bold+white, name, reset)
 	e("  %sRun '%s help' to see available commands.%s\n", dim, binaryName(sandbox), reset)
 	e("\n")
-	return exitUsage
+	return nil
+}
+
+// FindCommand is the command one of whose Identifiers is name, nil when none
+// is.
+func FindCommand(sandbox *api.Sandbox, name string) *api.Command {
+	for _, declared := range sandbox.Cli.Commands {
+		if identifiedBy(declared.Identifiers, name) {
+			return declared
+		}
+	}
+	return nil
 }
 
 // ─── General help ──────────────────────────────────────────────────────────
 
-// PrintGeneralHelp lists every command grouped by category. It is also the
-// usage screen shown when the binary is run with no arguments.
-func PrintGeneralHelp(sandbox *api.Sandbox) {
-	p := sandbox.Deps.Std.Printf
+// PrintGeneralHelp lists every command grouped by category — the middlewares
+// left out, since nobody types one. It is also the usage screen shown when the
+// binary is run with no arguments.
+func PrintGeneralHelp(sandbox *api.Sandbox, response *api.CommandResponse) {
+	p := response.Printf
 
-	printBanner(sandbox)
+	printBanner(sandbox, response)
 
 	p("  %s%sUSAGE%s\n", bold, cyan, reset)
 	p("  %s│%s\n", gray, reset)
-	p("  %s│%s  %s$%s %s %s<command>%s %s[flags]%s %s[args]%s\n",
+	p("  %s│%s  %s$%s %s %s<command>%s %s[args]%s %s[flags]%s\n",
 		gray, reset, dim, reset, binaryName(sandbox),
-		green, reset, yellow, reset, dim, reset,
+		green, reset, dim, reset, yellow, reset,
 	)
 	p("  %s│%s\n", gray, reset)
 	p("\n")
 
 	categoryOrder := []string{}
-	categorized := map[string][]api.Command{}
+	categorized := map[string][]*api.Command{}
 	for _, cmd := range sandbox.Cli.Commands {
-		if cmd.Hidden {
+		if !listed(cmd) {
 			continue
 		}
 		cat := cmd.Category
@@ -112,7 +118,7 @@ func PrintGeneralHelp(sandbox *api.Sandbox) {
 
 	maxNameLen := 0
 	for _, cmd := range sandbox.Cli.Commands {
-		if cmd.Hidden || len(cmd.Identifiers) == 0 {
+		if !listed(cmd) {
 			continue
 		}
 		if n := len(cmd.Identifiers[0]); n > maxNameLen {
@@ -124,9 +130,6 @@ func PrintGeneralHelp(sandbox *api.Sandbox) {
 		p("  %s%s%s%s\n", bold, cyan, sandbox.Deps.Stringsdeps.ToUpper(cat), reset)
 		p("  %s│%s\n", gray, reset)
 		for _, cmd := range categorized[cat] {
-			if len(cmd.Identifiers) == 0 {
-				continue
-			}
 			name := cmd.Identifiers[0]
 
 			aliasTag := ""
@@ -157,12 +160,24 @@ func PrintGeneralHelp(sandbox *api.Sandbox) {
 	p("\n")
 }
 
+// listed reports a command the general help lists: a visible, strict one
+// with a verb to type.
+func listed(cmd *api.Command) bool {
+	return !cmd.Hidden && cmd.Strict && len(cmd.Identifiers) > 0
+}
+
 // ─── Per-command help ──────────────────────────────────────────────────────
 
-func printCommandHelp(sandbox *api.Sandbox, cmd api.Command) {
-	p := sandbox.Deps.Std.Printf
+// PrintCommandHelp prints one command's detailed help: its description, the
+// line to type, and every arg and flag it reads — the flags of the middlewares
+// that run in front of it included, since the user types those too.
+func PrintCommandHelp(sandbox *api.Sandbox, response *api.CommandResponse, cmd *api.Command) {
+	p := response.Printf
 
-	name := cmd.Identifiers[0]
+	name := cmd.Pattern
+	if len(cmd.Identifiers) > 0 {
+		name = cmd.Identifiers[0]
+	}
 
 	titleLine := sandbox.Deps.Std.Sprintf("%s %s", binaryName(sandbox), name)
 	innerW := len(titleLine) + 4
@@ -193,21 +208,14 @@ func printCommandHelp(sandbox *api.Sandbox, cmd api.Command) {
 		p("\n")
 	}
 
+	flags := InheritedFlags(sandbox, cmd)
+
 	printSection(p, "USAGE")
-	usage := sandbox.Deps.Std.Sprintf("  %s$%s %s %s", dim, reset, binaryName(sandbox), name)
 	flagPart := ""
-	if len(cmd.Flags) > 0 {
+	if len(cmd.Flags)+len(flags) > 0 {
 		flagPart = sandbox.Deps.Std.Sprintf(" %s[flags]%s", yellow, reset)
 	}
-	argPart := ""
-	for _, arg := range cmd.Args {
-		if arg.Required {
-			argPart += sandbox.Deps.Std.Sprintf(" %s%s<%s>%s", bold, green, arg.Id, reset)
-		} else {
-			argPart += sandbox.Deps.Std.Sprintf(" %s[%s]%s", dim, arg.Id, reset)
-		}
-	}
-	p("  %s│%s%s%s%s\n", gray, reset, usage, flagPart, argPart)
+	p("  %s│%s  %s$%s %s %s%s\n", gray, reset, dim, reset, binaryName(sandbox), cmd.Pattern, flagPart)
 	p("  %s│%s\n", gray, reset)
 	p("\n")
 
@@ -224,11 +232,17 @@ func printCommandHelp(sandbox *api.Sandbox, cmd api.Command) {
 		p("\n")
 	}
 
-	if len(cmd.Args) > 0 {
+	args := []api.CommandArg{}
+	for _, arg := range cmd.Args {
+		if !arg.Trigger.Exist {
+			args = append(args, arg)
+		}
+	}
+	if len(args) > 0 {
 		printSection(p, "ARGUMENTS")
-		for i, arg := range cmd.Args {
-			printField(p, arg.Id, arg.Description, arg.Type, arg.Default, arg.Required, arg.Examples)
-			if i < len(cmd.Args)-1 {
+		for i, arg := range args {
+			printField(p, arg.Id, arg.Description, argTypeLabel(arg), arg.Default, arg.Required, "")
+			if i < len(args)-1 {
 				p("  %s│%s\n", gray, reset)
 			}
 		}
@@ -236,12 +250,21 @@ func printCommandHelp(sandbox *api.Sandbox, cmd api.Command) {
 		p("\n")
 	}
 
-	if len(cmd.Flags) > 0 {
+	all := []inheritedFlag{}
+	for _, flag := range cmd.Flags {
+		all = append(all, inheritedFlag{Flag: flag})
+	}
+	all = append(all, flags...)
+	if len(all) > 0 {
 		printSection(p, "FLAGS")
-		for i, flag := range cmd.Flags {
-			label := sandbox.Deps.Stringsdeps.Join(flag.Identifiers, gray+", "+reset+yellow+bold)
-			printField(p, label, flag.Description, flag.Type, flag.Default, flag.Required, flag.Examples)
-			if i < len(cmd.Flags)-1 {
+		for i, flag := range all {
+			label := sandbox.Deps.Stringsdeps.Join(flag.Flag.Keys, gray+", "+reset+yellow+bold)
+			from := ""
+			if flag.From != "" {
+				from = "from " + flag.From
+			}
+			printField(p, label, flag.Flag.Description, flagTypeLabel(flag.Flag.Type), flag.Flag.Default, flag.Flag.Required, from)
+			if i < len(all)-1 {
 				p("  %s│%s\n", gray, reset)
 			}
 		}
@@ -259,29 +282,83 @@ func printCommandHelp(sandbox *api.Sandbox, cmd api.Command) {
 	}
 }
 
+// inheritedFlag is one flag a command's help lists, and the middleware that
+// declares it — "" for one of the command's own.
+type inheritedFlag struct {
+	Flag api.CommandFlag
+	From string
+}
+
+// InheritedFlags is every flag a middleware in front of the command declares:
+// a non-strict command on a lower rung whose args match the command's own
+// literal verb. What the user types after the command is not known here, so a
+// middleware whose trigger reads a flag value is listed as well.
+func InheritedFlags(sandbox *api.Sandbox, cmd *api.Command) []inheritedFlag {
+	inherited := []inheritedFlag{}
+	argv := []string{}
+	if len(cmd.Identifiers) > 0 {
+		argv = sandbox.Deps.Stringsdeps.Fields(cmd.Identifiers[0])
+	}
+
+	for _, declared := range sandbox.Cli.Commands {
+		if declared.Strict || declared.Priority >= cmd.Priority || declared.Name == cmd.Name {
+			continue
+		}
+		bound := api.BindCommand(declared)
+		bound.Argv = argv
+		bound.Flags = []api.CommandFlag{}
+		if !declared.IsActionable(bound) {
+			continue
+		}
+		for _, flag := range declared.Flags {
+			if declaresKey(cmd, flag.Keys) {
+				continue
+			}
+			inherited = append(inherited, inheritedFlag{Flag: flag, From: declared.Name})
+		}
+	}
+	return inherited
+}
+
+// declaresKey reports whether a command declares a flag under one of keys.
+func declaresKey(cmd *api.Command, keys []string) bool {
+	for _, flag := range cmd.Flags {
+		for _, own := range flag.Keys {
+			for _, key := range keys {
+				if own == key {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
-func printField(p func(string, ...any) (int, error), label, description, kind, def string, required bool, examples []string) {
+func printField(p func(string, ...any) (int, error), label, description, kind, def string, required bool, from string) {
 	reqLabel := dim + "optional" + reset
 	if required {
 		reqLabel = yellow + bold + "required" + reset
 	}
 
 	p("  %s│%s  %s%s%s\n", gray, reset, green+bold, label, reset)
-	p("  %s│%s    %s\n", gray, reset, description)
+	if description != "" {
+		p("  %s│%s    %s\n", gray, reset, description)
+	}
 	p("  %s│%s    %s%s%s %s│%s %s\n",
-		gray, reset, magenta, typeLabel(kind), reset, gray, reset, reqLabel,
+		gray, reset, magenta, kind, reset, gray, reset, reqLabel,
 	)
 	if def != "" {
 		p("  %s│%s    %sdefault:%s %s%s%s\n", gray, reset, dim, reset, white+bold, def, reset)
 	}
-	for _, ex := range examples {
-		p("  %s│%s    %s$ %s%s\n", gray, reset, dim, ex, reset)
+	if from != "" {
+		p("  %s│%s    %s%s%s\n", gray, reset, dim, from, reset)
 	}
 }
 
-func printBanner(sandbox *api.Sandbox) {
-	p := sandbox.Deps.Std.Printf
+func printBanner(sandbox *api.Sandbox, response *api.CommandResponse) {
+	p := response.Printf
 
 	titleLine := sandbox.Deps.Std.Sprintf("%s  %s", sandbox.Config.ProjectName, sandbox.Config.Version)
 	innerW := len(titleLine) + 4
@@ -304,15 +381,35 @@ func printSection(p func(string, ...any) (int, error), title string) {
 	p("  %s│%s\n", gray, reset)
 }
 
-func typeLabel(kind string) string {
-	switch kind {
-	case "int":
-		return "int"
-	case "float":
-		return "float"
-	case "boolean":
-		return "bool"
-	default:
-		return "string"
+// argTypeLabel spells an arg's type the way the help screen prints it.
+func argTypeLabel(arg api.CommandArg) string {
+	if arg.End != arg.Start {
+		return "string..."
 	}
+	switch arg.Type {
+	case api.IntegerArg:
+		return "integer"
+	case api.NumberArg:
+		return "number"
+	case api.UuidArg:
+		return "uuid"
+	}
+	return "string"
+}
+
+// flagTypeLabel spells a flag's type the way the help screen prints it.
+func flagTypeLabel(kind api.FlagType) string {
+	switch kind {
+	case api.IntegerFlag:
+		return "integer"
+	case api.NumberFlag:
+		return "number"
+	case api.BooleanFlag:
+		return "boolean"
+	case api.StringArrayFlag:
+		return "string, repeatable"
+	case api.IntegerArrayFlag:
+		return "integer, repeatable"
+	}
+	return "string"
 }

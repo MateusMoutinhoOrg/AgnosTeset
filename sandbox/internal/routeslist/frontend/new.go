@@ -22,7 +22,6 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Priority = 1000
 	self.ResponseType = "text/html; charset=utf-8"
 	self.Segments = 0
-	self.After = false
 	self.Pattern = "/{*Rest}"
 	self.Category = "Assets"
 	self.Help = "Serves any file of the embedded assets/frontend tree"

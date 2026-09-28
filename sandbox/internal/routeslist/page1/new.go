@@ -22,7 +22,6 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Priority = 100
 	self.ResponseType = "application/json"
 	self.Segments = 2
-	self.After = false
 	self.Pattern = "/admin/page1"
 	self.Category = "Routes"
 	self.Help = ""

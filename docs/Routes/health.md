@@ -2,9 +2,9 @@
 
 Reports that the server is up
 
-| Entries | Read from | In | Type | Default | Description |
-| --- | --- | --- | --- | --- | --- |
-| `Route` | segments 0..-1 | path | string, equal `/health` |  |  |
+| Entries | Read from | In | Type | Default | Description | From |
+| --- | --- | --- | --- | --- | --- | --- |
+| `Route` | segments 0..-1 | path | string, equal `/health` |  |  | — |
 
 ```bash
 curl localhost:3000/health

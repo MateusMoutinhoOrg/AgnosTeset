@@ -22,7 +22,6 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Priority = 100
 	self.ResponseType = "application/json"
 	self.Segments = 0
-	self.After = false
 	self.Pattern = "/health"
 	self.Category = "Server"
 	self.Help = "Reports that the server is up"

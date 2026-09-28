@@ -1,15 +1,23 @@
-# `version` — `--version`
+# `version`
 
 Print the installed version
 
 ```bash
-teste version
+teste version [--help]
 ```
 
 Prints the current version of the installed binary and exits.
+
+| Flag | Type | Default | Description | From |
+| --- | --- | --- | --- | --- |
+| `--help` | boolean |  | Print the help of the command this command line is for | [help-flag](help-flag.md) |
+
+| Runs in front of it | When |
+| --- | --- |
+| [`help-flag`](help-flag.md) | always |
 
 ```bash
 teste version
 ```
 
-Info · [every command](doc.md) · [EntriesYaml](../EntriesYaml/doc.md)
+Info · [every command](doc.md) · [CommandYaml](../CommandYaml/doc.md)

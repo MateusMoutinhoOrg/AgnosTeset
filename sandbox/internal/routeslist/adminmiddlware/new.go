@@ -22,7 +22,6 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Priority = 10
 	self.ResponseType = "text/plain"
 	self.Segments = 0
-	self.After = false
 	self.Pattern = "/admin/{*Rest}"
 	self.Category = "Middleware"
 	self.Help = ""

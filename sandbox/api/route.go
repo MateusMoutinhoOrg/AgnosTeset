@@ -1,42 +1,5 @@
 package api
 
-// TriggerType is how a Trigger compares the text it is handed.
-type TriggerType int
-
-const (
-	// EqualTrigger matches a text that is exactly the trigger's Value.
-	EqualTrigger TriggerType = iota
-	// PrefixTrigger matches a text that is the Value or continues it with a
-	// new segment: "/admin" matches "/admin" and "/admin/users", never
-	// "/administrator". A Value of "/" matches every path.
-	PrefixTrigger
-	// TextPrefixTrigger matches a text that begins with the Value, whatever
-	// follows it: "/admin" matches "/administrator" too.
-	TextPrefixTrigger
-	// SuffixTrigger matches a text that ends with the Value.
-	SuffixTrigger
-	// RegexTrigger matches a text the Value, a regular expression, matches.
-	RegexTrigger
-)
-
-// Trigger is the condition a path slice or a parameter value has to meet for
-// a route to run at all — the parsed form of one `trigger:` of route.yaml.
-// Failing it is a non-match, never a 400: the request is for some other route.
-type Trigger struct {
-	// Exist tells a declared trigger from none at all; an entry with none
-	// matches whatever the request brought.
-	Exist bool
-	// Type is how Value is compared.
-	Type TriggerType
-	// Value is what the text is compared against.
-	Value string
-	// Negate inverts the comparison: the trigger holds when the text does
-	// not match.
-	Negate bool
-	// IgnoreCase compares without regard to case.
-	IgnoreCase bool
-}
-
 // PathType is what one segment a Path reads has to convert to. A segment
 // that will not is a non-match: the url is for some other route.
 type PathType int
@@ -211,9 +174,6 @@ type Route struct {
 	// Segments is how many segments the request path has to have for the
 	// route to run, 0 for any count.
 	Segments int
-	// After reports a route of the `after` phase: it runs once the chain
-	// has answered, whatever answered it, and never answers itself.
-	After bool
 	// Pattern is its path as it reads in docs and messages.
 	Pattern string
 	// Category groups it on the generated Routes page.
@@ -262,11 +222,6 @@ type Route struct {
 	// argument: what a middleware sets on it, the routes after it read.
 	Props *RouteProps
 
-	// AnsweredStatus is the status the request was answered with, set by the
-	// dispatch before the routes of the `after` phase run and bound onto
-	// their Entries.AnsweredStatus; 0 on every other run.
-	AnsweredStatus int
-
 	// Failure is why this route is being handed to one of the project's
 	// Handle* files, nil on a normal run. It is set by routeio.Raise, which
 	// is the one way any part of the server layer raises a failure.
@@ -308,7 +263,6 @@ func BindRoute(route *Route) *Route {
 	bound.Request = nil
 	bound.Response = nil
 	bound.Props = nil
-	bound.AnsweredStatus = 0
 	bound.Failure = nil
 	return &bound
 }

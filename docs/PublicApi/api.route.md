@@ -2,11 +2,6 @@
 
 | Constant | Value | Description |
 | --- | --- | --- |
-| `EqualTrigger` | `iota` | EqualTrigger matches a text that is exactly the trigger's Value. |
-| `PrefixTrigger` |  | PrefixTrigger matches a text that is the Value or continues it with a new segment: "/admin" matches "/admin" and "/admin/users", never "/administrator". A Value of "/" matches every path. |
-| `TextPrefixTrigger` |  | TextPrefixTrigger matches a text that begins with the Value, whatever follows it: "/admin" matches "/administrator" too. |
-| `SuffixTrigger` |  | SuffixTrigger matches a text that ends with the Value. |
-| `RegexTrigger` |  | RegexTrigger matches a text the Value, a regular expression, matches. |
 | `StringPath` | `iota` | StringPath takes any slice, bound as a string. |
 | `IntegerPath` |  | IntegerPath takes one segment reading as a whole number, bound as an int. |
 | `NumberPath` |  | NumberPath takes one segment reading as a number, bound as a float64. |
@@ -22,24 +17,6 @@
 | `IntegerType` |  | IntegerType is bound as an int. |
 | `IntegerArrayType` |  | IntegerArrayType is bound as a []int, read the way a StringArrayType is. |
 | `AnyMethod` | `"ANY"` | AnyMethod is the one entry of AcceptMethods that accepts every http method. |
-
-## `TriggerType`
-
-TriggerType is how a Trigger compares the text it is handed.
-
-`type TriggerType int`
-
-## `Trigger`
-
-Trigger is the condition a path slice or a parameter value has to meet for a route to run at all — the parsed form of one `trigger:` of route.yaml. Failing it is a non-match, never a 400: the request is for some other route.
-
-| Field | Type | Description |
-| --- | --- | --- |
-| `Exist` | `bool` | Exist tells a declared trigger from none at all; an entry with none matches whatever the request brought. |
-| `Type` | `TriggerType` | Type is how Value is compared. |
-| `Value` | `string` | Value is what the text is compared against. |
-| `Negate` | `bool` | Negate inverts the comparison: the trigger holds when the text does not match. |
-| `IgnoreCase` | `bool` | IgnoreCase compares without regard to case. |
 
 ## `PathType`
 
@@ -122,7 +99,6 @@ Route is one http route of the project, as the sandbox offers it: the whole of w
 | `Priority` | `int` | Priority is the rung this route runs on when several match one request: the dispatch runs them from the lowest upwards and stops at the first handler that sets a status. |
 | `ResponseType` | `string` | ResponseType is the Content-Type set on the response before the handler runs; the handler may set another. |
 | `Segments` | `int` | Segments is how many segments the request path has to have for the route to run, 0 for any count. |
-| `After` | `bool` | After reports a route of the `after` phase: it runs once the chain has answered, whatever answered it, and never answers itself. |
 | `Pattern` | `string` | Pattern is its path as it reads in docs and messages. |
 | `Category` | `string` | Category groups it on the generated Routes page. |
 | `Help` | `string` | Help is the one-line description. |
@@ -137,7 +113,6 @@ Route is one http route of the project, as the sandbox offers it: the whole of w
 | `Request` | `any` | Request is the http request this copy was bound from and Response the one being written. Both are handed over as any: sandbox/api may name no type of sandbox/deps, so the server layer reads them back through routeio.RequestOf and routeio.ResponseOf. |
 | `Response` | `any` |  |
 | `Props` | `*RouteProps` | Props is one request's RouteProps, shared by every route of the chain that runs for it and handed to each InternalPureHandler as its first argument: what a middleware sets on it, the routes after it read. |
-| `AnsweredStatus` | `int` | AnsweredStatus is the status the request was answered with, set by the dispatch before the routes of the `after` phase run and bound onto their Entries.AnsweredStatus; 0 on every other run. |
 | `Failure` | `*RouteFailure` | Failure is why this route is being handed to one of the project's Handle* files, nil on a normal run. It is set by routeio.Raise, which is the one way any part of the server layer raises a failure. |
 | `IsActionable` | `func(bound *Route) bool` | IsActionable reports whether one bound copy — its Request set — is for this route: the method is accepted, and every path slice and every parameter declaring a trigger matches it. |
 | `MatchesPath` | `func(bound *Route) bool` | MatchesPath reports whether one bound copy's request path is for this route whatever its method — what tells a 405 from a 404. |
