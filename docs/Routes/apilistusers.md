@@ -2,9 +2,23 @@
 
 ## Try it
 
+Only what is required:
+
 ```bash
 curl localhost:3000/api/admin/list-users
 ```
+
+With every value it reads:
+
+```bash
+curl 'localhost:3000/api/admin/list-users?token=my-token'
+```
+
+## Query string, headers and cookies
+
+| Name | Sent in | What goes there | Required | Example | Description |
+| --- | --- | --- | --- | --- | --- |
+| `token` | query string | text | no | `my-token` | read by [`apimiddleware`](apimiddleware.md), which runs first |
 
 ## What comes back
 

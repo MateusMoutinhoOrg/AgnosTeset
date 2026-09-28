@@ -2,8 +2,16 @@
 
 ## Try it
 
+Only what is required:
+
 ```bash
 curl localhost:3000/api/admin/my-rest
+```
+
+With every value it reads:
+
+```bash
+curl 'localhost:3000/api/admin/my-rest?token=my-token'
 ```
 
 ## In the address
@@ -11,6 +19,12 @@ curl localhost:3000/api/admin/my-rest
 | Part | What goes there | Example | Description |
 | --- | --- | --- | --- |
 | `{*Rest}` | the rest of the address — one part or more, like `a/b.png` | `my-rest` |  |
+
+## Query string, headers and cookies
+
+| Name | Sent in | What goes there | Required | Example | Description |
+| --- | --- | --- | --- | --- | --- |
+| `token` | query string | text | no | `my-token` |  |
 
 ## What comes back
 

@@ -2,6 +2,12 @@ category: Middleware
 help: ""
 methods:
     - ANY
+parameters:
+    - fonts:
+        - query
+      id: Token
+      key: token
+      type: string
 paths:
     - end: 1
       id: ApiAdmin

@@ -38,6 +38,7 @@ def main():
 
     ## Api 
     os.system('agnos add-route apimiddleware --pattern "/api/admin/{*rest}" --middleware  ')
+    os.system('agnos add-parameter token --route apimiddleware')
     os.system('agnos add-route apiadduser  --pattern "/api/admin/add-user" --category api --method POST --response-type "application/json" ')
     os.system('agnos add-route apieremoveuser  --pattern "/api/admin/remove-user" --category api --method POST --response-type "application/json"')
     os.system('agnos add-route apiupdateuser  --pattern "/api/admin/update-user" --category api --method POST --response-type "application/json"')

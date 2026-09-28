@@ -10,4 +10,5 @@ type Entries struct {
 	FullRoute string `id:"FullRoute"`
 	ApiAdmin  string `id:"ApiAdmin"`
 	Rest      string `id:"Rest"`
+	Token     string `id:"Token"`
 }
