@@ -12,6 +12,18 @@ for it to run. A path nothing answers is `404`; one matched under another method
 Every parameter of a route is bound and converted before the handler runs — a failure there is
 `400`, never the handler's call.
 
+## Middleware
+
+| Route | Answers | Package |
+| --- | --- | --- |
+| [`ANY /adimin/{*Rest}`](adminmiddleware.md) |  | `adminmiddleware` |
+
+## Routes
+
+| Route | Answers | Package |
+| --- | --- | --- |
+| [`GET /adimin/page1`](adminpage1.md) |  | `adminpage1` |
+
 ## Assets
 
 | Route | Answers | Package |
