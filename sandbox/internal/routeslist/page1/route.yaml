@@ -1,0 +1,14 @@
+category: Routes
+help: ""
+methods:
+    - GET
+paths:
+    - end: 1
+      id: AdminPage1
+      start: 0
+      trigger:
+        type: equal
+        value: /admin/page1
+priority: 100
+response-type: application/json
+segments: 2

@@ -28,7 +28,10 @@ def remove_all_files():
 
 def main():
     remove_all_files()
-    print("Limpeza finalizada.")
-
+    ## runs a terminal command 
+    os.system("agnos start --project-name teste --module github.com/MateusMoutinhoOrg/AgnosTeset")
+    os.system("agnos front-init")
+    os.system('agnos add-route adminmiddlware --pattern "/admin/{*rest}" --middleware  ')
+    os.system('agnos add-route page1 --pattern "/admin/page1" ')
 if __name__ == '__main__':
     main()

@@ -1,0 +1,16 @@
+category: Middleware
+help: ""
+methods:
+    - ANY
+paths:
+    - end: 0
+      id: Admin
+      start: 0
+      trigger:
+        type: equal
+        value: /admin
+    - end: -1
+      id: Rest
+      start: 1
+priority: 10
+response-type: text/plain
