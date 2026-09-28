@@ -1,7 +1,7 @@
 category: api
 help: ""
 methods:
-    - GET
+    - POST
 paths:
     - end: 2
       id: ApiAdminUpdateUser

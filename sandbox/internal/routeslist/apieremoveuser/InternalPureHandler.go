@@ -5,7 +5,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 )
 
-// InternalPureHandler answers GET /api/admin/remove-user. Every value the route
+// InternalPureHandler answers POST /api/admin/remove-user. Every value the route
 // declares is already on entries, read off the request by the generic
 // RequestHandler, and the response already carries the route's response-type.
 //

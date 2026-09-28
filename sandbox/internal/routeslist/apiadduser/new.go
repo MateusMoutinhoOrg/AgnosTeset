@@ -18,7 +18,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
 	self.Name = "apiadduser"
-	self.AcceptMethods = []string{"GET"}
+	self.AcceptMethods = []string{"POST"}
 	self.Priority = 100
 	self.ResponseType = "application/json"
 	self.Segments = 3

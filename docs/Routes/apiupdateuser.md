@@ -1,9 +1,9 @@
-# `GET /api/admin/update-user`
+# `POST /api/admin/update-user`
 
 ## Try it
 
 ```bash
-curl localhost:3000/api/admin/update-user
+curl -X POST localhost:3000/api/admin/update-user
 ```
 
 ## What comes back

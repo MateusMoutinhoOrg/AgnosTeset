@@ -1,9 +1,9 @@
-# `GET /api/admin/remove-user`
+# `POST /api/admin/remove-user`
 
 ## Try it
 
 ```bash
-curl localhost:3000/api/admin/remove-user
+curl -X POST localhost:3000/api/admin/remove-user
 ```
 
 ## What comes back

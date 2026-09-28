@@ -28,10 +28,10 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`GET /api/admin/add-user`](apiadduser.md) |  |
-| [`GET /api/admin/remove-user`](apieremoveuser.md) |  |
+| [`POST /api/admin/add-user`](apiadduser.md) |  |
+| [`POST /api/admin/remove-user`](apieremoveuser.md) |  |
 | [`GET /api/admin/list-users`](apilistusers.md) |  |
-| [`GET /api/admin/update-user`](apiupdateuser.md) |  |
+| [`POST /api/admin/update-user`](apiupdateuser.md) |  |
 
 ## Assets
 
@@ -44,13 +44,6 @@ it prints the address it took. Change it to wherever your server runs.
 | Route | What it does |
 | --- | --- |
 | [`GET /health`](health.md) | Reports that the server is up |
-
-## frontend
-
-| Route | What it does |
-| --- | --- |
-| [`GET /admin/user/{User:integer}`](userconfig.md) |  |
-| [`GET /admin/users`](users.md) |  |
 
 ## When something goes wrong
 
