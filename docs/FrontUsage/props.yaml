@@ -1,5 +1,0 @@
-description: "Serve html from FinanceApp: bring the front layer up, declare pages, link assets"
-name: "FrontUsage"
-order: 2
-themes:
-  - server-usage

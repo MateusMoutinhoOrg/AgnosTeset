@@ -1,5 +1,0 @@
-description: "Every change this project takes and the agnos command that makes it"
-name: "Workflow"
-order: 1
-themes:
-  - development
