@@ -33,14 +33,14 @@ def main():
     os.system("agnos front-init")
     os.system('agnos add-route adminmiddlware --pattern "/admin/{*rest}" --middleware  ')
     ## front route
-    os.system('agnos add-route users --pattern "/admin/users" ')
-    os.system('agnos add-route userconfig --pattern "/admin/user/{user:integer}" ')
+    os.system('agnos add-route users --pattern "/admin/users" --category frontend')
+    os.system('agnos add-route userconfig --pattern "/admin/user/{user:integer}" --category frontend')
 
     ## Api 
-    os.system('agnos add-route apiadduser  --pattern "/api/admin/add-user" ')
-    os.system('agnos add-route apieremoveuser  --pattern "/api/admin/remove-user" ')
-    os.system('agnos add-route apiupdateuser  --pattern "/api/admin/update-user" ')
-    os.system('agnos add-route apilistusers  --pattern "/api/admin/list-users" ')
+    os.system('agnos add-route apiadduser  --pattern "/api/admin/add-user" --category api')
+    os.system('agnos add-route apieremoveuser  --pattern "/api/admin/remove-user" --category api')
+    os.system('agnos add-route apiupdateuser  --pattern "/api/admin/update-user" --category api')
+    os.system('agnos add-route apilistusers  --pattern "/api/admin/list-users" --category api')
 
 
 

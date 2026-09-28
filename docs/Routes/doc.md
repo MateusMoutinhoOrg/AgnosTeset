@@ -24,7 +24,7 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`ANY /admin/{*Rest}`](adminmiddlware.md) |  |
 
-## Routes
+## api
 
 | Route | What it does |
 | --- | --- |
@@ -32,8 +32,6 @@ it prints the address it took. Change it to wherever your server runs.
 | [`GET /api/admin/remove-user`](apieremoveuser.md) |  |
 | [`GET /api/admin/list-users`](apilistusers.md) |  |
 | [`GET /api/admin/update-user`](apiupdateuser.md) |  |
-| [`GET /admin/user/{User:integer}`](userconfig.md) |  |
-| [`GET /admin/users`](users.md) |  |
 
 ## Assets
 
@@ -46,6 +44,13 @@ it prints the address it took. Change it to wherever your server runs.
 | Route | What it does |
 | --- | --- |
 | [`GET /health`](health.md) | Reports that the server is up |
+
+## frontend
+
+| Route | What it does |
+| --- | --- |
+| [`GET /admin/user/{User:integer}`](userconfig.md) |  |
+| [`GET /admin/users`](users.md) |  |
 
 ## When something goes wrong
 

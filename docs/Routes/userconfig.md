@@ -32,4 +32,4 @@ or `403`, for example — or let it through to this route.
 
 ---
 
-For developers: `sandbox/internal/routeslist/userconfig/` · Routes · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+For developers: `sandbox/internal/routeslist/userconfig/` · frontend · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

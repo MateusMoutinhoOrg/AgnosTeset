@@ -1,4 +1,4 @@
-category: Routes
+category: api
 help: ""
 methods:
     - GET
