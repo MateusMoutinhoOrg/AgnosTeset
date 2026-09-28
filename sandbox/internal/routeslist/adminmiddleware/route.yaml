@@ -1,14 +1,16 @@
-category: Routes
+category: Middleware
 help: ""
 methods:
-    - GET
+    - ANY
 paths:
-    - end: 1
-      id: AdiminPage1
+    - end: 0
+      id: Adimin
       start: 0
       trigger:
         type: equal
-        value: /adimin/page1
+        value: /adimin
+    - end: -1
+      id: Rest
+      start: 1
 priority: 10
-response-type: application/json
-segments: 2
+response-type: text/plain

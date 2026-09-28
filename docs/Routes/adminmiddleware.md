@@ -1,9 +1,10 @@
-# `GET /adimin/page1`
+# `ANY /adimin/{*Rest}`
 
 
 
 | Entries | Read from | In | Type | Default | Description |
 | --- | --- | --- | --- | --- | --- |
-| `AdiminPage1` | segments 0..1 | path | string, equal `/adimin/page1` |  |  |
+| `Adimin` | segments 0..0 | path | string, equal `/adimin` |  |  |
+| `Rest` | segments 1..-1 | path | string |  |  |
 
-`sandbox/internal/routeslist/adminmiddleware/` · Routes · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+`sandbox/internal/routeslist/adminmiddleware/` · Middleware · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

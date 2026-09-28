@@ -18,13 +18,13 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
 	self.Name = "adminmiddleware"
-	self.AcceptMethods = []string{"GET"}
-	self.Priority = 100
-	self.ResponseType = "application/json"
-	self.Segments = 2
+	self.AcceptMethods = []string{"ANY"}
+	self.Priority = 10
+	self.ResponseType = "text/plain"
+	self.Segments = 0
 	self.After = false
-	self.Pattern = "/adimin/page1"
-	self.Category = "Routes"
+	self.Pattern = "/adimin/{*Rest}"
+	self.Category = "Middleware"
 	self.Help = ""
 	self.LongDescription = ""
 	self.Examples = []string{}
@@ -32,12 +32,20 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 
 	self.Paths = []api.Path{
 		{
-			Id:          "AdiminPage1",
+			Id:          "Adimin",
 			Start:       0,
-			End:         1,
+			End:         0,
 			Type:        api.StringPath,
 			Description: "",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/adimin/page1", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/adimin", Negate: false, IgnoreCase: false},
+		},
+		{
+			Id:          "Rest",
+			Start:       1,
+			End:         -1,
+			Type:        api.StringPath,
+			Description: "",
+			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
 	}
 
