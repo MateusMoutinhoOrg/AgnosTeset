@@ -9,6 +9,6 @@ paths:
       trigger:
         type: equal
         value: /adimin/page1
-priority: 100
+priority: 10
 response-type: application/json
 segments: 2

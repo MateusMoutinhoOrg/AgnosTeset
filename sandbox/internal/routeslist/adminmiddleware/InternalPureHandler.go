@@ -16,6 +16,8 @@ import (
 // declared in sandbox/api/routeprops.go — is there to read. Refuse a request
 // by returning routeio.Fail; nil means "done" or "not mine".
 func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+
+	props.User = "user injected by middleware"
 	response.SetStatus(api.StatusOk)
 	response.Write([]byte("adminmiddleware called\n"))
 

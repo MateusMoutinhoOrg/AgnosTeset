@@ -16,8 +16,11 @@ import (
 // declared in sandbox/api/routeprops.go — is there to read. Refuse a request
 // by returning routeio.Fail; nil means "done" or "not mine".
 func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+
 	response.SetStatus(api.StatusOk)
-	response.Write([]byte("adminpage1 called\n"))
+
+	response_text := "value of user: " + props.User
+	response.Write([]byte(response_text))
 
 	return nil
 }
