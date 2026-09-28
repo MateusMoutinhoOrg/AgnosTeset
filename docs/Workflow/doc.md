@@ -141,17 +141,16 @@ rewrites: they are where a 404, a 405, a 401 or a 500 is worded.
 [ServerUsage](../ServerUsage/doc.md) is the whole recipe.
 
 
-## Add the front layer
+## Change the page surface
 
 ```bash
-agnos front-init      # frontio, the frontend route, assets/frontend/{index,404}.html
-backoffice start-server  # serves every file of assets/frontend
+agnos add-page <name> --title "One Line"   # assets/frontend/<name>.html, answered on /<name>
+agnos remove-page <name>                   # deletes the html
 ```
 
-From there any file under `assets/frontend/` is served; `agnos add-page <name>`
-scaffolds an html one and `remove-page` deletes it. A project with no server layer gets one
-first: the front is answered over http. `agnos front-purge` removes the layer
-again, leaving `assets/frontend/` alone.
+A page is a file of `assets/frontend/`, served as it is by the `frontend` route: write it by
+hand, scaffold it with `add-page`, or point a bundler's output there. Data comes from api
+routes the page's js calls. [FrontUsage](../FrontUsage/doc.md) is the whole recipe.
 
 ## Add the database layer
 
@@ -253,6 +252,7 @@ prints what it changes before writing. Details in [LibExamples](../LibExamples/d
 | --- | --- |
 | `sandbox/internal/commands/<name>/InternalPureHandler.go` | a command does something |
 | `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | a route answers something |
+| `assets/frontend/**` | the site looks like something |
 | `sandbox/internal/<pkg>/*.go` (never under `generated/`) | logic worth reusing |
 | `sandbox/api/<x>.go` + `sandbox/internal/<x>/new.go` | a new api surface |
 | `sandbox/constructors/<x>/constructor.go` | how a field of the `Sandbox` is built |

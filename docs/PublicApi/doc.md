@@ -29,6 +29,7 @@ struct of function fields, filled by a binder.
 | [`sandbox/api/commandprops.go`](api.commandprops.md) | `CommandProps` |
 | [`sandbox/api/config.go`](api.config.md) | `Config` |
 | [`sandbox/api/route.go`](api.route.md) | `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Error`, `NewRoute`, `BindRoute` |
+| [`sandbox/api/routeprops.go`](api.routeprops.md) | `RouteProps` |
 | [`sandbox/api/server.go`](api.server.md) | `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `Server`, `ServeProps` |
 | [`sandbox/api/trigger.go`](api.trigger.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `TriggerType`, `Trigger` |
 
@@ -40,6 +41,7 @@ field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&
 | Page | Declares |
 | --- | --- |
 | [`deps.Argvdeps`](deps.argvdeps.md) | `Sandbox`, `Parser` |
+| [`deps.Embeddeps`](deps.embeddeps.md) | `Sandbox` |
 | [`deps.Reflectdeps`](deps.reflectdeps.md) | `Sandbox` |
 | [`deps.Serializables`](deps.serializables.md) | `SerializibleObject`, `Sandbox` |
 | [`deps.Serverdeps`](deps.serverdeps.md) | `Sandbox`, `ServerProps`, `Server`, `Request`, `Response` |

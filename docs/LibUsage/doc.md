@@ -80,6 +80,7 @@ The contracts available to patch:
 | Field | Contract package |
 | --- | --- |
 | `deps.Argvdeps` | `sandbox/deps/argvdeps` |
+| `deps.Embeddeps` | `sandbox/deps/embeddeps` |
 | `deps.Reflectdeps` | `sandbox/deps/reflectdeps` |
 | `deps.Serializables` | `sandbox/deps/serializables` |
 | `deps.Serverdeps` | `sandbox/deps/serverdeps` |
@@ -94,6 +95,7 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | Adapter lib | Binder |
 | --- | --- |
 | `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
+| `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
 | `adapters/libs/reflectdeps` | `reflectdeps.Bind(&deps)` |
 | `adapters/libs/serializables` | `serializables.Bind(&deps)` |
 | `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |

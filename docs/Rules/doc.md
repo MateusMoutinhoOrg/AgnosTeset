@@ -208,6 +208,22 @@ makes each kind of change is in [Workflow](../Workflow/doc.md).
 
 Every key of a declaration is in [RouteYaml](../RouteYaml/doc.md).
 
+## Front
+
+- A page is a file of `assets/frontend/` and nothing else. The `frontend` route serves the
+  whole tree, so a file dropped there by hand or by a bundler is as much a page as one
+  `add-page` wrote; `add-page` / `remove-page` only write and delete the html.
+- Everything under `assets/frontend/` is the project's content: no build writes there,
+  `add-page` refuses an existing file, and `front-purge` leaves the tree whole.
+- The `frontend` route is written once and then the project's. Only
+  `sandbox/internal/generated/frontio/` is rewritten by every build, and `frontio.SafePath` is what keeps
+  a caller's path inside `assets/frontend/`: the handler resolves every path through it.
+- The `frontend` route runs at priority `1000`, after every api route, and answers a path that
+  names no file with `assets/frontend/404.html` under a `404`; only with that file gone does it
+  decline, so the `404` falls to `handle_not_found.go`.
+
+How a path is resolved, and a bundler's build, is in [FrontUsage](../FrontUsage/doc.md).
+
 ## Output channels
 
 | Channel | Stream | Carries | Silenced |

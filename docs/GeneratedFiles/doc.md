@@ -60,6 +60,12 @@
 | `sandbox/internal/commands/start_server/{command.yaml,InternalPureHandler.go}` | `server-init` | once |
 | `sandbox/internal/server/errors/handle_*.go` | `build` | once. Eight files, one per failure — what this project answers when no route does |
 | `sandbox/api/routeprops.go` | `build` | once. `api.RouteProps`, what one request's chain of routes shares — declare its fields there |
+| `sandbox/internal/generated/frontio/frontio.go` | `build` | always. `Resolve`, `SafePath`, `ContentTypeOf` |
+| `docs/FrontUsage/` | `build` | always. Both `doc.md` and `props.yaml` |
+| `sandbox/internal/routeslist/frontend/{route.yaml,InternalPureHandler.go}` | `front-init` | once. `spaFallback` is yours to turn on |
+| `assets/frontend/index.html` | `front-init` | once. Kept if already there |
+| `assets/frontend/404.html` | `front-init` | once. Kept if already there |
+| `assets/frontend/<page>.html` | `add-page` | once. Refused if already there |
 | `docs/<Name>/{props.yaml,doc.md}` | `add-doc` | once |
 | `examples/cli/<name>/example.sh` | `add-cli-example` | once. A stub that already runs |
 | `examples/lib/<name>/example.go` | `add-lib-example` | once. A stub that already runs |

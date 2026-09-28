@@ -26,6 +26,7 @@ Serving http - bring the server up, declare routes, read a body
 | Doc | Description |
 | --- | --- |
 | [ServerUsage](docs/ServerUsage/doc.md) | Serve http from backoffice: bring the layer up, declare routes, read a body |
+| [FrontUsage](docs/FrontUsage/doc.md) | Serve a website from backoffice: bring the front layer up, drop files in assets/frontend, add pages |
 | [Routes](docs/Routes/doc.md) | Every address backoffice answers: what to send, a request to run and what comes back |
 
 ### LibUsage

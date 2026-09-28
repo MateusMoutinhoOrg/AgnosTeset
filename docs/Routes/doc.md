@@ -18,6 +18,12 @@ it prints the address it took. Change it to wherever your server runs.
 | `*` | anything else, or nothing | `/admin/*` -> `/admin`, `/admin/users` |
 | `(a\|b)` | one of these words | `/(en\|pt)` -> `/en` |
 
+## Assets
+
+| Route | What it does |
+| --- | --- |
+| [`GET /{*Rest}`](frontend.md) | Serves any file of the embedded assets/frontend tree |
+
 ## Server
 
 | Route | What it does |
