@@ -23,3 +23,6 @@ Use o agnos cli (ja esta instalado), e crie diversos projetos com ele, desde ser
 - caso encontre bugs, reporte esses bugs no relatorio.
 - aponte os nomes de funcoes, struct,s docs ,que acha que deveriam ter nomes diferentes.
 
+## Importante:
+- nao olhe o fonte interno do agnos, quero que o teste seja do ponto de vista de um usuario.
+
