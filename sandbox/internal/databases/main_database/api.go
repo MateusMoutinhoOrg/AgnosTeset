@@ -9,6 +9,22 @@ import (
 // A query specs.yaml cannot describe goes in methods_custom.go, which no build
 // reads and no build rewrites.
 
+// AdminUsersItem is one stored admin-users record: its permanent id and every
+// plain field the declaration gives it.
+type AdminUsersItem struct {
+	Id int64
+}
+
+// AdminUsersNew is one insert into admin-users: the fields a new record carries.
+type AdminUsersNew struct {
+}
+
+// AdminUsersFiltrage narrows a ListAdminUsers. Every plain field is here, because
+// only a `key` field is indexed and this is the one way to reach the rest. A
+// zero value turns its own filter off.
+type AdminUsersFiltrage struct {
+}
+
 // MainDatabase is the main-database database: the handle it was built over and one
 // function field per generated method. Building one is free — it touches no
 // key and creates nothing until the first record is written — so whoever needs
@@ -16,4 +32,17 @@ import (
 type MainDatabase struct {
 	sandbox *api.Sandbox
 	handle  database.DatabaseHandle
+
+	// AddAdminUsers inserts one admin-users record.
+	AddAdminUsers func(props AdminUsersNew) (AdminUsersItem, error)
+	// FindAdminUsersById reads one admin-users record by its permanent id.
+	FindAdminUsersById func(id int64) (AdminUsersItem, bool)
+	// ListAdminUsers reads every admin-users record the filtrage keeps.
+	ListAdminUsers func(filtrage AdminUsersFiltrage) ([]AdminUsersItem, error)
+	// PageAdminUsers reads one page of admin-users records, counted from 1.
+	PageAdminUsers func(position int, chunk int) ([]AdminUsersItem, error)
+	// CountAdminUsers is how many admin-users records are live.
+	CountAdminUsers func() (int, error)
+	// RemoveAdminUsers deletes one admin-users record and everything nested under it.
+	RemoveAdminUsers func(id int64) error
 }

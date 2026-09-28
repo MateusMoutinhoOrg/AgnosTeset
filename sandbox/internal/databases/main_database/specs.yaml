@@ -1,3 +1,5 @@
 name: main-database
 prefix: main-database
-tables: []
+tables:
+    - fields: []
+      name: admin-users
