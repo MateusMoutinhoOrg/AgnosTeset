@@ -51,8 +51,8 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 		Schema:      "",
 	}
 
-	self.InternalPurehandler = func(bound *api.Route, entries *Entries, response *serverdeps.Response) error {
-		return InternalPureHandler(sandbox, bound, entries, response)
+	self.InternalPurehandler = func(props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+		return InternalPureHandler(sandbox, props, entries, response)
 	}
 
 	return self
