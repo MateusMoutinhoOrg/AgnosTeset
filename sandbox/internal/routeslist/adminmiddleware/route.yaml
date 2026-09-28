@@ -7,7 +7,7 @@ paths:
       id: Adimin
       start: 0
       trigger:
-        type: prefix
+        type: equal
         value: /adimin
     - end: -1
       id: Rest
