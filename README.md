@@ -45,6 +45,7 @@ How the project is put together - layers, boundaries, data flow
 
 | Doc | Description |
 | --- | --- |
+| [Databases](docs/Databases/doc.md) | Every database of teste, generated from the table declarations |
 | [Adapters](docs/Adapters/doc.md) | Contract, adapter and available: three units, one field of Deps, and who fills it |
 
 ### Development
@@ -67,6 +68,7 @@ Lookup tables - schemas, file formats, generated file listings
 | [CommandYaml](docs/CommandYaml/doc.md) | Every key of a command's command.yaml and what the generated code does with it |
 | [Extensions](docs/Extensions/doc.md) | The generation mechanics this project turns on, and what each one writes |
 | [DepList](docs/DepList/doc.md) | Every dep `agnos add-dep` can add, the adapters that fill it, and what backs each one |
+| [Databases](docs/Databases/doc.md) | Every database of teste, generated from the table declarations |
 | [GeneratedFiles](docs/GeneratedFiles/doc.md) | Every file agnos writes into this project and whether build overwrites it |
 | [RouteYaml](docs/RouteYaml/doc.md) | Every key of a route's route.yaml and what the generated code does with it |
 

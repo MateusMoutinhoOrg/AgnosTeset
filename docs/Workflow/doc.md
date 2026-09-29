@@ -153,16 +153,32 @@ A page is a file of `assets/frontend/`, served as it is by the `frontend` route:
 hand, scaffold it with `add-page`, or point a bundler's output there. Data comes from api
 routes the page's js calls. [FrontUsage](../FrontUsage/doc.md) is the whole recipe.
 
-## Add the database layer
+## Change the database surface
 
 ```bash
-agnos database-init                     # the store contract, databaseio, the mechanic on
-agnos add-database app-database         # the first database
+agnos add-database app-database --prefix app
 agnos add-table url --database app-database
+agnos add-table-field alias --database app-database --table url --type key --required
+agnos add-table-field visits --database app-database --table url --type database
+agnos add-table-field agent --database app-database --table url --parent visits
+agnos show-database app-database                  # read the declaration back
 ```
 
-From there `add-table-field` declares what a table holds and every method it generates is
-written for you. `agnos database-purge` removes the layer again.
+`set-table-field` and the `remove-` half of each pair are the inverses. Every command rewrites
+`sandbox/internal/databases/<db>/specs.yaml` and runs `build`, which regenerates `api.go`,
+`new.go` and `methods.go` from it — the records, the insert structs, the filtrage and the body
+of every method.
+
+Then call it from wherever needs it:
+
+```go
+db := app_database.New(sandbox)
+url, err := db.AddUrl(app_database.UrlNew{Alias: "gh", Link: "https://github.com"})
+found, ok := db.FindUrlByAlias("gh")
+```
+
+A query the declaration cannot describe goes in `methods_custom.go` beside them, hand-written
+and rewritten by no build. [Databases](../Databases/doc.md) is the whole recipe.
 ## Add reusable logic
 
 `sandbox/internal/<pkg>/`, one directory per concern, imported by whatever needs it. No

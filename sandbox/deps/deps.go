@@ -2,6 +2,7 @@ package deps
 
 import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/argvdeps"
+	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
@@ -17,6 +18,7 @@ import (
 // sandbox only calls them, which is what keeps it free of OS packages.
 type Deps struct {
 	Argvdeps      argvdeps.Sandbox
+	Database      database.Sandbox
 	Embeddeps     embeddeps.Sandbox
 	Reflectdeps   reflectdeps.Sandbox
 	Serializables serializables.Sandbox

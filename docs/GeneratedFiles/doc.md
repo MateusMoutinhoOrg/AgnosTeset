@@ -60,6 +60,12 @@
 | `sandbox/internal/commands/start_server/{command.yaml,InternalPureHandler.go}` | `server-init` | once |
 | `sandbox/internal/server/errors/handle_*.go` | `build` | once. Eight files, one per failure — what this project answers when no route does |
 | `sandbox/api/routeprops.go` | `build` | once. `api.RouteProps`, what one request's chain of routes shares — declare its fields there |
+| `sandbox/internal/generated/databaseio/*.go` | `build` | always |
+| `sandbox/internal/databases/<db>/{api.go,new.go,methods.go}` | `build` | always. The records, the `database.Props` and the body of every method, all from `specs.yaml` |
+| `docs/Databases/` | `build` | always. Both `doc.md` and `props.yaml` |
+| `docs/Databases/<db>.md` | `build` | always. One page per declared database; `docs/Databases/doc.md` indexes them |
+| `sandbox/internal/databases/<db>/specs.yaml` | `add-database` | once, then rewritten by `add-table` / `add-table-field` / `set-table-field` and their inverses — never by hand |
+| `sandbox/internal/databases/<db>/methods_custom.go` | you | never. The one file of the package no build reads and no build rewrites |
 | `sandbox/internal/generated/frontio/frontio.go` | `build` | always. `Resolve`, `SafePath`, `ContentTypeOf` |
 | `docs/FrontUsage/` | `build` | always. Both `doc.md` and `props.yaml` |
 | `sandbox/internal/routeslist/frontend/{route.yaml,InternalPureHandler.go}` | `front-init` | once. `spaFallback` is yours to turn on |
