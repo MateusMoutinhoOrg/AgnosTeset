@@ -14,11 +14,13 @@ import (
 type BackofficeuserItem struct {
 	Id       int64
 	Username string
+	Email    string
 }
 
 // BackofficeuserNew is one insert into backofficeuser: the fields a new record carries.
 type BackofficeuserNew struct {
 	Username string
+	Email    string
 }
 
 // BackofficeuserFiltrage narrows a ListBackofficeuser. Every plain field is here, because
@@ -27,6 +29,8 @@ type BackofficeuserNew struct {
 type BackofficeuserFiltrage struct {
 	UsernameStartsWith string
 	UsernameEquals     string
+	EmailStartsWith    string
+	EmailEquals        string
 }
 
 // Maindatabase is the maindatabase database: the handle it was built over and one
@@ -49,6 +53,8 @@ type Maindatabase struct {
 	CountBackofficeuser func() (int, error)
 	// UpdateBackofficeuserUsername writes a new username on one backofficeuser record.
 	UpdateBackofficeuserUsername func(id int64, value string) error
+	// UpdateBackofficeuserEmail writes a new email on one backofficeuser record.
+	UpdateBackofficeuserEmail func(id int64, value string) error
 	// RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 	RemoveBackofficeuser func(id int64) error
 }

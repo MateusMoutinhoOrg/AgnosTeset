@@ -117,6 +117,19 @@ func UpdateBackofficeuserUsername(sandbox *api.Sandbox, self *Maindatabase, id i
 	return databaseio.Fail(sandbox, item.Update("username", value))
 }
 
+// UpdateBackofficeuserEmail writes a new email on one backofficeuser record.
+func UpdateBackofficeuserEmail(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("backofficeuser %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("email", value))
+}
+
 // RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) error {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
@@ -134,6 +147,7 @@ func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) er
 func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
 	return map[string]any{
 		"username": props.Username,
+		"email":    props.Email,
 	}
 }
 
@@ -149,6 +163,12 @@ func buildBackofficeuserItem(sandbox *api.Sandbox, item database.SchemaItem) (Ba
 	}
 	built.Username = username_value
 
+	email_value, err := databaseio.ReadString(sandbox, item, "email")
+	if err != nil {
+		return built, err
+	}
+	built.Email = email_value
+
 	return built, nil
 }
 
@@ -156,6 +176,9 @@ func buildBackofficeuserItem(sandbox *api.Sandbox, item database.SchemaItem) (Ba
 // never filters, so an empty filtrage keeps everything.
 func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage BackofficeuserFiltrage) bool {
 	if !databaseio.TextMatches(sandbox, item.Username, filtrage.UsernameStartsWith, filtrage.UsernameEquals) {
+		return false
+	}
+	if !databaseio.TextMatches(sandbox, item.Email, filtrage.EmailStartsWith, filtrage.EmailEquals) {
 		return false
 	}
 	return true

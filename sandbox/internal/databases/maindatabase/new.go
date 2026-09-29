@@ -19,6 +19,7 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 				Name: "backofficeuser",
 				Itens: []database.Item{
 					{Name: "username", Type: database.String},
+					{Name: "email", Type: database.String},
 				},
 			},
 		},
@@ -44,6 +45,9 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 	}
 	self.UpdateBackofficeuserUsername = func(id int64, value string) error {
 		return UpdateBackofficeuserUsername(self.sandbox, &self, id, value)
+	}
+	self.UpdateBackofficeuserEmail = func(id int64, value string) error {
+		return UpdateBackofficeuserEmail(self.sandbox, &self, id, value)
 	}
 	self.RemoveBackofficeuser = func(id int64) error {
 		return RemoveBackofficeuser(self.sandbox, &self, id)

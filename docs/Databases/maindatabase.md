@@ -8,6 +8,7 @@
 | Field | Type | Required | Target |
 | --- | --- | --- | --- |
 | `username` | `string` |  |  |
+| `email` | `string` |  |  |
 
 ## Methods
 
@@ -19,6 +20,7 @@
 | `PageBackofficeuser(position int, chunk int) ([]BackofficeuserItem, error)` | reads one page of backofficeuser records, counted from 1 |
 | `CountBackofficeuser() (int, error)` | is how many backofficeuser records are live |
 | `UpdateBackofficeuserUsername(id int64, value string) error` | writes a new username on one backofficeuser record |
+| `UpdateBackofficeuserEmail(id int64, value string) error` | writes a new email on one backofficeuser record |
 | `RemoveBackofficeuser(id int64) error` | deletes one backofficeuser record and everything nested under it |
 
 A query this page does not list goes in `methods_custom.go`, hand-written beside these and
