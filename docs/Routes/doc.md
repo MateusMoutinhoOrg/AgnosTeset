@@ -46,6 +46,12 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`GET /health`](health.md) | Reports that the server is up |
 
+## frontend
+
+| Route | What it does |
+| --- | --- |
+| [`GET /admin/login`](login.md) |  |
+
 ## When something goes wrong
 
 | Status | Means |

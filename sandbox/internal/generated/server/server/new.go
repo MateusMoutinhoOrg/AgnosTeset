@@ -11,6 +11,7 @@ import (
 	routeslist_apiupdateuser "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/apiupdateuser"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
+	routeslist_login "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/login"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
 )
 
@@ -31,6 +32,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routeslist_apilistusers.NewRoute(sandbox),
 		routeslist_apiupdateuser.NewRoute(sandbox),
 		routeslist_health.NewRoute(sandbox),
+		routeslist_login.NewRoute(sandbox),
 		routeslist_frontend.NewRoute(sandbox),
 	}
 
