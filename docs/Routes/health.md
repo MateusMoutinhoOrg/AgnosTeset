@@ -24,6 +24,7 @@ or `403`, for example — or let it through to this route.
 | Route | When |
 | --- | --- |
 | [`apimiddleware`](apimiddleware.md) | depends on the address — `explain-route` gives the exact answer |
+| [`login`](login.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 

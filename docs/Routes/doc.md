@@ -24,6 +24,7 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`ANY /admin/{*Rest}`](adminmiddlware.md) |  |
 | [`ANY /api/admin/{*Rest}`](apimiddleware.md) |  |
+| [`ANY /admin/login`](login.md) |  |
 
 ## api
 

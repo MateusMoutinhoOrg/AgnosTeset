@@ -33,6 +33,7 @@ or `403`, for example — or let it through to this route.
 | [`apilistusers`](apilistusers.md) | depends on the address — `explain-route` gives the exact answer |
 | [`apimiddleware`](apimiddleware.md) | depends on the address — `explain-route` gives the exact answer |
 | [`health`](health.md) | depends on the address — `explain-route` gives the exact answer |
+| [`login`](login.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 
