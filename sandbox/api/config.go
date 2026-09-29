@@ -6,6 +6,11 @@ package api
 // caller may replace it — a test that runs the cli under another name, say —
 // and every reader of it follows.
 type Config struct {
+	// UserConfig is the part of the Config the project declares itself, in
+	// sandbox/api/userconfig.go: embedded, so each of its fields is read as
+	// sandbox.Config.<Field>.
+	UserConfig
+
 	// ProjectName is the project's name, title-cased. It prefixes the
 	// <ProjectName>Config/ directory that holds every declaration, and
 	// lower-cased it is the name the cli answers to.
@@ -14,9 +19,4 @@ type Config struct {
 	// Version is the release the project is at, the `version` key of
 	// <ProjectName>Config/project.yaml.
 	Version string
-
-	// Secret is the secret prepended to passwords before SHA-256 hashing,
-	// set by the start-server command's --secret flag so every route of
-	// the running server can read it.
-	Secret string
 }

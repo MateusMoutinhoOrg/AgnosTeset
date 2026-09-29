@@ -32,6 +32,8 @@ struct of function fields, filled by a binder.
 | [`sandbox/api/routeprops.go`](api.routeprops.md) | `RouteProps` |
 | [`sandbox/api/server.go`](api.server.md) | `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `Server`, `ServeProps` |
 | [`sandbox/api/trigger.go`](api.trigger.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `TriggerType`, `Trigger` |
+| [`sandbox/api/userconfig.go`](api.userconfig.md) | `UserConfig` |
+| [`sandbox/api/usersandbox.go`](api.usersandbox.md) | `UserSandbox` |
 
 ## Dependency contracts
 
