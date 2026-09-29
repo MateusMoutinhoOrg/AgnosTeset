@@ -1,16 +1,25 @@
-# `GET /admin/login`
+# `POST /admin/login`
 
 ## Try it
 
 ```bash
-curl localhost:3000/admin/login
+curl -X POST localhost:3000/admin/login \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'name=value'
 ```
+
+## Body
+
+Send form fields, like `name=value&other=value` with the header `Content-Type: application/x-www-form-urlencoded`, up to 1 MB. The body is required.
 
 ## What comes back
 
 | Status | Means |
 | --- | --- |
 | `200` | It worked. The answer comes as `application/json`. |
+| `400` | Something you sent is missing or has the wrong type or format. The answer's `field` names it. |
+| `413` | The body is larger than 1 MB. |
+| `415` | The body was not sent with `Content-Type: application/x-www-form-urlencoded`. |
 
 Any route may also answer `404`, `405` or `500`: see [when something goes wrong](doc.md#when-something-goes-wrong).
 

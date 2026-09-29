@@ -1,7 +1,12 @@
+body:
+    content-type: application/x-www-form-urlencoded
+    max-bytes: 1048576
+    required: true
+    type: form
 category: frontend
 help: ""
 methods:
-    - GET
+    - POST
 paths:
     - end: 1
       id: AdminLogin

@@ -18,7 +18,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
 	self.Name = "login"
-	self.AcceptMethods = []string{"GET"}
+	self.AcceptMethods = []string{"POST"}
 	self.Priority = 100
 	self.ResponseType = "application/json"
 	self.Segments = 2
@@ -43,11 +43,15 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Parameters = []api.Parameter{}
 
 	self.Body = api.RouteBody{
-		Type:        "none",
-		Required:    false,
+		Type:        "form",
+		Required:    true,
 		MaxBytes:    1048576,
-		ContentType: "",
+		ContentType: "application/x-www-form-urlencoded",
 		Schema:      "",
+	}
+
+	self.ReadBody = func(bound *api.Route) (any, error) {
+		return ReadBody(sandbox, bound)
 	}
 
 	self.InternalPureHandler = func(props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {

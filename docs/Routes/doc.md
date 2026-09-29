@@ -50,7 +50,7 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`GET /admin/login`](login.md) |  |
+| [`POST /admin/login`](login.md) |  |
 
 ## When something goes wrong
 
