@@ -43,10 +43,10 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Parameters = []api.Parameter{}
 
 	self.Body = api.RouteBody{
-		Type:        "json",
+		Type:        "form",
 		Required:    true,
 		MaxBytes:    1048576,
-		ContentType: "application/json",
+		ContentType: "application/x-www-form-urlencoded",
 		Schema:      BodySchema,
 	}
 

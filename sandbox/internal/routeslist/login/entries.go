@@ -18,7 +18,7 @@ type Entries struct {
 	Body       Body   `id:"Body"`
 }
 
-// Body is one object of this route's declared json-schema, as the
+// Body is one object of this route's declared form-schema, as the
 // generated ReadBody hands it over.
 type Body struct {
 	Password string
@@ -29,8 +29,8 @@ type Body struct {
 // `max-bytes` of its declaration. A longer one is answered 413.
 const MaxBodyBytes = 1048576
 
-// BodySchema is this route's declared json-schema in canonical form — the text
-// routeio.ValidateSchema checks a request body against.
+// BodySchema is this route's declared form-schema in canonical form — the text
+// routeio.ValidateForm checks a request body against.
 const BodySchema = "{\"properties\":{\"password\":{\"type\":\"string\"},\"username\":{\"type\":\"string\"}},\"required\":[\"password\",\"username\"],\"type\":\"object\"}"
 
 // ReadBody reads, validates and converts the request body of one bound route.
@@ -56,7 +56,13 @@ func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 			"this route requires a request body")
 	}
 
-	parsed, field, message, ok := routeio.ValidateSchema(sandbox, BodySchema, raw)
+	form, err := routeio.RequestOf(route).ReadForm(MaxBodyBytes)
+	if err != nil {
+		return body, routeio.RaiseWithCause(sandbox, route, api.StatusBadRequest, "",
+			"the request body is not a valid form", err.Error())
+	}
+
+	parsed, field, message, ok := routeio.ValidateForm(sandbox, BodySchema, form)
 	if !ok {
 		return body, routeio.Raise(sandbox, route, api.StatusBadRequest, field, message)
 	}

@@ -1,6 +1,6 @@
 body:
-    content-type: application/json
-    json-schema:
+    content-type: application/x-www-form-urlencoded
+    form-schema:
         properties:
             password:
                 type: string
@@ -12,7 +12,7 @@ body:
         type: object
     max-bytes: 1048576
     required: true
-    type: json
+    type: form
 category: frontend
 help: ""
 methods:
