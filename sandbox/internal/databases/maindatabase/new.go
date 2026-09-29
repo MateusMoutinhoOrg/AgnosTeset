@@ -18,8 +18,8 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 			{
 				Name: "backofficeuser",
 				Itens: []database.Item{
-					{Name: "username", Type: database.String},
-					{Name: "email", Type: database.String},
+					{Name: "username", Type: database.String, Required: true},
+					{Name: "email", Type: database.String, Required: true},
 				},
 			},
 		},

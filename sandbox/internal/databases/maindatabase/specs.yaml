@@ -3,7 +3,9 @@ prefix: maindatabase
 tables:
     - fields:
         - name: username
+          required: true
           type: string
         - name: email
+          required: true
           type: string
       name: backofficeuser

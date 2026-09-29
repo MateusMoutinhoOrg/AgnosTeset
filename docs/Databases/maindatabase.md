@@ -7,8 +7,8 @@
 
 | Field | Type | Required | Target |
 | --- | --- | --- | --- |
-| `username` | `string` |  |  |
-| `email` | `string` |  |  |
+| `username` | `string` | yes |  |
+| `email` | `string` | yes |  |
 
 ## Methods
 
