@@ -9,6 +9,22 @@ import (
 // A query specs.yaml cannot describe goes in methods_custom.go, which no build
 // reads and no build rewrites.
 
+// BackofficeuserItem is one stored backofficeuser record: its permanent id and every
+// plain field the declaration gives it.
+type BackofficeuserItem struct {
+	Id int64
+}
+
+// BackofficeuserNew is one insert into backofficeuser: the fields a new record carries.
+type BackofficeuserNew struct {
+}
+
+// BackofficeuserFiltrage narrows a ListBackofficeuser. Every plain field is here, because
+// only a `key` field is indexed and this is the one way to reach the rest. A
+// zero value turns its own filter off.
+type BackofficeuserFiltrage struct {
+}
+
 // Maindatabase is the maindatabase database: the handle it was built over and one
 // function field per generated method. Building one is free — it touches no
 // key and creates nothing until the first record is written — so whoever needs
@@ -16,4 +32,17 @@ import (
 type Maindatabase struct {
 	sandbox *api.Sandbox
 	handle  database.DatabaseHandle
+
+	// AddBackofficeuser inserts one backofficeuser record.
+	AddBackofficeuser func(props BackofficeuserNew) (BackofficeuserItem, error)
+	// FindBackofficeuserById reads one backofficeuser record by its permanent id.
+	FindBackofficeuserById func(id int64) (BackofficeuserItem, bool)
+	// ListBackofficeuser reads every backofficeuser record the filtrage keeps.
+	ListBackofficeuser func(filtrage BackofficeuserFiltrage) ([]BackofficeuserItem, error)
+	// PageBackofficeuser reads one page of backofficeuser records, counted from 1.
+	PageBackofficeuser func(position int, chunk int) ([]BackofficeuserItem, error)
+	// CountBackofficeuser is how many backofficeuser records are live.
+	CountBackofficeuser func() (int, error)
+	// RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
+	RemoveBackofficeuser func(id int64) error
 }

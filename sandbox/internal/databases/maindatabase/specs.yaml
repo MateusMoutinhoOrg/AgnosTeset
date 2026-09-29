@@ -1,3 +1,5 @@
 name: maindatabase
 prefix: maindatabase
-tables: []
+tables:
+    - fields: []
+      name: backofficeuser
