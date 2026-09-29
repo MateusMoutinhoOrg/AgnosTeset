@@ -12,9 +12,9 @@ func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *E
 	username := entries.Body.Username
 	password := entries.Body.Password
 
-	res := "Login form data received. Authentication is not implemented.\nUsername: " + username + "\nPassword: " + password
+	res := "<html><head><title>Login Success</title></head><body><h1>Login form data received.</h1><p>Authentication is not implemented.</p><p>Username: " + username + "</p><p>Password: " + password + "</p></body></html>"
 
-	response.SetHeader("Content-Type", "text/plain")
+	response.SetHeader("Content-Type", "text/html")
 	response.Write([]byte(res))
 
 	return nil

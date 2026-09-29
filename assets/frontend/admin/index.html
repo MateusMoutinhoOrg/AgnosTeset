@@ -209,10 +209,12 @@
         });
 
         if (response.ok) {
-          const text = await response.text();
-          // For now, just show an alert with the backend response
-          alert(text);
-          // TODO: handle successful login (e.g. redirect)
+          const html = await response.text();
+          document.open();
+          document.write(html);
+          document.close();
+          // Update the URL to match the form submission action
+          window.history.pushState({}, '', '/admin/login');
         } else {
           const err = await response.text();
           alert('Login failed: ' + err);
