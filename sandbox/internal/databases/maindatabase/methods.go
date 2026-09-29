@@ -130,6 +130,19 @@ func UpdateBackofficeuserEmail(sandbox *api.Sandbox, self *Maindatabase, id int6
 	return databaseio.Fail(sandbox, item.Update("email", value))
 }
 
+// UpdateBackofficeuserPasswordsha writes a new passwordsha on one backofficeuser record.
+func UpdateBackofficeuserPasswordsha(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("backofficeuser %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("passwordsha", value))
+}
+
 // RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) error {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
@@ -146,8 +159,9 @@ func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) er
 // newBackofficeuserFields is one insert into backofficeuser as the stored field map.
 func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
 	return map[string]any{
-		"username": props.Username,
-		"email":    props.Email,
+		"username":    props.Username,
+		"email":       props.Email,
+		"passwordsha": props.Passwordsha,
 	}
 }
 
@@ -169,6 +183,12 @@ func buildBackofficeuserItem(sandbox *api.Sandbox, item database.SchemaItem) (Ba
 	}
 	built.Email = email_value
 
+	passwordsha_value, err := databaseio.ReadString(sandbox, item, "passwordsha")
+	if err != nil {
+		return built, err
+	}
+	built.Passwordsha = passwordsha_value
+
 	return built, nil
 }
 
@@ -179,6 +199,9 @@ func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage
 		return false
 	}
 	if !databaseio.TextMatches(sandbox, item.Email, filtrage.EmailStartsWith, filtrage.EmailEquals) {
+		return false
+	}
+	if !databaseio.TextMatches(sandbox, item.Passwordsha, filtrage.PasswordshaStartsWith, filtrage.PasswordshaEquals) {
 		return false
 	}
 	return true

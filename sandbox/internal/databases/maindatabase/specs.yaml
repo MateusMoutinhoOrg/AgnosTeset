@@ -8,4 +8,7 @@ tables:
         - name: email
           required: true
           type: string
+        - name: passwordsha
+          required: true
+          type: string
       name: backofficeuser

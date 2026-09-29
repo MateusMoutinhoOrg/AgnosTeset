@@ -9,6 +9,7 @@
 | --- | --- | --- | --- |
 | `username` | `string` | yes |  |
 | `email` | `string` | yes |  |
+| `passwordsha` | `string` | yes |  |
 
 ## Methods
 
@@ -21,6 +22,7 @@
 | `CountBackofficeuser() (int, error)` | is how many backofficeuser records are live |
 | `UpdateBackofficeuserUsername(id int64, value string) error` | writes a new username on one backofficeuser record |
 | `UpdateBackofficeuserEmail(id int64, value string) error` | writes a new email on one backofficeuser record |
+| `UpdateBackofficeuserPasswordsha(id int64, value string) error` | writes a new passwordsha on one backofficeuser record |
 | `RemoveBackofficeuser(id int64) error` | deletes one backofficeuser record and everything nested under it |
 
 A query this page does not list goes in `methods_custom.go`, hand-written beside these and
