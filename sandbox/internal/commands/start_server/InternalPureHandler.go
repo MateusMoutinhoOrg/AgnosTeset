@@ -9,6 +9,9 @@ import (
 // InternalPureHandler backs `start-server`: it serves until the process is
 // asked to stop, and answers the command line once it has.
 func InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries *Entries, response *api.CommandResponse) error {
+	// Make the secret available to every route handler through sandbox.Config.
+	sandbox.Config.Secret = entries.Secret
+
 	err := server.ServerMain(sandbox, api.ServeProps{
 		Addr:              entries.Addr,
 		ReadTimeoutMs:     entries.ReadTimeoutMs,
@@ -21,3 +24,4 @@ func InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries 
 	response.SetStatus(api.ExitOk)
 	return nil
 }
+

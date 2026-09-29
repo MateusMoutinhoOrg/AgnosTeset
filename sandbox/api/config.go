@@ -14,4 +14,9 @@ type Config struct {
 	// Version is the release the project is at, the `version` key of
 	// <ProjectName>Config/project.yaml.
 	Version string
+
+	// Secret is the secret prepended to passwords before SHA-256 hashing,
+	// set by the start-server command's --secret flag so every route of
+	// the running server can read it.
+	Secret string
 }

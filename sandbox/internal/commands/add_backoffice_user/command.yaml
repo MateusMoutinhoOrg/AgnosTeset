@@ -1,0 +1,23 @@
+args:
+    - end: 0
+      id: Command
+      start: 0
+      trigger:
+        type: equal
+        value: add-backoffice-user
+category: Backoffice
+flags:
+    - description: the username for the backoffice user
+      id: Username
+      required: true
+    - description: the email for the backoffice user
+      id: Email
+      required: true
+    - description: the plain-text password (hashed with secret before storing)
+      id: Password
+      required: true
+    - description: the secret prepended to the password before SHA-256 hashing
+      id: Secret
+      required: true
+help: Creates an initial backoffice user in the database
+priority: 100

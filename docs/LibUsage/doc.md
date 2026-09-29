@@ -82,6 +82,7 @@ The contracts available to patch:
 | `deps.Argvdeps` | `sandbox/deps/argvdeps` |
 | `deps.Database` | `sandbox/deps/database` |
 | `deps.Embeddeps` | `sandbox/deps/embeddeps` |
+| `deps.Hashdeps` | `sandbox/deps/hashdeps` |
 | `deps.Reflectdeps` | `sandbox/deps/reflectdeps` |
 | `deps.Serializables` | `sandbox/deps/serializables` |
 | `deps.Serverdeps` | `sandbox/deps/serverdeps` |
@@ -98,6 +99,7 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
 | `adapters/libs/database` | `database.Bind(&deps)` |
 | `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
+| `adapters/libs/hashdeps` | `hashdeps.Bind(&deps)` |
 | `adapters/libs/reflectdeps` | `reflectdeps.Bind(&deps)` |
 | `adapters/libs/serializables` | `serializables.Bind(&deps)` |
 | `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |

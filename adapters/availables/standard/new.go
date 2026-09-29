@@ -4,6 +4,7 @@ import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/argvdeps"
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/embeddeps"
+	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/hashdeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serverdeps"
@@ -19,6 +20,7 @@ func New() deps.Deps {
 	argvdeps.Bind(&deps)
 	database.Bind(&deps)
 	embeddeps.Bind(&deps)
+	hashdeps.Bind(&deps)
 	reflectdeps.Bind(&deps)
 	serializables.Bind(&deps)
 	serverdeps.Bind(&deps)

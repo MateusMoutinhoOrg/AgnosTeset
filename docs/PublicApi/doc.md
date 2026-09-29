@@ -43,6 +43,7 @@ field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&
 | [`deps.Argvdeps`](deps.argvdeps.md) | `Sandbox`, `Parser` |
 | [`deps.Database`](deps.database.md) | `Key`, `Int`, `Database`, `Float`, `String`, `Link`, `KeyConflict`, `NotFound`, `MissingField`, `InvalidField`, `Internal`, `Item`, `Schema`, `Props`, `Error`, `SchemaItem`, `SchemaInstance`, `DatabaseHandle`, `Databases`, `Info`, `Sandbox` |
 | [`deps.Embeddeps`](deps.embeddeps.md) | `Sandbox` |
+| [`deps.Hashdeps`](deps.hashdeps.md) | `Sandbox` |
 | [`deps.Reflectdeps`](deps.reflectdeps.md) | `Sandbox` |
 | [`deps.Serializables`](deps.serializables.md) | `SerializibleObject`, `Sandbox` |
 | [`deps.Serverdeps`](deps.serverdeps.md) | `Sandbox`, `ServerProps`, `Server`, `Request`, `Response` |

@@ -10,6 +10,12 @@ whole page. Hidden commands are not listed. The args are the leading words of th
 the flags follow them, in any order. A `repeatable` flag is given once per value. A command's page
 lists the flags of the middlewares in front of it too.
 
+## Backoffice
+
+| Command | Does |
+| --- | --- |
+| [`add-backoffice-user`](add-backoffice-user.md) | Creates an initial backoffice user in the database |
+
 ## Info
 
 | Command | Does |

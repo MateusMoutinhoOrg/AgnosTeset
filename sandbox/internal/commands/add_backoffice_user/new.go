@@ -1,4 +1,4 @@
-package start_server
+package add_backoffice_user
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -16,16 +16,16 @@ import (
 func NewCommand(sandbox *api.Sandbox) *api.Command {
 	self := command.NewCommand(sandbox)
 
-	self.Name = "start_server"
-	self.Identifiers = []string{"start-server"}
+	self.Name = "add_backoffice_user"
+	self.Identifiers = []string{"add-backoffice-user"}
 	self.Priority = 100
 	self.Segments = 0
 	self.Strict = true
-	self.Pattern = "start-server"
-	self.Category = "Server"
-	self.Help = "Starts the http server"
-	self.LongDescription = "Opens the port and serves every route declared under\nsandbox/internal/routeslist, until the process is stopped. An interrupt\n(Ctrl+C) or a termination request stops it gracefully: no new request is\ntaken, and the ones in flight get --shutdown-timeout-ms to finish.\n"
-	self.Examples = []string{"start-server", "start-server --addr 4000:5000"}
+	self.Pattern = "add-backoffice-user"
+	self.Category = "Backoffice"
+	self.Help = "Creates an initial backoffice user in the database"
+	self.LongDescription = ""
+	self.Examples = []string{}
 	self.Hidden = false
 
 	self.Args = []api.CommandArg{
@@ -38,54 +38,43 @@ func NewCommand(sandbox *api.Sandbox) *api.Command {
 			Default:     "",
 			HasDefault:  false,
 			Description: "",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "start-server", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "add-backoffice-user", Negate: false, IgnoreCase: false},
 		},
 	}
 
 	self.Flags = []api.CommandFlag{
 		{
-			Id:          "Addr",
-			Keys:        []string{"--addr"},
+			Id:          "Username",
+			Keys:        []string{"--username"},
 			Type:        api.StringFlag,
-			Required:    false,
-			Default:     "3000:4000",
-			HasDefault:  true,
+			Required:    true,
+			Default:     "",
+			HasDefault:  false,
 			Pattern:     "",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "the port the server listens on, or a range of ports it takes the first free one of, with or without a host (8080, 4000:5000, 127.0.0.1:4000:5000, :8080)",
+			Description: "the username for the backoffice user",
 		},
 		{
-			Id:          "ReadTimeoutMs",
-			Keys:        []string{"--read-timeout-ms"},
-			Type:        api.IntegerFlag,
-			Required:    false,
-			Default:     "10000",
-			HasDefault:  true,
+			Id:          "Email",
+			Keys:        []string{"--email"},
+			Type:        api.StringFlag,
+			Required:    true,
+			Default:     "",
+			HasDefault:  false,
 			Pattern:     "",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "how long a request has to arrive, in milliseconds",
+			Description: "the email for the backoffice user",
 		},
 		{
-			Id:          "WriteTimeoutMs",
-			Keys:        []string{"--write-timeout-ms"},
-			Type:        api.IntegerFlag,
-			Required:    false,
-			Default:     "10000",
-			HasDefault:  true,
+			Id:          "Password",
+			Keys:        []string{"--password"},
+			Type:        api.StringFlag,
+			Required:    true,
+			Default:     "",
+			HasDefault:  false,
 			Pattern:     "",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "how long a response has to be written, in milliseconds",
-		},
-		{
-			Id:          "ShutdownTimeoutMs",
-			Keys:        []string{"--shutdown-timeout-ms"},
-			Type:        api.IntegerFlag,
-			Required:    false,
-			Default:     "10000",
-			HasDefault:  true,
-			Pattern:     "",
-			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "how long the requests in flight have to finish once the server is asked to stop, in milliseconds (0 waits for them)",
+			Description: "the plain-text password (hashed with secret before storing)",
 		},
 		{
 			Id:          "Secret",
@@ -96,7 +85,7 @@ func NewCommand(sandbox *api.Sandbox) *api.Command {
 			HasDefault:  false,
 			Pattern:     "",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "the secret used to hash passwords for backoffice authentication",
+			Description: "the secret prepended to the password before SHA-256 hashing",
 		},
 	}
 

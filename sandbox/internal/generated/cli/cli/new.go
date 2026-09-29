@@ -3,6 +3,7 @@ package cli
 import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/cli/errors"
+	add_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/add_backoffice_user"
 	help "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/help"
 	help_flag "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/help_flag"
 	start_server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/start_server"
@@ -19,6 +20,7 @@ func NewCli(sandbox *api.Sandbox) api.Cli {
 
 	cli.Commands = []*api.Command{
 		help_flag.NewCommand(sandbox),
+		add_backoffice_user.NewCommand(sandbox),
 		help.NewCommand(sandbox),
 		start_server.NewCommand(sandbox),
 		version.NewCommand(sandbox),
