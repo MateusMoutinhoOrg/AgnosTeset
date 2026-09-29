@@ -104,6 +104,19 @@ func CountBackofficeuser(sandbox *api.Sandbox, self *Maindatabase) (int, error) 
 	return len(items), nil
 }
 
+// UpdateBackofficeuserUsername writes a new username on one backofficeuser record.
+func UpdateBackofficeuserUsername(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("backofficeuser %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("username", value))
+}
+
 // RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) error {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
@@ -119,7 +132,9 @@ func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) er
 
 // newBackofficeuserFields is one insert into backofficeuser as the stored field map.
 func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
-	return map[string]any{}
+	return map[string]any{
+		"username": props.Username,
+	}
 }
 
 // buildBackofficeuserItem reads one stored backofficeuser record back into its Go form.
@@ -128,11 +143,20 @@ func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
 func buildBackofficeuserItem(sandbox *api.Sandbox, item database.SchemaItem) (BackofficeuserItem, error) {
 	built := BackofficeuserItem{Id: item.Id}
 
+	username_value, err := databaseio.ReadString(sandbox, item, "username")
+	if err != nil {
+		return built, err
+	}
+	built.Username = username_value
+
 	return built, nil
 }
 
 // matchBackofficeuser is one BackofficeuserFiltrage applied to one record. A zero value
 // never filters, so an empty filtrage keeps everything.
 func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage BackofficeuserFiltrage) bool {
+	if !databaseio.TextMatches(sandbox, item.Username, filtrage.UsernameStartsWith, filtrage.UsernameEquals) {
+		return false
+	}
 	return true
 }

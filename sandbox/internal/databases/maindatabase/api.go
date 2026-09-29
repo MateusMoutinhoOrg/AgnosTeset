@@ -12,17 +12,21 @@ import (
 // BackofficeuserItem is one stored backofficeuser record: its permanent id and every
 // plain field the declaration gives it.
 type BackofficeuserItem struct {
-	Id int64
+	Id       int64
+	Username string
 }
 
 // BackofficeuserNew is one insert into backofficeuser: the fields a new record carries.
 type BackofficeuserNew struct {
+	Username string
 }
 
 // BackofficeuserFiltrage narrows a ListBackofficeuser. Every plain field is here, because
 // only a `key` field is indexed and this is the one way to reach the rest. A
 // zero value turns its own filter off.
 type BackofficeuserFiltrage struct {
+	UsernameStartsWith string
+	UsernameEquals     string
 }
 
 // Maindatabase is the maindatabase database: the handle it was built over and one
@@ -43,6 +47,8 @@ type Maindatabase struct {
 	PageBackofficeuser func(position int, chunk int) ([]BackofficeuserItem, error)
 	// CountBackofficeuser is how many backofficeuser records are live.
 	CountBackofficeuser func() (int, error)
+	// UpdateBackofficeuserUsername writes a new username on one backofficeuser record.
+	UpdateBackofficeuserUsername func(id int64, value string) error
 	// RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 	RemoveBackofficeuser func(id int64) error
 }

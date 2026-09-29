@@ -16,8 +16,10 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 		Path: "maindatabase",
 		Schemas: []database.Schema{
 			{
-				Name:  "backofficeuser",
-				Itens: []database.Item{},
+				Name: "backofficeuser",
+				Itens: []database.Item{
+					{Name: "username", Type: database.String},
+				},
 			},
 		},
 	}
@@ -39,6 +41,9 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 	}
 	self.CountBackofficeuser = func() (int, error) {
 		return CountBackofficeuser(self.sandbox, &self)
+	}
+	self.UpdateBackofficeuserUsername = func(id int64, value string) error {
+		return UpdateBackofficeuserUsername(self.sandbox, &self, id, value)
 	}
 	self.RemoveBackofficeuser = func(id int64) error {
 		return RemoveBackofficeuser(self.sandbox, &self, id)
