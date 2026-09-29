@@ -33,15 +33,15 @@ def main():
     os.system("agnos front-init")
     os.system('agnos add-route adminmiddlware --pattern "/admin/{*rest}" --middleware  ')
     ## front route
-    os.system('agnos add-route users --pattern "/admin/users" --category frontend --method GET -- response-type "text/html"')
-    os.system('agnos add-route userconfig --pattern "/admin/user/{user:integer}" --category frontend --method GET -- response-type "text/html"')
+    os.system('agnos add-route users --pattern "/admin/list-users" --category frontend --method GET -- response-type "text/html"')
+    os.system('agnos add-route userconfig --pattern "/admin/show-user/{user:integer}" --category frontend --method GET -- response-type "text/html"')
 
     ## Api 
     os.system('agnos add-route apimiddleware --pattern "/api/admin/{*rest}" --middleware  ')
     os.system('agnos add-parameter token --route apimiddleware')
     os.system('agnos add-route apiadduser  --pattern "/api/admin/add-user" --category api --method POST --response-type "application/json" ')
-    os.system('agnos add-route apieremoveuser  --pattern "/api/admin/remove-user" --category api --method POST --response-type "application/json"')
-    os.system('agnos add-route apiupdateuser  --pattern "/api/admin/update-user" --category api --method POST --response-type "application/json"')
+    os.system('agnos add-route apieremoveuser  --pattern "/api/admin/remove-user/{id:integer}" --category api --method POST --response-type "application/json"')
+    os.system('agnos add-route apiupdateuser  --pattern "/api/admin/update-user/{id:integer}" --category api --method POST --response-type "application/json"')
     os.system('agnos add-route apilistusers  --pattern "/api/admin/list-users" --category api --method GET --response-type "application/json"')
 
 

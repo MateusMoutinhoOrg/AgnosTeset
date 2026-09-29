@@ -21,8 +21,8 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.AcceptMethods = []string{"POST"}
 	self.Priority = 100
 	self.ResponseType = "application/json"
-	self.Segments = 3
-	self.Pattern = "/api/admin/update-user"
+	self.Segments = 4
+	self.Pattern = "/api/admin/update-user/{Id:integer}"
 	self.Category = "api"
 	self.Help = ""
 	self.LongDescription = ""
@@ -37,6 +37,14 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Type:        api.StringPath,
 			Description: "",
 			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/api/admin/update-user", Negate: false, IgnoreCase: false},
+		},
+		{
+			Id:          "Id",
+			Start:       3,
+			End:         3,
+			Type:        api.IntegerPath,
+			Description: "",
+			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
 	}
 

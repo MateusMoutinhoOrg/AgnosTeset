@@ -1,18 +1,24 @@
-# `POST /api/admin/remove-user`
+# `POST /api/admin/remove-user/{Id:integer}`
 
 ## Try it
 
 Only what is required:
 
 ```bash
-curl -X POST localhost:3000/api/admin/remove-user
+curl -X POST localhost:3000/api/admin/remove-user/1
 ```
 
 With every value it reads:
 
 ```bash
-curl -X POST 'localhost:3000/api/admin/remove-user?token=my-token'
+curl -X POST 'localhost:3000/api/admin/remove-user/1?token=my-token'
 ```
+
+## In the address
+
+| Part | What goes there | Example | Description |
+| --- | --- | --- | --- |
+| `{Id:integer}` | whole number | `1` |  |
 
 ## Query string, headers and cookies
 
@@ -25,6 +31,7 @@ curl -X POST 'localhost:3000/api/admin/remove-user?token=my-token'
 | Status | Means |
 | --- | --- |
 | `200` | It worked. The answer comes as `application/json`. |
+| `404` | `{Id:integer}` is not a whole number, so this route does not answer the address. |
 
 Any route may also answer `404`, `405` or `500`: see [when something goes wrong](doc.md#when-something-goes-wrong).
 

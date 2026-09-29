@@ -9,4 +9,5 @@ package apiupdateuser
 type Entries struct {
 	FullRoute          string `id:"FullRoute"`
 	ApiAdminUpdateUser string `id:"ApiAdminUpdateUser"`
+	Id                 int    `id:"Id"`
 }

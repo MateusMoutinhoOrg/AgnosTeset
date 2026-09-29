@@ -9,4 +9,5 @@ package apieremoveuser
 type Entries struct {
 	FullRoute          string `id:"FullRoute"`
 	ApiAdminRemoveUser string `id:"ApiAdminRemoveUser"`
+	Id                 int    `id:"Id"`
 }

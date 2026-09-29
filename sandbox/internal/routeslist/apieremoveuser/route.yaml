@@ -9,6 +9,10 @@ paths:
       trigger:
         type: equal
         value: /api/admin/remove-user
+    - end: 3
+      id: Id
+      start: 3
+      type: integer
 priority: 100
 response-type: application/json
-segments: 3
+segments: 4

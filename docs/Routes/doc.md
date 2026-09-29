@@ -30,9 +30,9 @@ it prints the address it took. Change it to wherever your server runs.
 | Route | What it does |
 | --- | --- |
 | [`POST /api/admin/add-user`](apiadduser.md) |  |
-| [`POST /api/admin/remove-user`](apieremoveuser.md) |  |
+| [`POST /api/admin/remove-user/{Id:integer}`](apieremoveuser.md) |  |
 | [`GET /api/admin/list-users`](apilistusers.md) |  |
-| [`POST /api/admin/update-user`](apiupdateuser.md) |  |
+| [`POST /api/admin/update-user/{Id:integer}`](apiupdateuser.md) |  |
 
 ## Assets
 
