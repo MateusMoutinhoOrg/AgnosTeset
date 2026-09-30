@@ -1,4 +1,4 @@
-package adminmiddlware
+package autentication
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"

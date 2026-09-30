@@ -44,7 +44,7 @@ agnos remove-arg <name> --command <cmd> / remove-flag <name> --command <cmd> / r
 agnos list-commands / show-command <cmd> / explain-command -- <argv…>
 ```
 
-`add-command` writes `sandbox/internal/commands/<name>/command.yaml` (the declaration) and a
+`add-command` writes `sandbox/internal/commands/[<--dir>/]<name>/command.yaml` (the declaration) and a
 stub `InternalPureHandler.go` (yours), then generates `new.go` — the `api.Command` that joins
 `Cli.Commands` — and `entries.go`, the `Entries` it is handed. Every key these editors write is
 in [CommandYaml](../CommandYaml/doc.md); never edit `command.yaml` by hand.
@@ -95,7 +95,7 @@ agnos remove-body-field <dotted.name> --route <route>
 agnos remove-route <route>
 ```
 
-`add-route` writes `sandbox/internal/routeslist/<name>/route.yaml` (the declaration, `priority`
+`add-route` writes `sandbox/internal/routeslist/[<--dir>/]<name>/route.yaml` (the declaration, `priority`
 and `response-type` always included — `100` for a route, `10` for a `--middleware`) and a stub
 `InternalPureHandler.go` (yours), then
 generates `new.go` — the `api.Route` that lands in `Server.Routes`, a 1:1 image of the yaml —

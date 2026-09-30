@@ -22,4 +22,4 @@ Any route may also answer `404`, `405` or `500`: see [when something goes wrong]
 
 ---
 
-For developers: `sandbox/internal/routeslist/adminmiddlware/` · Middleware · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+For developers: `sandbox/internal/routeslist/autentication/` · Middleware · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

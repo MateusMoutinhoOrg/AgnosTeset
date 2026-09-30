@@ -22,7 +22,13 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`ANY /admin/{*Rest}`](adminmiddlware.md) |  |
+| [`ANY /admin/{*Rest}`](autentication.md) |  |
+
+## frontend
+
+| Route | What it does |
+| --- | --- |
+| [`POST /admin/login`](login.md) |  |
 
 ## Assets
 
@@ -35,12 +41,6 @@ it prints the address it took. Change it to wherever your server runs.
 | Route | What it does |
 | --- | --- |
 | [`GET /health`](health.md) | Reports that the server is up |
-
-## frontend
-
-| Route | What it does |
-| --- | --- |
-| [`POST /admin/login`](login.md) |  |
 
 ## When something goes wrong
 

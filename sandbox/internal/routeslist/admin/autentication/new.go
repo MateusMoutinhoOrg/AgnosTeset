@@ -1,4 +1,4 @@
-package adminmiddlware
+package autentication
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -17,7 +17,7 @@ import (
 func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
-	self.Name = "adminmiddlware"
+	self.Name = "autentication"
 	self.AcceptMethods = []string{"ANY"}
 	self.Priority = 10
 	self.ResponseType = "text/plain"

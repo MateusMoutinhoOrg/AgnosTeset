@@ -41,7 +41,7 @@ or `403`, for example — or let it through to this route.
 
 | Route | When |
 | --- | --- |
-| [`adminmiddlware`](adminmiddlware.md) | always |
+| [`autentication`](autentication.md) | always |
 
 ---
 

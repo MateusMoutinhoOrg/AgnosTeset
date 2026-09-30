@@ -1,4 +1,4 @@
-package adminmiddlware
+package autentication
 
 // Entries is every value this route reads off a request, one field per entry
 // of its route.yaml: FullRoute, the whole request path, then one per entry of

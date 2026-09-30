@@ -29,7 +29,7 @@ or `403`, for example — or let it through to this route.
 
 | Route | When |
 | --- | --- |
-| [`adminmiddlware`](adminmiddlware.md) | depends on the address — `explain-route` gives the exact answer |
+| [`autentication`](autentication.md) | depends on the address — `explain-route` gives the exact answer |
 | [`health`](health.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
