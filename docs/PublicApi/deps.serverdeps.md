@@ -40,7 +40,7 @@ Request is one incoming http request, read through function fields only: the san
 | --- | --- | --- |
 | `GetMethod` | `func() string` | GetMethod returns the http method in upper case ("GET", "POST"). |
 | `GetPath` | `func() string` | GetPath returns the raw request path, query string excluded ("/users/acme/create"). Slicing it into segments is the sandbox's business. |
-| `GetHeader` | `func(key string) string` | GetHeader returns the first value of the named header, matched without regard to case, or "" when it is absent. |
+| `GetHeader` | `func(key string) string` | GetHeader returns the first value of the named header, matched without regard to case, or "" when it is absent. "Host" answers what GetHost does. |
 | `GetHeaders` | `func() map[string][]string` | GetHeaders returns every header of the request, each name in its canonical spelling ("Content-Type") with every value it was sent with. |
 | `GetHost` | `func() string` | GetHost returns the host the request was sent to, port included when the request named one ("example.com", "localhost:8080"). |
 | `GetCookie` | `func(name string) string` | GetCookie returns the value of the named cookie, or "" when the request carries none by that name. |

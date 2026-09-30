@@ -11,18 +11,28 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps"
 )
 
-// sign fills jwtdeps.Sandbox.Sign: the claims become jwt.RegisteredClaims and
-// are signed with HMAC-SHA256 over secret.
+// claimsSet is what a token carries on the wire: the registered claims and
+// the private `host` claim.
+type claimsSet struct {
+	jwt.RegisteredClaims
+	Host string `json:"host,omitempty"`
+}
+
+// sign fills jwtdeps.Sandbox.Sign: the claims become a claimsSet and are
+// signed with HMAC-SHA256 over secret.
 func sign(claims jwtdeps.Claims, secret string) (string, error) {
 	if secret == "" {
 		return "", errors.New("jwt: empty secret")
 	}
-	registered := jwt.RegisteredClaims{
-		Subject:   claims.Subject,
-		IssuedAt:  jwt.NewNumericDate(time.Unix(claims.IssuedAt, 0)),
-		ExpiresAt: jwt.NewNumericDate(time.Unix(claims.ExpiresAt, 0)),
+	set := claimsSet{
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   claims.Subject,
+			IssuedAt:  jwt.NewNumericDate(time.Unix(claims.IssuedAt, 0)),
+			ExpiresAt: jwt.NewNumericDate(time.Unix(claims.ExpiresAt, 0)),
+		},
+		Host: claims.Host,
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, registered).SignedString([]byte(secret))
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, set).SignedString([]byte(secret))
 }
 
 // parse fills jwtdeps.Sandbox.Parse: only HS256 is accepted, and a token
@@ -31,19 +41,19 @@ func parse(token string, secret string) (jwtdeps.Claims, error) {
 	if secret == "" {
 		return jwtdeps.Claims{}, errors.New("jwt: empty secret")
 	}
-	registered := jwt.RegisteredClaims{}
-	_, err := jwt.ParseWithClaims(token, &registered, func(*jwt.Token) (any, error) {
+	set := claimsSet{}
+	_, err := jwt.ParseWithClaims(token, &set, func(*jwt.Token) (any, error) {
 		return []byte(secret), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}), jwt.WithExpirationRequired())
 	if err != nil {
 		return jwtdeps.Claims{}, err
 	}
-	claims := jwtdeps.Claims{Subject: registered.Subject}
-	if registered.IssuedAt != nil {
-		claims.IssuedAt = registered.IssuedAt.Unix()
+	claims := jwtdeps.Claims{Subject: set.Subject, Host: set.Host}
+	if set.IssuedAt != nil {
+		claims.IssuedAt = set.IssuedAt.Unix()
 	}
-	if registered.ExpiresAt != nil {
-		claims.ExpiresAt = registered.ExpiresAt.Unix()
+	if set.ExpiresAt != nil {
+		claims.ExpiresAt = set.ExpiresAt.Unix()
 	}
 	return claims, nil
 }

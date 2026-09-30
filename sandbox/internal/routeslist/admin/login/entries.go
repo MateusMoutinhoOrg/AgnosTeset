@@ -15,6 +15,7 @@ import (
 type Entries struct {
 	FullRoute  string `id:"FullRoute"`
 	AdminLogin string `id:"AdminLogin"`
+	Host       string `id:"Host"`
 	Body       Body   `id:"Body"`
 }
 

@@ -22,6 +22,9 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 					{Name: "email", Type: database.String, Required: true},
 					{Name: "passwordsha", Type: database.String, Required: true},
 					{Name: "role", Type: database.Int},
+					{Name: "hosts", Type: database.Database, Itens: []database.Item{
+						{Name: "host", Type: database.String, Required: true},
+						{Name: "mincreation", Type: database.Int, Required: true}}},
 				},
 			},
 		},
@@ -59,6 +62,12 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 	}
 	self.RemoveBackofficeuser = func(id int64) error {
 		return RemoveBackofficeuser(self.sandbox, &self, id)
+	}
+	self.AddBackofficeuserHosts = func(parent_id int64, props HostsNew) (HostsItem, error) {
+		return AddBackofficeuserHosts(self.sandbox, &self, parent_id, props)
+	}
+	self.ListBackofficeuserHosts = func(parent_id int64) ([]HostsItem, error) {
+		return ListBackofficeuserHosts(self.sandbox, &self, parent_id)
 	}
 
 	return &self

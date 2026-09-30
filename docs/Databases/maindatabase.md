@@ -11,6 +11,9 @@
 | `email` | `string` | yes |  |
 | `passwordsha` | `string` | yes |  |
 | `role` | `int` |  |  |
+| `hosts` | `database` |  |  |
+| `hosts.host` | `string` | yes |  |
+| `hosts.mincreation` | `int` | yes |  |
 
 ## Methods
 
@@ -26,6 +29,8 @@
 | `UpdateBackofficeuserPasswordsha(id int64, value string) error` | writes a new passwordsha on one backofficeuser record |
 | `UpdateBackofficeuserRole(id int64, value int64) error` | writes a new role on one backofficeuser record |
 | `RemoveBackofficeuser(id int64) error` | deletes one backofficeuser record and everything nested under it |
+| `AddBackofficeuserHosts(parent_id int64, props HostsNew) (HostsItem, error)` | inserts one hosts record under one backofficeuser record |
+| `ListBackofficeuserHosts(parent_id int64) ([]HostsItem, error)` | reads every hosts record of one backofficeuser record |
 
 A query this page does not list goes in `methods_custom.go`, hand-written beside these and
 rewritten by no build.

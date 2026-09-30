@@ -1,4 +1,4 @@
-package autentication
+package logout
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -18,49 +18,30 @@ import (
 func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
-	self.Name = "autentication"
-	self.AcceptMethods = []string{"ANY"}
-	self.Priority = 10
+	self.Name = "logout"
+	self.AcceptMethods = []string{"POST"}
+	self.Priority = 100
 	self.ResponseType = "text/html"
-	self.Segments = 0
-	self.Pattern = "/admin/* !(/admin/login)"
-	self.Category = "Middleware"
-	self.Help = ""
+	self.Segments = 2
+	self.Pattern = "/admin/logout"
+	self.Category = "Routes"
+	self.Help = "Ends the session on this host"
 	self.LongDescription = ""
 	self.Examples = []string{}
 	self.Hidden = false
 
 	self.Paths = []api.Path{
 		{
-			Id:          "Admin",
+			Id:          "AdminLogout",
 			Start:       0,
-			End:         -1,
+			End:         1,
 			Type:        api.StringPath,
 			Description: "",
-			Trigger:     api.Trigger{Exist: true, Type: api.PrefixTrigger, Value: "/admin", Negate: false, IgnoreCase: false},
-		},
-		{
-			Id:          "NotLogin",
-			Start:       0,
-			End:         -1,
-			Type:        api.StringPath,
-			Description: "the login route is reachable without a session",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/admin/login", Negate: true, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/admin/logout", Negate: false, IgnoreCase: false},
 		},
 	}
 
 	self.Parameters = []api.Parameter{
-		{
-			Id:          "AdminToken",
-			Key:         "admin_token",
-			Fonts:       []api.ParameterFont{api.CookieParam},
-			Required:    false,
-			Type:        api.StringType,
-			Default:     "",
-			HasDefault:  false,
-			Description: "the session JWT set by POST /admin/login",
-			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-		},
 		{
 			Id:          "Host",
 			Key:         "host",

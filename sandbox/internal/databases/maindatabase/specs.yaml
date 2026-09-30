@@ -13,4 +13,13 @@ tables:
           type: string
         - name: role
           type: int
+        - fields:
+            - name: host
+              required: true
+              type: string
+            - name: mincreation
+              required: true
+              type: int
+          name: hosts
+          type: database
       name: backofficeuser

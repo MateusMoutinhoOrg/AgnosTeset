@@ -169,6 +169,44 @@ func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) er
 	return databaseio.Fail(sandbox, item.Remove())
 }
 
+// AddBackofficeuserHosts inserts one hosts record under one backofficeuser record.
+func AddBackofficeuserHosts(sandbox *api.Sandbox, self *Maindatabase, parent_id int64, props HostsNew) (HostsItem, error) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
+	if err != nil {
+		return HostsItem{}, err
+	}
+	parent, ok := schema.FindById(parent_id)
+	if !ok {
+		return HostsItem{}, sandbox.Deps.Std.Errorf("backofficeuser %d not found", parent_id)
+	}
+	item, failure := parent.NewSubItem("hosts", newHostsFields(props))
+	if failure != nil {
+		return HostsItem{}, databaseio.Fail(sandbox, failure)
+	}
+	return buildHostsItem(sandbox, item)
+}
+
+// ListBackofficeuserHosts reads every hosts record of one backofficeuser record.
+func ListBackofficeuserHosts(sandbox *api.Sandbox, self *Maindatabase, parent_id int64) ([]HostsItem, error) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
+	if err != nil {
+		return nil, err
+	}
+	parent, ok := schema.FindById(parent_id)
+	if !ok {
+		return nil, sandbox.Deps.Std.Errorf("backofficeuser %d not found", parent_id)
+	}
+	nested := []HostsItem{}
+	for _, item := range parent.ListAll("hosts") {
+		built, err := buildHostsItem(sandbox, item)
+		if err != nil {
+			return nil, err
+		}
+		nested = append(nested, built)
+	}
+	return nested, nil
+}
+
 // newBackofficeuserFields is one insert into backofficeuser as the stored field map.
 func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
 	return map[string]any{
@@ -228,4 +266,33 @@ func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage
 		return false
 	}
 	return true
+}
+
+// newHostsFields is one insert into hosts as the stored field map.
+func newHostsFields(props HostsNew) map[string]any {
+	return map[string]any{
+		"host":        props.Host,
+		"mincreation": props.Mincreation,
+	}
+}
+
+// buildHostsItem reads one stored hosts record back into its Go form.
+// Every conversion is checked, so a value of the wrong type is an error rather
+// than a panic.
+func buildHostsItem(sandbox *api.Sandbox, item database.SchemaItem) (HostsItem, error) {
+	built := HostsItem{Id: item.Id}
+
+	host_value, err := databaseio.ReadString(sandbox, item, "host")
+	if err != nil {
+		return built, err
+	}
+	built.Host = host_value
+
+	mincreation_value, err := databaseio.ReadInt(sandbox, item, "mincreation")
+	if err != nil {
+		return built, err
+	}
+	built.Mincreation = mincreation_value
+
+	return built, nil
 }

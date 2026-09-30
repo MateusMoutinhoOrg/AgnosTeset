@@ -69,7 +69,8 @@ type Request struct {
 	// business.
 	GetPath func() string
 	// GetHeader returns the first value of the named header, matched
-	// without regard to case, or "" when it is absent.
+	// without regard to case, or "" when it is absent. "Host" answers what
+	// GetHost does.
 	GetHeader func(key string) string
 	// GetHeaders returns every header of the request, each name in its
 	// canonical spelling ("Content-Type") with every value it was sent with.

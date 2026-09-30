@@ -99,6 +99,10 @@ func newRequest(request *http.Request) serverdeps.Request {
 			return request.URL.Path
 		},
 		GetHeader: func(key string) string {
+			// net/http moves Host off the header map onto request.Host.
+			if http.CanonicalHeaderKey(key) == "Host" {
+				return request.Host
+			}
 			return request.Header.Get(key)
 		},
 		GetHeaders: func() map[string][]string {

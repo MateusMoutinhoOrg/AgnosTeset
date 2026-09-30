@@ -9,8 +9,8 @@ import (
 )
 
 // InternalPureHandler answers POST /admin/login. The username field takes a
-// username or an email; a match sets the session cookie and redirects to
-// /admin/home, anything else answers the login page again under a 401.
+// username or an email; a match sets a session cookie bound to the request's
+// host and redirects to /admin/home, anything else answers the login page again under a 401.
 func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	username := entries.Body.Username
 
@@ -22,7 +22,7 @@ func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, ent
 		return render.Login(sandbox, response, api.StatusUnauthorized, "Invalid username or password.", username)
 	}
 
-	token, err := backofficeauth.IssueToken(sandbox, user)
+	token, err := backofficeauth.IssueToken(sandbox, user, entries.Host)
 	if err != nil {
 		return err
 	}

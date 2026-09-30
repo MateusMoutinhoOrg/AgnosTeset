@@ -1,0 +1,21 @@
+category: Routes
+help: Ends the session on this host
+methods:
+    - POST
+parameters:
+    - description: the host the request was sent to
+      fonts:
+        - header
+      id: Host
+      key: host
+      type: string
+paths:
+    - end: 1
+      id: AdminLogout
+      start: 0
+      trigger:
+        type: equal
+        value: /admin/logout
+priority: 100
+response-type: text/html
+segments: 2

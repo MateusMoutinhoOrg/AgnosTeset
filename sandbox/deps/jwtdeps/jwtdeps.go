@@ -26,7 +26,8 @@ type Sandbox struct {
 	Parse func(token string, secret string) (Claims, error)
 }
 
-// Claims is the set of registered claims a token carries.
+// Claims is the set of registered claims a token carries, plus the private
+// `host` claim.
 type Claims struct {
 	// Subject is the `sub` claim: who the token was issued for.
 	Subject string
@@ -35,4 +36,6 @@ type Claims struct {
 	// ExpiresAt is the `exp` claim, in seconds since the Unix epoch. A token
 	// is refused by Parse from that instant on.
 	ExpiresAt int64
+	// Host is the private `host` claim: the host the token was issued on.
+	Host string
 }

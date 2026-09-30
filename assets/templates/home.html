@@ -186,6 +186,22 @@
       background: var(--ok);
       box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.15);
     }
+    .logout button {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .logout button:hover {
+      border-color: var(--accent);
+      background: rgba(236, 72, 153, 0.12);
+    }
+
     .muted {
       color: var(--text-muted);
       font-size: 0.9rem;
@@ -208,6 +224,9 @@
     <div class="who">
       <span class="name">{{html .Username}}</span>
       <div class="avatar">{{html .Initial}}</div>
+      <form class="logout" action="/admin/logout" method="POST">
+        <button type="submit">Log out</button>
+      </form>
     </div>
   </header>
 

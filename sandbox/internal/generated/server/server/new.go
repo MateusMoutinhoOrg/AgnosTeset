@@ -6,6 +6,7 @@ import (
 	routeslist_autentication "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/autentication"
 	routeslist_home "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/home"
 	routeslist_login "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/login"
+	routeslist_logout "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/logout"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
@@ -26,6 +27,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routeslist_health.NewRoute(sandbox),
 		routeslist_home.NewRoute(sandbox),
 		routeslist_login.NewRoute(sandbox),
+		routeslist_logout.NewRoute(sandbox),
 		routeslist_frontend.NewRoute(sandbox),
 	}
 

@@ -17,6 +17,13 @@ category: frontend
 help: ""
 methods:
     - POST
+parameters:
+    - description: the host the request was sent to
+      fonts:
+        - header
+      id: Host
+      key: host
+      type: string
 paths:
     - end: 1
       id: AdminLogin

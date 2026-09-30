@@ -41,6 +41,20 @@ type BackofficeuserFiltrage struct {
 	RoleMax               int64
 }
 
+// HostsItem is one stored hosts record: its permanent id and every
+// plain field the declaration gives it.
+type HostsItem struct {
+	Id          int64
+	Host        string
+	Mincreation int64
+}
+
+// HostsNew is one insert into hosts: the fields a new record carries.
+type HostsNew struct {
+	Host        string
+	Mincreation int64
+}
+
 // Maindatabase is the maindatabase database: the handle it was built over and one
 // function field per generated method. Building one is free — it touches no
 // key and creates nothing until the first record is written — so whoever needs
@@ -69,4 +83,8 @@ type Maindatabase struct {
 	UpdateBackofficeuserRole func(id int64, value int64) error
 	// RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 	RemoveBackofficeuser func(id int64) error
+	// AddBackofficeuserHosts inserts one hosts record under one backofficeuser record.
+	AddBackofficeuserHosts func(parent_id int64, props HostsNew) (HostsItem, error)
+	// ListBackofficeuserHosts reads every hosts record of one backofficeuser record.
+	ListBackofficeuserHosts func(parent_id int64) ([]HostsItem, error)
 }

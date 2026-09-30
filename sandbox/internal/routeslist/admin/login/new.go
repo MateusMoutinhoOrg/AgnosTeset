@@ -41,7 +41,19 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 		},
 	}
 
-	self.Parameters = []api.Parameter{}
+	self.Parameters = []api.Parameter{
+		{
+			Id:          "Host",
+			Key:         "host",
+			Fonts:       []api.ParameterFont{api.HeaderParam},
+			Required:    false,
+			Type:        api.StringType,
+			Default:     "",
+			HasDefault:  false,
+			Description: "the host the request was sent to",
+			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
+		},
+	}
 
 	self.Body = api.RouteBody{
 		Type:        "form",
