@@ -14,6 +14,7 @@ func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *E
 
 	//check if username or email exist , and find by username or email
 	//check if password is correct
+	// if is not correct , or username not exist ,or email not exist , it renders the templates/login.html with a error message.
 	//creates a jwt token with (userid,creation,expiration) (expiration is creation + 30 minutes)
 	//set token into coockies httponly, samesite=strict, path=/
 	//redirect to /admin/home
