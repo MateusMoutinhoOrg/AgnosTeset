@@ -4,7 +4,7 @@ package api
 type UserRole int
 
 const (
-	// UserRoleAdmin is the admin role
+	// UserRoleRoot is the root role
 	UserRoleRoot UserRole = iota
 	// UserRoleViewer is the viewer role
 	UserRoleViewer
