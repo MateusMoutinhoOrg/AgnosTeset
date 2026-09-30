@@ -27,7 +27,7 @@ password=text&username=text
 
 | Status | Means |
 | --- | --- |
-| `200` | It worked. The answer comes as `application/json`. |
+| `200` | It worked. The answer comes as `text/html`. |
 | `400` | Something you sent is missing or has the wrong type or format. The answer's `field` names it. |
 | `413` | The body is larger than 1 MB. |
 | `415` | The body was not sent with `Content-Type: application/x-www-form-urlencoded`. |
@@ -41,7 +41,7 @@ or `403`, for example — or let it through to this route.
 
 | Route | When |
 | --- | --- |
-| [`autentication`](autentication.md) | always |
+| [`autentication`](autentication.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 

@@ -20,9 +20,9 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Name = "autentication"
 	self.AcceptMethods = []string{"ANY"}
 	self.Priority = 10
-	self.ResponseType = "text/plain"
+	self.ResponseType = "text/html"
 	self.Segments = 0
-	self.Pattern = "/admin/{*Rest}"
+	self.Pattern = "/admin/{*Rest} !(/admin/login)"
 	self.Category = "Middleware"
 	self.Help = ""
 	self.LongDescription = ""
@@ -46,9 +46,29 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Description: "",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
+		{
+			Id:          "NotLogin",
+			Start:       0,
+			End:         -1,
+			Type:        api.StringPath,
+			Description: "the login route is reachable without a session",
+			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/admin/login", Negate: true, IgnoreCase: false},
+		},
 	}
 
-	self.Parameters = []api.Parameter{}
+	self.Parameters = []api.Parameter{
+		{
+			Id:          "AdminToken",
+			Key:         "admin_token",
+			Fonts:       []api.ParameterFont{api.CookieParam},
+			Required:    false,
+			Type:        api.StringType,
+			Default:     "",
+			HasDefault:  false,
+			Description: "the session JWT set by POST /admin/login",
+			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
+		},
+	}
 
 	self.Body = api.RouteBody{
 		Type:        "none",

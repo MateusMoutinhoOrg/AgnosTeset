@@ -3,29 +3,27 @@ package autentication
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/render"
 )
 
-// InternalPureHandler runs in front of every ANY /admin/{*Rest} on a
-// lower rung of the chain: it is a middleware. Returning nil without answering
-// hands the request to the next route; answering — a status, or a byte —
-// ends the chain here.
+// InternalPureHandler runs in front of every ANY /admin/{*Rest} except
+// /admin/login, on a lower rung of the chain: it is a middleware.
 //
-// Refuse a request by returning routeio.Fail, which is answered through the
-// project's own handler for that status:
-//
-//	return routeio.Fail(sandbox, api.StatusUnauthorized, "authorization", "invalid token")
-//
-// Hand what you learned to the routes after it through props, the request's
-// api.RouteProps — declare the field in sandbox/api/routeprops.go:
-//
-//	props.User = user
+// A valid session cookie puts its user on props.User and declines, so the
+// route after it runs. Anything else answers the login page under a 401, and
+// clears a cookie that no longer holds a valid session.
 func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
-	//try to get the token from the cookies
-	//verify if the token is valid
-	//if valid:
-	// set props.User with the user retrived
-	// return nil (since these route its a middlware, it will render the other routes)
-	//else:
-	//returns assets/templates/login.html (blocks autentication)
-	return nil
+	user, ok := backofficeauth.UserOfToken(sandbox, entries.AdminToken)
+	if ok {
+		props.User = user
+		return nil
+	}
+
+	message := ""
+	if entries.AdminToken != "" {
+		response.AddHeader("Set-Cookie", backofficeauth.ClearedCookie(sandbox))
+		message = "Your session has expired. Please sign in again."
+	}
+	return render.Login(sandbox, response, api.StatusUnauthorized, message, "")
 }

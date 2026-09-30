@@ -160,6 +160,16 @@
     .btn-submit:active {
       transform: translateY(0);
     }
+
+    .alert {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #FCA5A5;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -172,10 +182,12 @@
       <p>Sign in to your admin account</p>
     </div>
     
+    {{if .Error}}<div class="alert" role="alert">{{html .Error}}</div>{{end}}
+
     <form id="loginForm" action="/admin/login" method="POST">
       <div class="form-group">
         <label for="username" class="form-label">Email or Username</label>
-        <input type="text" id="username" name="username" class="form-control" placeholder="Enter your email or username" required autocomplete="username">
+        <input type="text" id="username" name="username" class="form-control" value="{{html .Username}}" placeholder="Enter your email or username" required autocomplete="username">
       </div>
       
       <div class="form-group">

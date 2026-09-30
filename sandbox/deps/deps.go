@@ -5,6 +5,7 @@ import (
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/hashdeps"
+	jwtdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/jwtdeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
@@ -22,6 +23,7 @@ type Deps struct {
 	Database      database.Sandbox
 	Embeddeps     embeddeps.Sandbox
 	Hashdeps      hashdeps.Sandbox
+	Jwtdeps       jwtdeps.Sandbox
 	Reflectdeps   reflectdeps.Sandbox
 	Serializables serializables.Sandbox
 	Serverdeps    serverdeps.Sandbox

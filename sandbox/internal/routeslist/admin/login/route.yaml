@@ -25,5 +25,5 @@ paths:
         type: equal
         value: /admin/login
 priority: 100
-response-type: application/json
+response-type: text/html
 segments: 2

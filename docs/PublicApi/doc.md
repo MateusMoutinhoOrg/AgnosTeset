@@ -24,7 +24,7 @@ struct of function fields, filled by a binder.
 | Page | Declares |
 | --- | --- |
 | [`sandbox/api/sandbox.go`](api.sandbox.md) | `Sandbox` |
-| [`sandbox/api/User.go`](api.User.md) | `UserRoleAdmin`, `UserRoleViewer`, `UserRole`, `User` |
+| [`sandbox/api/User.go`](api.User.md) | `UserRoleRoot`, `UserRoleViewer`, `UserRole`, `User` |
 | [`sandbox/api/cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
 | [`sandbox/api/command.go`](api.command.md) | `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Error`, `NewCommand`, `BindCommand` |
 | [`sandbox/api/commandprops.go`](api.commandprops.md) | `CommandProps` |
@@ -47,6 +47,7 @@ field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&
 | [`deps.Database`](deps.database.md) | `Key`, `Int`, `Database`, `Float`, `String`, `Link`, `KeyConflict`, `NotFound`, `MissingField`, `InvalidField`, `Internal`, `Item`, `Schema`, `Props`, `Error`, `SchemaItem`, `SchemaInstance`, `DatabaseHandle`, `Databases`, `Info`, `Sandbox` |
 | [`deps.Embeddeps`](deps.embeddeps.md) | `Sandbox` |
 | [`deps.Hashdeps`](deps.hashdeps.md) | `Sandbox` |
+| [`deps.Jwtdeps`](deps.jwtdeps.md) | `Sandbox`, `Claims` |
 | [`deps.Reflectdeps`](deps.reflectdeps.md) | `Sandbox` |
 | [`deps.Serializables`](deps.serializables.md) | `SerializibleObject`, `Sandbox` |
 | [`deps.Serverdeps`](deps.serverdeps.md) | `Sandbox`, `ServerProps`, `Server`, `Request`, `Response` |

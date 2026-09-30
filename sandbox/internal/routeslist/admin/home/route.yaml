@@ -10,5 +10,5 @@ paths:
         type: equal
         value: /admin/home
 priority: 100
-response-type: application/json
+response-type: text/html
 segments: 2

@@ -2,6 +2,13 @@ category: Middleware
 help: ""
 methods:
     - ANY
+parameters:
+    - description: the session JWT set by POST /admin/login
+      fonts:
+        - cookie
+      id: AdminToken
+      key: admin_token
+      type: string
 paths:
     - end: 0
       id: Admin
@@ -12,5 +19,13 @@ paths:
     - end: -1
       id: Rest
       start: 1
+    - description: the login route is reachable without a session
+      end: -1
+      id: NotLogin
+      start: 0
+      trigger:
+        negate: true
+        type: equal
+        value: /admin/login
 priority: 10
-response-type: text/plain
+response-type: text/html

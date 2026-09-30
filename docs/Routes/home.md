@@ -10,7 +10,7 @@ curl localhost:3000/admin/home
 
 | Status | Means |
 | --- | --- |
-| `200` | It worked. The answer comes as `application/json`. |
+| `200` | It worked. The answer comes as `text/html`. |
 
 Any route may also answer `404`, `405` or `500`: see [when something goes wrong](doc.md#when-something-goes-wrong).
 
@@ -21,7 +21,7 @@ or `403`, for example — or let it through to this route.
 
 | Route | When |
 | --- | --- |
-| [`autentication`](autentication.md) | always |
+| [`autentication`](autentication.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 

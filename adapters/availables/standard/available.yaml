@@ -3,6 +3,7 @@ adapters:
     - database
     - embeddeps
     - hashdeps
+    - jwtdeps
     - reflectdeps
     - serializables
     - serverdeps

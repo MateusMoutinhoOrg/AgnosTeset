@@ -2,7 +2,7 @@
 
 | Constant | Value | Description |
 | --- | --- | --- |
-| `UserRoleAdmin` | `iota` | UserRoleAdmin is the admin role |
+| `UserRoleRoot` | `iota` | UserRoleRoot is the root role |
 | `UserRoleViewer` |  | UserRoleViewer is the viewer role |
 
 ## `UserRole`

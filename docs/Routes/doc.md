@@ -22,7 +22,7 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`ANY /admin/{*Rest}`](autentication.md) |  |
+| [`ANY /admin/{*Rest} !(/admin/login)`](autentication.md) |  |
 
 ## Routes
 

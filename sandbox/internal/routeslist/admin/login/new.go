@@ -20,7 +20,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Name = "login"
 	self.AcceptMethods = []string{"POST"}
 	self.Priority = 100
-	self.ResponseType = "application/json"
+	self.ResponseType = "text/html"
 	self.Segments = 2
 	self.Pattern = "/admin/login"
 	self.Category = "frontend"
