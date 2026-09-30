@@ -5,7 +5,7 @@ type UserRole int
 
 const (
 	// UserRoleAdmin is the admin role
-	UserRoleAdmin UserRole = iota
+	UserRoleRoot UserRole = iota
 	// UserRoleViewer is the viewer role
 	UserRoleViewer
 )
