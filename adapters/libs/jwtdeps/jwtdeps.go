@@ -26,6 +26,7 @@ func sign(claims jwtdeps.Claims, secret string) (string, error) {
 	}
 	set := claimsSet{
 		RegisteredClaims: jwt.RegisteredClaims{
+			ID:        claims.Id,
 			Subject:   claims.Subject,
 			IssuedAt:  jwt.NewNumericDate(time.Unix(claims.IssuedAt, 0)),
 			ExpiresAt: jwt.NewNumericDate(time.Unix(claims.ExpiresAt, 0)),
@@ -48,7 +49,7 @@ func parse(token string, secret string) (jwtdeps.Claims, error) {
 	if err != nil {
 		return jwtdeps.Claims{}, err
 	}
-	claims := jwtdeps.Claims{Subject: set.Subject, Host: set.Host}
+	claims := jwtdeps.Claims{Id: set.ID, Subject: set.Subject, Host: set.Host}
 	if set.IssuedAt != nil {
 		claims.IssuedAt = set.IssuedAt.Unix()
 	}

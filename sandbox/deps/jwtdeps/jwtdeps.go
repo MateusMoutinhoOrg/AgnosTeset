@@ -29,6 +29,8 @@ type Sandbox struct {
 // Claims is the set of registered claims a token carries, plus the private
 // `host` claim.
 type Claims struct {
+	// Id is the `jti` claim: the one token among every token issued.
+	Id string
 	// Subject is the `sub` claim: who the token was issued for.
 	Subject string
 	// IssuedAt is the `iat` claim, in seconds since the Unix epoch.

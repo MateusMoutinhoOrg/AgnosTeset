@@ -11,14 +11,15 @@ import (
 // InternalPureHandler runs in front of every ANY /admin/{*Rest} except
 // /admin/login, on a lower rung of the chain: it is a middleware.
 //
-// A valid session cookie, issued on the host this request was sent to and
-// after that host's last logout, puts its user on props.User and declines, so
-// the route after it runs. Anything else answers the login page under a 401, and
+// A valid session cookie, issued on the host this request was sent to for a
+// session no logout has closed, puts its user on props.User and its session on
+// props.Session and declines, so the route after it runs. Anything else answers the login page under a 401, and
 // clears a cookie that no longer holds a valid session.
 func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
-	user, ok := backofficeauth.UserOfToken(sandbox, entries.AdminToken, entries.Host)
+	user, session, ok := backofficeauth.SessionOfToken(sandbox, entries.AdminToken, entries.Host)
 	if ok {
 		props.User = &user
+		props.Session = &session
 		return nil
 	}
 

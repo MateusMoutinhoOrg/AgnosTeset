@@ -169,25 +169,25 @@ func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) er
 	return databaseio.Fail(sandbox, item.Remove())
 }
 
-// AddBackofficeuserHosts inserts one hosts record under one backofficeuser record.
-func AddBackofficeuserHosts(sandbox *api.Sandbox, self *Maindatabase, parent_id int64, props HostsNew) (HostsItem, error) {
+// AddBackofficeuserSessions inserts one sessions record under one backofficeuser record.
+func AddBackofficeuserSessions(sandbox *api.Sandbox, self *Maindatabase, parent_id int64, props SessionsNew) (SessionsItem, error) {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
 	if err != nil {
-		return HostsItem{}, err
+		return SessionsItem{}, err
 	}
 	parent, ok := schema.FindById(parent_id)
 	if !ok {
-		return HostsItem{}, sandbox.Deps.Std.Errorf("backofficeuser %d not found", parent_id)
+		return SessionsItem{}, sandbox.Deps.Std.Errorf("backofficeuser %d not found", parent_id)
 	}
-	item, failure := parent.NewSubItem("hosts", newHostsFields(props))
+	item, failure := parent.NewSubItem("sessions", newSessionsFields(props))
 	if failure != nil {
-		return HostsItem{}, databaseio.Fail(sandbox, failure)
+		return SessionsItem{}, databaseio.Fail(sandbox, failure)
 	}
-	return buildHostsItem(sandbox, item)
+	return buildSessionsItem(sandbox, item)
 }
 
-// ListBackofficeuserHosts reads every hosts record of one backofficeuser record.
-func ListBackofficeuserHosts(sandbox *api.Sandbox, self *Maindatabase, parent_id int64) ([]HostsItem, error) {
+// ListBackofficeuserSessions reads every sessions record of one backofficeuser record.
+func ListBackofficeuserSessions(sandbox *api.Sandbox, self *Maindatabase, parent_id int64) ([]SessionsItem, error) {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
 	if err != nil {
 		return nil, err
@@ -196,9 +196,9 @@ func ListBackofficeuserHosts(sandbox *api.Sandbox, self *Maindatabase, parent_id
 	if !ok {
 		return nil, sandbox.Deps.Std.Errorf("backofficeuser %d not found", parent_id)
 	}
-	nested := []HostsItem{}
-	for _, item := range parent.ListAll("hosts") {
-		built, err := buildHostsItem(sandbox, item)
+	nested := []SessionsItem{}
+	for _, item := range parent.ListAll("sessions") {
+		built, err := buildSessionsItem(sandbox, item)
 		if err != nil {
 			return nil, err
 		}
@@ -268,19 +268,19 @@ func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage
 	return true
 }
 
-// newHostsFields is one insert into hosts as the stored field map.
-func newHostsFields(props HostsNew) map[string]any {
+// newSessionsFields is one insert into sessions as the stored field map.
+func newSessionsFields(props SessionsNew) map[string]any {
 	return map[string]any{
-		"host":        props.Host,
-		"mincreation": props.Mincreation,
+		"host":      props.Host,
+		"expiresat": props.Expiresat,
 	}
 }
 
-// buildHostsItem reads one stored hosts record back into its Go form.
+// buildSessionsItem reads one stored sessions record back into its Go form.
 // Every conversion is checked, so a value of the wrong type is an error rather
 // than a panic.
-func buildHostsItem(sandbox *api.Sandbox, item database.SchemaItem) (HostsItem, error) {
-	built := HostsItem{Id: item.Id}
+func buildSessionsItem(sandbox *api.Sandbox, item database.SchemaItem) (SessionsItem, error) {
+	built := SessionsItem{Id: item.Id}
 
 	host_value, err := databaseio.ReadString(sandbox, item, "host")
 	if err != nil {
@@ -288,11 +288,11 @@ func buildHostsItem(sandbox *api.Sandbox, item database.SchemaItem) (HostsItem, 
 	}
 	built.Host = host_value
 
-	mincreation_value, err := databaseio.ReadInt(sandbox, item, "mincreation")
+	expiresat_value, err := databaseio.ReadInt(sandbox, item, "expiresat")
 	if err != nil {
 		return built, err
 	}
-	built.Mincreation = mincreation_value
+	built.Expiresat = expiresat_value
 
 	return built, nil
 }

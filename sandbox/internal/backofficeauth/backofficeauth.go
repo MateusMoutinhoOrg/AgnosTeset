@@ -65,23 +65,28 @@ func Authenticate(sandbox *api.Sandbox, login string, password string) (maindata
 	return user, true, nil
 }
 
-// IssueToken signs a session token for user on host, valid for
-// SessionSeconds, and makes sure host has a hosts record under user, so the
-// autentication middleware finds the mincreation it checks the token against.
+// IssueToken opens a session for user on host and signs its token, valid for
+// SessionSeconds. The session is a sessions record under user, living as long
+// as the token; its id travels as the token's `jti`, so the autentication
+// middleware can tell whether that one session is still open. The user's
+// expired sessions are dropped first, so they never pile up.
 func IssueToken(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, host string) (string, error) {
-	hosts, err := hostsOf(sandbox, user.Id, host)
+	now := nowSeconds(sandbox)
+	err := dropExpired(sandbox, user.Id, now)
 	if err != nil {
 		return "", err
 	}
-	if len(hosts) == 0 {
-		_, err = maindatabase.New(sandbox).AddBackofficeuserHosts(user.Id, maindatabase.HostsNew{Host: host})
-		if err != nil {
-			return "", err
-		}
+
+	session, err := maindatabase.New(sandbox).AddBackofficeuserSessions(user.Id, maindatabase.SessionsNew{
+		Host:      host,
+		Expiresat: now + SessionSeconds,
+	})
+	if err != nil {
+		return "", err
 	}
 
-	now := nowSeconds(sandbox)
 	return sandbox.Deps.Jwtdeps.Sign(jwtdeps.Claims{
+		Id:        sandbox.Deps.Stringsdeps.FormatInt(session.Id, 10),
 		Subject:   sandbox.Deps.Stringsdeps.FormatInt(user.Id, 10),
 		IssuedAt:  now,
 		ExpiresAt: now + SessionSeconds,
@@ -100,75 +105,79 @@ func ClearedCookie(sandbox *api.Sandbox) string {
 	return sandbox.Deps.Std.Sprintf("%s=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict", CookieName)
 }
 
-// hostsOf is every hosts record of the user with id userId that names host.
-func hostsOf(sandbox *api.Sandbox, userId int64, host string) ([]maindatabase.HostsItem, error) {
-	all, err := maindatabase.New(sandbox).ListBackofficeuserHosts(userId)
-	if err != nil {
-		return nil, err
-	}
-	matching := []maindatabase.HostsItem{}
-	for _, item := range all {
-		if item.Host == host {
-			matching = append(matching, item)
-		}
-	}
-	return matching, nil
-}
-
-// UserOfToken answers the user a session token was issued for, or false when
-// the token is invalid, expired, issued on another host than host, issued no
-// later than the mincreation of host (a logout on it), or its user no longer
-// exists.
-func UserOfToken(sandbox *api.Sandbox, token string, host string) (maindatabase.BackofficeuserItem, bool) {
-	if token == "" || host == "" {
-		return maindatabase.BackofficeuserItem{}, false
-	}
-	claims, err := sandbox.Deps.Jwtdeps.Parse(token, sandbox.Config.Secret)
-	if err != nil || claims.Host != host {
-		return maindatabase.BackofficeuserItem{}, false
-	}
-	id, err := sandbox.Deps.Stringsdeps.ParseInt(claims.Subject, 10, 64)
-	if err != nil {
-		return maindatabase.BackofficeuserItem{}, false
-	}
-	user, ok := maindatabase.New(sandbox).FindBackofficeuserById(id)
-	if !ok {
-		return maindatabase.BackofficeuserItem{}, false
-	}
-
-	hosts, err := hostsOf(sandbox, user.Id, host)
-	if err != nil || len(hosts) == 0 {
-		return maindatabase.BackofficeuserItem{}, false
-	}
-	for _, item := range hosts {
-		// Strictly after: a token issued in the very second of a logout is
-		// one the logout meant to end.
-		if claims.IssuedAt <= item.Mincreation {
-			return maindatabase.BackofficeuserItem{}, false
-		}
-	}
-	return user, true
-}
-
-// Logout ends every session of user on host: the mincreation of host becomes
-// now, so every token issued on it until now is refused from here on.
-func Logout(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, host string) error {
+// dropExpired deletes every session of the user with id userId that expired
+// by now: its token is refused anyway, so the record is only garbage.
+func dropExpired(sandbox *api.Sandbox, userId int64, now int64) error {
 	db := maindatabase.New(sandbox)
-	now := nowSeconds(sandbox)
-
-	hosts, err := hostsOf(sandbox, user.Id, host)
+	sessions, err := db.ListBackofficeuserSessions(userId)
 	if err != nil {
 		return err
 	}
-	if len(hosts) == 0 {
-		_, err = db.AddBackofficeuserHosts(user.Id, maindatabase.HostsNew{Host: host, Mincreation: now})
-		return err
-	}
-	for _, item := range hosts {
-		err = maindatabase.UpdateBackofficeuserHostsMincreation(sandbox, db, user.Id, item.Id, now)
-		if err != nil {
-			return err
+	for _, session := range sessions {
+		if session.Expiresat <= now {
+			err = maindatabase.RemoveBackofficeuserSessions(sandbox, db, userId, session.Id)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
+}
+
+// findSession is the session with id sessionId of the user with id userId.
+func findSession(sandbox *api.Sandbox, userId int64, sessionId int64) (maindatabase.SessionsItem, bool) {
+	sessions, err := maindatabase.New(sandbox).ListBackofficeuserSessions(userId)
+	if err != nil {
+		return maindatabase.SessionsItem{}, false
+	}
+	for _, session := range sessions {
+		if session.Id == sessionId {
+			return session, true
+		}
+	}
+	return maindatabase.SessionsItem{}, false
+}
+
+// SessionOfToken answers the user a session token was issued for and the
+// session it names, or false when the token is invalid or expired, was issued
+// on another host than host, names a session that was closed by a logout, or
+// its user no longer exists.
+func SessionOfToken(sandbox *api.Sandbox, token string, host string) (maindatabase.BackofficeuserItem, maindatabase.SessionsItem, bool) {
+	none := func() (maindatabase.BackofficeuserItem, maindatabase.SessionsItem, bool) {
+		return maindatabase.BackofficeuserItem{}, maindatabase.SessionsItem{}, false
+	}
+	if token == "" || host == "" {
+		return none()
+	}
+	claims, err := sandbox.Deps.Jwtdeps.Parse(token, sandbox.Config.Secret)
+	if err != nil || claims.Host != host {
+		return none()
+	}
+	userId, err := sandbox.Deps.Stringsdeps.ParseInt(claims.Subject, 10, 64)
+	if err != nil {
+		return none()
+	}
+	sessionId, err := sandbox.Deps.Stringsdeps.ParseInt(claims.Id, 10, 64)
+	if err != nil {
+		return none()
+	}
+	user, ok := maindatabase.New(sandbox).FindBackofficeuserById(userId)
+	if !ok {
+		return none()
+	}
+	session, ok := findSession(sandbox, user.Id, sessionId)
+	if !ok || session.Host != host || session.Expiresat <= nowSeconds(sandbox) {
+		return none()
+	}
+	return user, session, true
+}
+
+// Logout closes session of user: its record is deleted, so its token is
+// refused from here on, along with every other session of user that expired.
+func Logout(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, session maindatabase.SessionsItem) error {
+	err := maindatabase.RemoveBackofficeuserSessions(sandbox, maindatabase.New(sandbox), user.Id, session.Id)
+	if err != nil {
+		return err
+	}
+	return dropExpired(sandbox, user.Id, nowSeconds(sandbox))
 }

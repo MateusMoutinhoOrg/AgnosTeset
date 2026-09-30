@@ -5,10 +5,11 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/databaseio"
 )
 
-// UpdateBackofficeuserHostsMincreation writes a new mincreation on one hosts
-// record of one backofficeuser record. The declaration generates Add and List
-// for a nested collection but no Update, so it is written here.
-func UpdateBackofficeuserHostsMincreation(sandbox *api.Sandbox, self *Maindatabase, parent_id int64, id int64, value int64) error {
+// RemoveBackofficeuserSessions deletes one sessions record of one
+// backofficeuser record. The declaration generates Add and List for a nested
+// collection but no Remove, so it is written here. Removing a record that is
+// already gone is not an error.
+func RemoveBackofficeuserSessions(sandbox *api.Sandbox, self *Maindatabase, parent_id int64, id int64) error {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
 	if err != nil {
 		return err
@@ -17,10 +18,10 @@ func UpdateBackofficeuserHostsMincreation(sandbox *api.Sandbox, self *Maindataba
 	if !ok {
 		return sandbox.Deps.Std.Errorf("backofficeuser %d not found", parent_id)
 	}
-	for _, item := range parent.ListAll("hosts") {
+	for _, item := range parent.ListAll("sessions") {
 		if item.Id == id {
-			return databaseio.Fail(sandbox, item.Update("mincreation", value))
+			return databaseio.Fail(sandbox, item.Remove())
 		}
 	}
-	return sandbox.Deps.Std.Errorf("hosts %d of backofficeuser %d not found", id, parent_id)
+	return nil
 }

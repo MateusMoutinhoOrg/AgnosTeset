@@ -4,24 +4,9 @@ Ends the session on this host
 
 ## Try it
 
-Only what is required:
-
 ```bash
 curl -X POST localhost:3000/admin/logout
 ```
-
-With every value it reads:
-
-```bash
-curl -X POST localhost:3000/admin/logout \
-  -H 'host: my-host'
-```
-
-## Query string, headers and cookies
-
-| Name | Sent in | What goes there | Required | Example | Description |
-| --- | --- | --- | --- | --- | --- |
-| `host` | header | text | no | `my-host` | the host the request was sent to |
 
 ## What comes back
 

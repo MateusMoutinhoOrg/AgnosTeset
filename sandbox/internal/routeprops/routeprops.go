@@ -16,4 +16,7 @@ type RouteProps struct {
 	// User is the backoffice user the admin/autentication middleware
 	// authenticated from the session cookie, nil when none.
 	User *maindatabase.BackofficeuserItem
+	// Session is the session of User the session cookie names, nil when
+	// none.
+	Session *maindatabase.SessionsItem
 }

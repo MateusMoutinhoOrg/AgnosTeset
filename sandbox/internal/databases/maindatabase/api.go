@@ -41,18 +41,18 @@ type BackofficeuserFiltrage struct {
 	RoleMax               int64
 }
 
-// HostsItem is one stored hosts record: its permanent id and every
+// SessionsItem is one stored sessions record: its permanent id and every
 // plain field the declaration gives it.
-type HostsItem struct {
-	Id          int64
-	Host        string
-	Mincreation int64
+type SessionsItem struct {
+	Id        int64
+	Host      string
+	Expiresat int64
 }
 
-// HostsNew is one insert into hosts: the fields a new record carries.
-type HostsNew struct {
-	Host        string
-	Mincreation int64
+// SessionsNew is one insert into sessions: the fields a new record carries.
+type SessionsNew struct {
+	Host      string
+	Expiresat int64
 }
 
 // Maindatabase is the maindatabase database: the handle it was built over and one
@@ -83,8 +83,8 @@ type Maindatabase struct {
 	UpdateBackofficeuserRole func(id int64, value int64) error
 	// RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 	RemoveBackofficeuser func(id int64) error
-	// AddBackofficeuserHosts inserts one hosts record under one backofficeuser record.
-	AddBackofficeuserHosts func(parent_id int64, props HostsNew) (HostsItem, error)
-	// ListBackofficeuserHosts reads every hosts record of one backofficeuser record.
-	ListBackofficeuserHosts func(parent_id int64) ([]HostsItem, error)
+	// AddBackofficeuserSessions inserts one sessions record under one backofficeuser record.
+	AddBackofficeuserSessions func(parent_id int64, props SessionsNew) (SessionsItem, error)
+	// ListBackofficeuserSessions reads every sessions record of one backofficeuser record.
+	ListBackofficeuserSessions func(parent_id int64) ([]SessionsItem, error)
 }

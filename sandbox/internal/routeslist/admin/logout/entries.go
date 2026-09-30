@@ -9,5 +9,4 @@ package logout
 type Entries struct {
 	FullRoute   string `id:"FullRoute"`
 	AdminLogout string `id:"AdminLogout"`
-	Host        string `id:"Host"`
 }

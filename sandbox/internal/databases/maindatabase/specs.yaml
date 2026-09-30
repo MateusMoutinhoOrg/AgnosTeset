@@ -17,9 +17,9 @@ tables:
             - name: host
               required: true
               type: string
-            - name: mincreation
+            - name: expiresat
               required: true
               type: int
-          name: hosts
+          name: sessions
           type: database
       name: backofficeuser
