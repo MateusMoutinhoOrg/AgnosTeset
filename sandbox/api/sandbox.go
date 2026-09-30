@@ -22,6 +22,7 @@ type Sandbox struct {
 	// a consumer: an installed copy of this contract carries the api, never
 	// the wiring behind it.
 	Deps   *deps.Deps
+	User   User
 	Cli    Cli
 	Config Config
 	Server Server

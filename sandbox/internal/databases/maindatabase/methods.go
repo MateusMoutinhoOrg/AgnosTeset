@@ -144,7 +144,7 @@ func UpdateBackofficeuserPasswordsha(sandbox *api.Sandbox, self *Maindatabase, i
 }
 
 // UpdateBackofficeuserRole writes a new role on one backofficeuser record.
-func UpdateBackofficeuserRole(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+func UpdateBackofficeuserRole(sandbox *api.Sandbox, self *Maindatabase, id int64, value int64) error {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
 	if err != nil {
 		return err
@@ -203,7 +203,7 @@ func buildBackofficeuserItem(sandbox *api.Sandbox, item database.SchemaItem) (Ba
 	}
 	built.Passwordsha = passwordsha_value
 
-	role_value, err := databaseio.ReadString(sandbox, item, "role")
+	role_value, err := databaseio.ReadInt(sandbox, item, "role")
 	if err != nil {
 		return built, err
 	}
@@ -224,7 +224,7 @@ func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage
 	if !databaseio.TextMatches(sandbox, item.Passwordsha, filtrage.PasswordshaStartsWith, filtrage.PasswordshaEquals) {
 		return false
 	}
-	if !databaseio.TextMatches(sandbox, item.Role, filtrage.RoleStartsWith, filtrage.RoleEquals) {
+	if !databaseio.IntInRange(item.Role, filtrage.RoleMin, filtrage.RoleMax) {
 		return false
 	}
 	return true

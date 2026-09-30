@@ -16,7 +16,7 @@ type BackofficeuserItem struct {
 	Username    string
 	Email       string
 	Passwordsha string
-	Role        string
+	Role        int64
 }
 
 // BackofficeuserNew is one insert into backofficeuser: the fields a new record carries.
@@ -24,7 +24,7 @@ type BackofficeuserNew struct {
 	Username    string
 	Email       string
 	Passwordsha string
-	Role        string
+	Role        int64
 }
 
 // BackofficeuserFiltrage narrows a ListBackofficeuser. Every plain field is here, because
@@ -37,8 +37,8 @@ type BackofficeuserFiltrage struct {
 	EmailEquals           string
 	PasswordshaStartsWith string
 	PasswordshaEquals     string
-	RoleStartsWith        string
-	RoleEquals            string
+	RoleMin               int64
+	RoleMax               int64
 }
 
 // Maindatabase is the maindatabase database: the handle it was built over and one
@@ -66,7 +66,7 @@ type Maindatabase struct {
 	// UpdateBackofficeuserPasswordsha writes a new passwordsha on one backofficeuser record.
 	UpdateBackofficeuserPasswordsha func(id int64, value string) error
 	// UpdateBackofficeuserRole writes a new role on one backofficeuser record.
-	UpdateBackofficeuserRole func(id int64, value string) error
+	UpdateBackofficeuserRole func(id int64, value int64) error
 	// RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 	RemoveBackofficeuser func(id int64) error
 }
