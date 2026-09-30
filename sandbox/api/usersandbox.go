@@ -14,4 +14,5 @@ package api
 // This is the only API contract you need to worry about. The implementation lives under
 // sandbox/internal/, and can be refactored or replaced wholesale.
 type UserSandbox struct {
+	User User
 }

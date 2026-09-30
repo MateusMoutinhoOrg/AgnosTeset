@@ -12,5 +12,5 @@ tables:
           required: true
           type: string
         - name: role
-          type: string
+          type: integer
       name: backofficeuser
