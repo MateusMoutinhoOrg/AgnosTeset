@@ -22,7 +22,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Priority = 10
 	self.ResponseType = "text/html"
 	self.Segments = 0
-	self.Pattern = "/admin/{*Rest} !(/admin/login)"
+	self.Pattern = "/admin/* !(/admin/login)"
 	self.Category = "Middleware"
 	self.Help = ""
 	self.LongDescription = ""
@@ -33,18 +33,10 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 		{
 			Id:          "Admin",
 			Start:       0,
-			End:         0,
-			Type:        api.StringPath,
-			Description: "",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/admin", Negate: false, IgnoreCase: false},
-		},
-		{
-			Id:          "Rest",
-			Start:       1,
 			End:         -1,
 			Type:        api.StringPath,
 			Description: "",
-			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.PrefixTrigger, Value: "/admin", Negate: false, IgnoreCase: false},
 		},
 		{
 			Id:          "NotLogin",

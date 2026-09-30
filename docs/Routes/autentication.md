@@ -1,17 +1,17 @@
-# `ANY /admin/{*Rest} !(/admin/login)`
+# `ANY /admin/* !(/admin/login)`
 
 ## Try it
 
 Only what is required:
 
 ```bash
-curl localhost:3000/admin/my-rest
+curl localhost:3000/admin
 ```
 
 With every value it reads:
 
 ```bash
-curl localhost:3000/admin/my-rest \
+curl localhost:3000/admin \
   -b 'admin_token=my-admin-token'
 ```
 
@@ -19,7 +19,6 @@ curl localhost:3000/admin/my-rest \
 
 | Part | What goes there | Example | Description |
 | --- | --- | --- | --- |
-| `{*Rest}` | the rest of the address — one part or more, like `a/b.png` | `my-rest` |  |
 | the whole address | text that must not be exactly `/admin/login` | — | the login route is reachable without a session |
 
 ## Query string, headers and cookies

@@ -10,15 +10,12 @@ parameters:
       key: admin_token
       type: string
 paths:
-    - end: 0
+    - end: -1
       id: Admin
       start: 0
       trigger:
-        type: equal
+        type: prefix
         value: /admin
-    - end: -1
-      id: Rest
-      start: 1
     - description: the login route is reachable without a session
       end: -1
       id: NotLogin

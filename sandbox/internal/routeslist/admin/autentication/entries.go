@@ -9,7 +9,6 @@ package autentication
 type Entries struct {
 	FullRoute  string `id:"FullRoute"`
 	Admin      string `id:"Admin"`
-	Rest       string `id:"Rest"`
 	NotLogin   string `id:"NotLogin"`
 	AdminToken string `id:"AdminToken"`
 }
