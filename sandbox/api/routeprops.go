@@ -14,4 +14,5 @@ package api
 // Written once by `agnos build` and the project's from then on:
 // declare here whatever the routes of this project hand each other.
 type RouteProps struct {
+	User User
 }
