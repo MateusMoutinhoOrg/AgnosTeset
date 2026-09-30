@@ -20,5 +20,12 @@ import (
 //
 //	props.User = user
 func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+	//try to get the token from the cookies
+	//verify if the token is valid
+	//if valid:
+	// set sandbox.User(BackkofficeUseritem) with the user retrived
+	// return nil
+	//else:
+	//returns assets/templates/login.html
 	return nil
 }
