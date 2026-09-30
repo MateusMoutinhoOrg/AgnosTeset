@@ -11,4 +11,6 @@ tables:
         - name: passwordsha
           required: true
           type: string
+        - name: role
+          type: string
       name: backofficeuser

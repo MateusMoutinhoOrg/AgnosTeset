@@ -21,6 +21,7 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 					{Name: "username", Type: database.String, Required: true},
 					{Name: "email", Type: database.String, Required: true},
 					{Name: "passwordsha", Type: database.String, Required: true},
+					{Name: "role", Type: database.String},
 				},
 			},
 		},
@@ -52,6 +53,9 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 	}
 	self.UpdateBackofficeuserPasswordsha = func(id int64, value string) error {
 		return UpdateBackofficeuserPasswordsha(self.sandbox, &self, id, value)
+	}
+	self.UpdateBackofficeuserRole = func(id int64, value string) error {
+		return UpdateBackofficeuserRole(self.sandbox, &self, id, value)
 	}
 	self.RemoveBackofficeuser = func(id int64) error {
 		return RemoveBackofficeuser(self.sandbox, &self, id)

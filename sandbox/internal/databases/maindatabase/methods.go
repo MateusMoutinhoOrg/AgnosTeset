@@ -143,6 +143,19 @@ func UpdateBackofficeuserPasswordsha(sandbox *api.Sandbox, self *Maindatabase, i
 	return databaseio.Fail(sandbox, item.Update("passwordsha", value))
 }
 
+// UpdateBackofficeuserRole writes a new role on one backofficeuser record.
+func UpdateBackofficeuserRole(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("backofficeuser %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("role", value))
+}
+
 // RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.
 func RemoveBackofficeuser(sandbox *api.Sandbox, self *Maindatabase, id int64) error {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
@@ -162,6 +175,7 @@ func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
 		"username":    props.Username,
 		"email":       props.Email,
 		"passwordsha": props.Passwordsha,
+		"role":        props.Role,
 	}
 }
 
@@ -189,6 +203,12 @@ func buildBackofficeuserItem(sandbox *api.Sandbox, item database.SchemaItem) (Ba
 	}
 	built.Passwordsha = passwordsha_value
 
+	role_value, err := databaseio.ReadString(sandbox, item, "role")
+	if err != nil {
+		return built, err
+	}
+	built.Role = role_value
+
 	return built, nil
 }
 
@@ -202,6 +222,9 @@ func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage
 		return false
 	}
 	if !databaseio.TextMatches(sandbox, item.Passwordsha, filtrage.PasswordshaStartsWith, filtrage.PasswordshaEquals) {
+		return false
+	}
+	if !databaseio.TextMatches(sandbox, item.Role, filtrage.RoleStartsWith, filtrage.RoleEquals) {
 		return false
 	}
 	return true
