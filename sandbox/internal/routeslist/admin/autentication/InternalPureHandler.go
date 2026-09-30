@@ -24,7 +24,7 @@ func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *E
 	//verify if the token is valid
 	//if valid:
 	// set sandbox.User(BackkofficeUseritem) with the user retrived
-	// return nil
+	// return nil (since these route its a middlware, it will render the other routes)
 	//else:
 	//returns assets/templates/login.html
 	return nil
