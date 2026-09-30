@@ -23,7 +23,7 @@ func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *E
 	//try to get the token from the cookies
 	//verify if the token is valid
 	//if valid:
-	// set sandbox.User(BackkofficeUseritem) with the user retrived
+	// set sandbox.User with the user retrived
 	// return nil (since these route its a middlware, it will render the other routes)
 	//else:
 	//returns assets/templates/login.html

@@ -24,6 +24,12 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`ANY /admin/{*Rest}`](autentication.md) |  |
 
+## Routes
+
+| Route | What it does |
+| --- | --- |
+| [`GET /admin/home`](home.md) |  |
+
 ## frontend
 
 | Route | What it does |

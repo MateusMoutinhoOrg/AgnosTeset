@@ -4,6 +4,7 @@ import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	routeslist_autentication "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/autentication"
+	routeslist_home "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/home"
 	routeslist_login "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/login"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
@@ -23,6 +24,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 	server.Routes = []*api.Route{
 		routeslist_autentication.NewRoute(sandbox),
 		routeslist_health.NewRoute(sandbox),
+		routeslist_home.NewRoute(sandbox),
 		routeslist_login.NewRoute(sandbox),
 		routeslist_frontend.NewRoute(sandbox),
 	}
