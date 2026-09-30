@@ -2,13 +2,14 @@ package start_server
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commandprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/cliio"
 	server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/server/server"
 )
 
 // InternalPureHandler backs `start-server`: it serves until the process is
 // asked to stop, and answers the command line once it has.
-func InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries *Entries, response *api.CommandResponse) error {
+func InternalPureHandler(sandbox *api.Sandbox, props *commandprops.CommandProps, entries *Entries, response *api.CommandResponse) error {
 	// Make the secret available to every route handler through sandbox.Config.
 	sandbox.Config.Secret = entries.Secret
 

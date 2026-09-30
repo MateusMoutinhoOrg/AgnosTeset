@@ -4,6 +4,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/server/route"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 )
 
 // NewRoute builds this route's declaration — a 1:1 image of its route.yaml —
@@ -50,7 +51,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 		Schema:      "",
 	}
 
-	self.InternalPureHandler = func(props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+	self.InternalPureHandler = func(props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 		return InternalPureHandler(sandbox, props, entries, response)
 	}
 

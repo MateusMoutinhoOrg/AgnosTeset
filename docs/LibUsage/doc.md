@@ -37,7 +37,6 @@ Everything callable from Go is behind one of them.
 
 | Field | Type |
 | --- | --- |
-| `lib.User` | `api.User` |
 | `lib.Cli` | `api.Cli` |
 | `lib.Config` | `api.Config` |
 | `lib.Server` | `api.Server` |

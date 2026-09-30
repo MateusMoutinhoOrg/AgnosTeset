@@ -46,7 +46,7 @@
 | `sandbox/internal/commands/<name>/command.yaml` | `add-command` | once, then rewritten by `add-flag` / `add-arg` / `set-command`, their `set-` editors and their inverses — never by hand |
 | `sandbox/internal/commands/<name>/InternalPureHandler.go` | `add-command` | once. A stub; the command's whole hand-written half |
 | `sandbox/internal/cli/errors/handle_*.go` | `build` | once. Five files, one per failure — what this project answers when no command does |
-| `sandbox/api/commandprops.go` | `build` | once. `api.CommandProps`, what one command line's chain of commands shares |
+| `sandbox/internal/commandprops/commandprops.go` | `build` | once. `commandprops.CommandProps`, what one command line's chain of commands shares |
 | `sandbox/api/{server.go,route.go}` | `build` | always |
 | `sandbox/internal/generated/server/server/new.go` | `build` | always. `NewServer` builds `Server.Routes` from every route's `NewRoute` |
 | `sandbox/internal/generated/server/server/servermain.go` | `build` | always. `ServerMain` + the one dispatch that runs `Server.Routes` as a chain |
@@ -61,7 +61,7 @@
 | `sandbox/internal/routeslist/<name>/InternalPureHandler.go` | `add-route` | once. A stub; the route's whole hand-written half |
 | `sandbox/internal/commands/start_server/{command.yaml,InternalPureHandler.go}` | `server-init` | once |
 | `sandbox/internal/server/errors/handle_*.go` | `build` | once. Eight files, one per failure — what this project answers when no route does |
-| `sandbox/api/routeprops.go` | `build` | once. `api.RouteProps`, what one request's chain of routes shares — declare its fields there |
+| `sandbox/internal/routeprops/routeprops.go` | `build` | once. `routeprops.RouteProps`, what one request's chain of routes shares — declare its fields there |
 | `sandbox/internal/generated/databaseio/*.go` | `build` | always |
 | `sandbox/internal/databases/<db>/{api.go,new.go,methods.go}` | `build` | always. The records, the `database.Props` and the body of every method, all from `specs.yaml` |
 | `docs/Databases/` | `build` | always. Both `doc.md` and `props.yaml` |

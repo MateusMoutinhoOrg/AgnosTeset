@@ -5,12 +5,13 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/render"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 )
 
 // InternalPureHandler answers POST /admin/login. The username field takes a
 // username or an email; a match sets the session cookie and redirects to
 // /admin/home, anything else answers the login page again under a 401.
-func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	username := entries.Body.Username
 
 	user, ok, err := backofficeauth.Authenticate(sandbox, username, entries.Body.Password)

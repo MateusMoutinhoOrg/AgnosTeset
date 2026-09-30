@@ -4,6 +4,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/frontio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 )
 
 // spaFallback answers a path that names no file, and has no extension, with
@@ -26,7 +27,7 @@ const spaFallback = false
 // and HandleNotFound answers it. frontio.SafePath is what keeps the caller's
 // path inside assets/frontend; it is generated and rewritten by every build,
 // so the check is never yours to keep.
-func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	relative, content, ok := frontio.Resolve(sandbox, entries.Rest)
 	if !ok && spaFallback && frontio.ExtensionOf(sandbox, entries.Rest) == "" {
 		relative, content, ok = frontio.Resolve(sandbox, "")

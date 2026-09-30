@@ -33,7 +33,7 @@ adapters/  -->  sandbox/  <--  cmd/main
 - **Every function in `sandbox/internal/`** takes `sandbox *api.Sandbox` as its first parameter.
 - **Commands** are in `sandbox/internal/commands/<name>/`. **Routes** are in `sandbox/internal/routeslist/[<folder>/]<name>/`. Each has a `command.yaml`/`route.yaml` declaration plus generated `new.go`/`entries.go`. Only `InternalPureHandler.go` is hand-written. Change the YAML with `agnos add-flag`/`set-route`/`add-body-field`/etc., never by hand. Handler inputs arrive typed and validated on `entries`.
 - **Route dispatch:** all matching routes run in `priority` order, lowest first (middleware on rung 10, routes on 100, `frontend` on 1000). A handler that neither sets a status nor writes has *declined*, and the next route runs. That's how middleware works. Refuse a request with `routeio.Fail(...)`. Unanswered and failed requests go to `sandbox/internal/server/errors/handle_*.go` (hand-owned).
-- **Per-request state goes on `props *api.RouteProps`** (fields declared in `sandbox/api/routeprops.go`), which is fresh for each request and shared along its chain. `*api.Sandbox` is shared across all requests, so don't store per-request data such as the authenticated user on it.
+- **Per-request state goes on `props *routeprops.RouteProps`** (fields declared in `sandbox/internal/routeprops/routeprops.go`), which is fresh for each request and shared along its chain. It lives under `sandbox/internal`, so a field may name a project type: `props.User` is the `*maindatabase.BackofficeuserItem` the auth middleware found (nil when none). `*api.Sandbox` is shared across all requests, so don't store per-request data such as the authenticated user on it. The cli mirror is `commandprops.CommandProps`.
 - **Databases:** `sandbox/internal/databases/maindatabase/specs.yaml` generates `api.go`/`new.go`/`methods.go`. Edit the specs with `agnos add-table-field` and similar commands. Custom queries go in a hand-written `methods_custom.go`. Use `maindatabase.New(sandbox)` then `db.AddBackofficeuser(...)`. `Find<T>By<Field>` is generated only for fields of `type: key`. Other fields are reached through `List<T>` plus a filtrage.
 - **Generated code** under `sandbox/internal/generated/`, `sandbox/new.go`, `sandbox/api/sandbox.go`, `README.md` and most of `docs/` is overwritten on every `build`. Never edit it. Change the source declaration instead (see `docs/GeneratedFiles/doc.md`). Files marked "written once" (constructors, `routeprops.go`, `handle_*.go`, route/command stubs) are yours after creation.
 - **Assets:** everything under `assets/` is embedded via `assets/asset.go` and read through `sandbox.Deps.Embeddeps` (e.g. `templates/login.html`). `assets/frontend/**` is served as-is by the `frontend` route.
@@ -42,7 +42,7 @@ adapters/  -->  sandbox/  <--  cmd/main
 ## Backoffice auth (in progress on `backoffice-auth`)
 
 - `start-server --secret` copies the secret into `sandbox.Config.Secret` (`UserConfig`) for route handlers.
-- `add-backoffice-user` stores `SHA-256(secret + password)` in the `backofficeuser` table. `role` is an int that maps to `api.UserRole` (`UserRoleRoot`=0, `UserRoleViewer`=1).
+- `add-backoffice-user` stores `SHA-256(secret + password)` in the `backofficeuser` table. `role` is an int that maps to `backofficeauth.Role` (`RoleRoot`=0, `RoleViewer`=1).
 - Routes under `routeslist/admin/`:
   - `autentication` (spelled that way): an `ANY /admin/...` middleware at priority 10.
   - `login`: `POST /admin/login`, form body.

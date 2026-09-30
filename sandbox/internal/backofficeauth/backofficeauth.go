@@ -13,6 +13,16 @@ const CookieName = "admin_token"
 // SessionSeconds is how long a session token is valid after login.
 const SessionSeconds = 30 * 60
 
+// Role is what the role column of a backofficeuser stands for.
+type Role int64
+
+const (
+	// RoleRoot is the root role.
+	RoleRoot Role = iota
+	// RoleViewer is the viewer role.
+	RoleViewer
+)
+
 // nowSeconds is the current time in seconds since the Unix epoch.
 func nowSeconds(sandbox *api.Sandbox) int64 {
 	return sandbox.Deps.Std.Now() / 1_000_000_000
@@ -76,33 +86,19 @@ func ClearedCookie(sandbox *api.Sandbox) string {
 	return sandbox.Deps.Std.Sprintf("%s=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict", CookieName)
 }
 
-// UserOf is the api.User a stored backoffice user stands for.
-func UserOf(sandbox *api.Sandbox, item maindatabase.BackofficeuserItem) api.User {
-	return api.User{
-		Id:       sandbox.Deps.Stringsdeps.FormatInt(item.Id, 10),
-		Email:    item.Email,
-		Username: item.Username,
-		Role:     api.UserRole(item.Role),
-	}
-}
-
 // UserOfToken answers the user a session token was issued for, or false when
 // the token is invalid, expired, or its user no longer exists.
-func UserOfToken(sandbox *api.Sandbox, token string) (api.User, bool) {
+func UserOfToken(sandbox *api.Sandbox, token string) (maindatabase.BackofficeuserItem, bool) {
 	if token == "" {
-		return api.User{}, false
+		return maindatabase.BackofficeuserItem{}, false
 	}
 	claims, err := sandbox.Deps.Jwtdeps.Parse(token, sandbox.Config.Secret)
 	if err != nil {
-		return api.User{}, false
+		return maindatabase.BackofficeuserItem{}, false
 	}
 	id, err := sandbox.Deps.Stringsdeps.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
-		return api.User{}, false
+		return maindatabase.BackofficeuserItem{}, false
 	}
-	item, ok := maindatabase.New(sandbox).FindBackofficeuserById(id)
-	if !ok {
-		return api.User{}, false
-	}
-	return UserOf(sandbox, item), true
+	return maindatabase.New(sandbox).FindBackofficeuserById(id)
 }

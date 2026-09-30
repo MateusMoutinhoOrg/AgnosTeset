@@ -2,6 +2,7 @@ package add_backoffice_user
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commandprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/cliio"
 )
@@ -9,7 +10,7 @@ import (
 // InternalPureHandler answers `add-backoffice-user`. It prepends the secret
 // to the password, hashes the result with SHA-256, and inserts one
 // backoffice user record into the database.
-func InternalPureHandler(sandbox *api.Sandbox, props *api.CommandProps, entries *Entries, response *api.CommandResponse) error {
+func InternalPureHandler(sandbox *api.Sandbox, props *commandprops.CommandProps, entries *Entries, response *api.CommandResponse) error {
 	// Hash: SHA-256(secret + password)
 	combined := entries.Secret + entries.Password
 	passwordSha := sandbox.Deps.Hashdeps.Sha256Hex([]byte(combined))

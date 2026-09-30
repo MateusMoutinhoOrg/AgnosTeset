@@ -5,6 +5,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/render"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 )
 
 // InternalPureHandler runs in front of every ANY /admin/{*Rest} except
@@ -13,10 +14,10 @@ import (
 // A valid session cookie puts its user on props.User and declines, so the
 // route after it runs. Anything else answers the login page under a 401, and
 // clears a cookie that no longer holds a valid session.
-func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *Entries, response *serverdeps.Response) error {
+func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	user, ok := backofficeauth.UserOfToken(sandbox, entries.AdminToken)
 	if ok {
-		props.User = user
+		props.User = &user
 		return nil
 	}
 

@@ -3,6 +3,8 @@ package render
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
 )
 
 // HomePage is what templates/home.html is rendered with.
@@ -17,11 +19,11 @@ type HomePage struct {
 }
 
 // roleName is the display name of a role.
-func roleName(sandbox *api.Sandbox, role api.UserRole) string {
+func roleName(sandbox *api.Sandbox, role backofficeauth.Role) string {
 	switch role {
-	case api.UserRoleRoot:
+	case backofficeauth.RoleRoot:
 		return "root"
-	case api.UserRoleViewer:
+	case backofficeauth.RoleViewer:
 		return "viewer"
 	}
 	return "unknown"
@@ -36,13 +38,13 @@ func initialOf(sandbox *api.Sandbox, name string) string {
 }
 
 // Home answers the home page for user, whose session lasts sessionMinutes.
-func Home(sandbox *api.Sandbox, response *serverdeps.Response, user api.User, sessionMinutes int) error {
+func Home(sandbox *api.Sandbox, response *serverdeps.Response, user *maindatabase.BackofficeuserItem, sessionMinutes int) error {
 	return Html(sandbox, response, api.StatusOk, "templates/home.html", HomePage{
-		Id:             user.Id,
+		Id:             sandbox.Deps.Stringsdeps.FormatInt(user.Id, 10),
 		Username:       user.Username,
 		Initial:        initialOf(sandbox, user.Username),
 		Email:          user.Email,
-		Role:           roleName(sandbox, user.Role),
+		Role:           roleName(sandbox, backofficeauth.Role(user.Role)),
 		SessionMinutes: sessionMinutes,
 	})
 }
