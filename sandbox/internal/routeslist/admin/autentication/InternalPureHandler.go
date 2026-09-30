@@ -26,6 +26,6 @@ func InternalPureHandler(sandbox *api.Sandbox, props *api.RouteProps, entries *E
 	// set sandbox.User with the user retrived
 	// return nil (since these route its a middlware, it will render the other routes)
 	//else:
-	//returns assets/templates/login.html
+	//returns assets/templates/login.html (blocks autentication)
 	return nil
 }
