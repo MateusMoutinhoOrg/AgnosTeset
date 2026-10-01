@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Home</title>
+  <title>Forbidden</title>
   <style>
     :root {
       --primary: #4F46E5;
+      --primary-hover: #4338CA;
       --primary-soft: rgba(79, 70, 229, 0.15);
       --accent: #EC4899;
       --bg-dark: #111827;
@@ -15,6 +16,7 @@
       --text-muted: #9CA3AF;
       --border: rgba(255, 255, 255, 0.1);
       --ok: #34D399;
+      --danger: #F87171;
     }
 
     * {
@@ -31,6 +33,8 @@
       position: relative;
       overflow-x: hidden;
     }
+
+    a { color: inherit; }
 
     .blob {
       position: fixed;
@@ -60,27 +64,24 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 1rem;
       padding: 1.25rem 2rem;
       border-bottom: 1px solid var(--border);
       background: rgba(17, 24, 39, 0.6);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-
-    .brand {
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: 0.02em;
-    }
-    .brand span {
-      color: var(--primary);
-    }
-
     .topbar .left {
       display: flex;
       align-items: center;
       gap: 2rem;
     }
+    .brand {
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+    }
+    .brand span { color: var(--primary); }
     .nav {
       display: flex;
       gap: 0.25rem;
@@ -104,7 +105,6 @@
       font-size: 0.9rem;
       color: var(--text-muted);
     }
-
     .avatar {
       width: 36px;
       height: 36px;
@@ -115,97 +115,7 @@
       color: white;
       background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
       text-transform: uppercase;
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem;
-      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #F9FAFB 0%, #D1D5DB 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      color: var(--text-muted);
-      margin-bottom: 2.5rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .card {
-      background: var(--surface);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 1.75rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-    }
-
-    .card h2 {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 1.25rem;
-    }
-
-    dl {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 0.75rem 1.25rem;
-      font-size: 0.95rem;
-    }
-    dt {
-      color: var(--text-muted);
-    }
-    dd {
-      word-break: break-all;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.7rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: var(--primary-soft);
-      color: #A5B4FC;
-      border: 1px solid rgba(79, 70, 229, 0.4);
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 1rem;
-      margin-bottom: 0.75rem;
-    }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--ok);
-      box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.15);
+      flex-shrink: 0;
     }
     .logout button {
       background: transparent;
@@ -223,45 +133,164 @@
       background: rgba(236, 72, 153, 0.12);
     }
 
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    main.narrow { max-width: 560px; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #F9FAFB 0%, #D1D5DB 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card {
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.75rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+
     .muted {
       color: var(--text-muted);
       font-size: 0.9rem;
       line-height: 1.5;
     }
 
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-top: 1.25rem;
-    }
     .btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      background: transparent;
       color: var(--text);
-      text-decoration: none;
       border: 1px solid var(--border);
-      padding: 0.5rem 0.95rem;
-      border-radius: 10px;
-      font-size: 0.85rem;
+      padding: 0.65rem 1.1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
       font-weight: 600;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
-    .btn:hover {
-      border-color: rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.05);
-    }
+    .btn:hover { border-color: rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.05); }
     .btn-primary {
       border: none;
       color: white;
       background: linear-gradient(135deg, var(--primary) 0%, #6366F1 100%);
+      box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+      transform: translateY(-1px);
+    }
+    .btn-danger { color: #FCA5A5; border-color: rgba(239, 68, 68, 0.4); }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.12); border-color: var(--danger); }
+    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 10px; }
+    .btn.disabled { opacity: 0.35; pointer-events: none; }
+
+    .alert, .notice {
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    .alert, .notice-error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #FCA5A5;
+    }
+    .notice-ok {
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #A7F3D0;
     }
 
-    @media (max-width: 560px) {
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.45rem;
+      color: #D1D5DB;
+    }
+    input, select {
+      width: 100%;
+      background-color: rgba(17, 24, 39, 0.6);
+      border: 1px solid #374151;
+      color: var(--text);
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+      background-color: rgba(17, 24, 39, 0.8);
+    }
+    input::placeholder { color: #6B7280; }
+    select option { background: #1F2937; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(156, 163, 175, 0.12);
+      color: #D1D5DB;
+      border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+    .badge-root {
+      background: var(--primary-soft);
+      color: #A5B4FC;
+      border-color: rgba(79, 70, 229, 0.4);
+    }
+
+    .denied { text-align: center; padding: 2.5rem 2rem; }
+    .denied .code {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .denied p.muted { margin: 0 auto 1.75rem; max-width: 360px; }
+    .denied .links {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 640px) {
       .topbar { padding: 1rem; }
       .topbar .left { gap: 0.75rem; }
       .brand { display: none; }
       .who .name { display: none; }
       main { padding: 2rem 1rem; }
+      h1 { font-size: 1.6rem; }
     }
   </style>
 </head>
@@ -273,60 +302,29 @@
     <div class="left">
       <div class="brand">Back<span>office</span></div>
       <nav class="nav">
-        <a href="/admin/home" class="active">Home</a>
+        <a href="/admin/home">Home</a>
         <a href="/admin/list-users">Users</a>
       </nav>
     </div>
     <div class="who">
-      <span class="name">{{html .Username}}</span>
-      <div class="avatar">{{html .Initial}}</div>
+      <span class="name">{{html .Viewer.Username}}</span>
+      <div class="avatar">{{html .Viewer.Initial}}</div>
       <form class="logout" action="/admin/logout" method="POST">
         <button type="submit">Log out</button>
       </form>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <h1>Welcome, {{html .Username}}</h1>
-      <p>You are signed in to the admin area.</p>
-    </section>
-
-    <section class="grid">
-      <article class="card">
-        <h2>Account</h2>
-        <dl>
-          <dt>Username</dt>
-          <dd>{{html .Username}}</dd>
-          <dt>Email</dt>
-          <dd>{{html .Email}}</dd>
-          <dt>Role</dt>
-          <dd><span class="badge">{{html .Role}}</span></dd>
-          <dt>User id</dt>
-          <dd>{{html .Id}}</dd>
-        </dl>
-      </article>
-
-      <article class="card">
-        <h2>Session</h2>
-        <div class="status"><span class="dot"></span> Active</div>
-        <p class="muted">
-          Your session lasts {{.SessionMinutes}} minutes from sign-in.
-          After that you will be asked to sign in again.
-        </p>
-      </article>
-
-      <article class="card">
-        <h2>Users</h2>
-        <p class="muted">
-          {{if .IsRoot}}See, add, edit and remove the backoffice users.{{else}}See who can sign in to the backoffice.{{end}}
-        </p>
-        <div class="links">
-          <a class="btn btn-primary" href="/admin/list-users">View users</a>
-          {{if .IsRoot}}<a class="btn" href="/admin/root/add-user">Add user</a>{{end}}
-        </div>
-      </article>
-    </section>
+  <main class="narrow">
+    <div class="card denied">
+      <div class="code">403 &middot; Forbidden</div>
+      <h1>Root access required</h1>
+      <p class="muted">Only root users can add, edit or remove backoffice users. Ask a root user if something needs to change.</p>
+      <div class="links">
+        <a class="btn btn-primary" href="/admin/list-users">Back to users</a>
+        <a class="btn" href="/admin/home">Home</a>
+      </div>
+    </div>
   </main>
 </body>
 </html>

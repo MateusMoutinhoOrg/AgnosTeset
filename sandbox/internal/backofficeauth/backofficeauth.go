@@ -23,6 +23,42 @@ const (
 	RoleViewer
 )
 
+// Roles is every role a backoffice user may hold, in the order they are offered.
+func Roles(sandbox *api.Sandbox) []Role {
+	return []Role{RoleRoot, RoleViewer}
+}
+
+// RoleName is the display name of a role, "unknown" for one Roles does not hold.
+func RoleName(sandbox *api.Sandbox, role Role) string {
+	switch role {
+	case RoleRoot:
+		return "root"
+	case RoleViewer:
+		return "viewer"
+	}
+	return "unknown"
+}
+
+// ParseRole is the role RoleName spells as name, or false when none does.
+func ParseRole(sandbox *api.Sandbox, name string) (Role, bool) {
+	for _, role := range Roles(sandbox) {
+		if RoleName(sandbox, role) == name {
+			return role, true
+		}
+	}
+	return RoleRoot, false
+}
+
+// ValidRole tells whether role is one of Roles.
+func ValidRole(sandbox *api.Sandbox, role Role) bool {
+	for _, known := range Roles(sandbox) {
+		if known == role {
+			return true
+		}
+	}
+	return false
+}
+
 // nowSeconds is the current time in seconds since the Unix epoch.
 func nowSeconds(sandbox *api.Sandbox) int64 {
 	return sandbox.Deps.Std.Now() / 1_000_000_000

@@ -23,6 +23,7 @@ it prints the address it took. Change it to wherever your server runs.
 | Route | What it does |
 | --- | --- |
 | [`ANY /admin/* !(/admin/login)`](autentication.md) |  |
+| [`ANY /admin/root/*`](root_guard.md) | Lets only root users reach /admin/root |
 
 ## Routes
 
@@ -30,6 +31,17 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`GET /admin/home`](home.md) |  |
 | [`POST /admin/logout`](logout.md) | Ends the current session |
+
+## Admin
+
+| Route | What it does |
+| --- | --- |
+| [`GET /admin/list-users`](list_users.md) | Lists backoffice users, filtered and paginated |
+| [`POST /admin/root/add-user`](add_user.md) | Adds a backoffice user |
+| [`GET /admin/root/add-user`](add_user_page.md) | Shows the form that adds a backoffice user |
+| [`POST /admin/root/edit-user/{Id:integer}`](edit_user.md) | Edits a backoffice user; a blank password keeps the current one |
+| [`GET /admin/root/edit-user/{Id:integer}`](edit_user_page.md) | Shows the form that edits a backoffice user |
+| [`POST /admin/root/remove-user/{Id:integer}`](remove_user.md) | Removes a backoffice user and every session of it |
 
 ## frontend
 

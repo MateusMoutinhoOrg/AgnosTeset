@@ -16,17 +16,8 @@ type HomePage struct {
 	Email          string
 	Role           string
 	SessionMinutes int
-}
-
-// roleName is the display name of a role.
-func roleName(sandbox *api.Sandbox, role backofficeauth.Role) string {
-	switch role {
-	case backofficeauth.RoleRoot:
-		return "root"
-	case backofficeauth.RoleViewer:
-		return "viewer"
-	}
-	return "unknown"
+	// IsRoot shows what only a root may do.
+	IsRoot bool
 }
 
 // initialOf is the first letter of name, "?" for an empty one.
@@ -44,7 +35,8 @@ func Home(sandbox *api.Sandbox, response *serverdeps.Response, user *maindatabas
 		Username:       user.Username,
 		Initial:        initialOf(sandbox, user.Username),
 		Email:          user.Email,
-		Role:           roleName(sandbox, backofficeauth.Role(user.Role)),
+		Role:           backofficeauth.RoleName(sandbox, backofficeauth.Role(user.Role)),
 		SessionMinutes: sessionMinutes,
+		IsRoot:         backofficeauth.Role(user.Role) == backofficeauth.RoleRoot,
 	})
 }
