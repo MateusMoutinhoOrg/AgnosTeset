@@ -274,7 +274,7 @@
       <div class="brand">Back<span>office</span></div>
       <nav class="nav">
         <a href="/admin/home" class="active">Home</a>
-        <a href="/admin/list-users">Users</a>
+        <a href="/admin/list-backoffice-users">Users</a>
       </nav>
     </div>
     <div class="who">
@@ -322,8 +322,8 @@
           {{if .IsRoot}}See, add, edit and remove the backoffice users.{{else}}See who can sign in to the backoffice.{{end}}
         </p>
         <div class="links">
-          <a class="btn btn-primary" href="/admin/list-users">View users</a>
-          {{if .IsRoot}}<a class="btn" href="/admin/root/add-user">Add user</a>{{end}}
+          <a class="btn btn-primary" href="/admin/list-backoffice-users">View users</a>
+          {{if .IsRoot}}<a class="btn" href="/admin/root/add-backoffice-user">Add user</a>{{end}}
         </div>
       </article>
     </section>

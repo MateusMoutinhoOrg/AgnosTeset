@@ -7,7 +7,7 @@ import (
 )
 
 // ListPath is the page every add, edit and remove sends the browser back to.
-const ListPath = "/admin/list-users"
+const ListPath = "/admin/list-backoffice-users"
 
 // DefaultLimit is how many users a page of the list shows when none is asked.
 const DefaultLimit = 20

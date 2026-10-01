@@ -47,12 +47,12 @@ adapters/  -->  sandbox/  <--  cmd/main
   - `autentication` (spelled that way): an `ANY /admin/...` middleware at priority 10.
   - `login`: `POST /admin/login`, form body.
   - `home`: `GET /admin/home`.
-  - `list-users`: `GET /admin/list-users?search=&role=&page=&limit=&notice=`, open to any backoffice user.
+  - `list-backoffice-users`: `GET /admin/list-backoffice-users?search=&role=&page=&limit=&notice=`, open to any backoffice user.
 - Routes under `routeslist/admin/root/` (root only):
   - `root-guard`: an `ANY /admin/root/...` middleware at priority 11, right after `autentication`. It answers `templates/forbidden.html` (403) to non-roots.
-  - `add-user-page`/`add-user`: `GET`/`POST /admin/root/add-user`.
-  - `edit-user-page`/`edit-user`: `GET`/`POST /admin/root/edit-user/{id}`. A blank password keeps the current one.
-  - `remove-user`: `POST /admin/root/remove-user/{id}`.
+  - `add-backoffice-user-page`/`add-backoffice-user`: `GET`/`POST /admin/root/add-backoffice-user`.
+  - `edit-backoffice-user-page`/`edit-backoffice-user`: `GET`/`POST /admin/root/edit-backoffice-user/{id}`. A blank password keeps the current one.
+  - `remove-backoffice-user`: `POST /admin/root/remove-backoffice-user/{id}`.
   - A handler never sees the method, so a form page and its action are two routes on one path.
 - Session: a JWT cookie (HttpOnly, SameSite=Strict, 30 min) whose `jti` names a `sessions` record nested under the user. Logout or removing the user deletes that record.
 - User-management logic lives in `sandbox/internal/backofficeusers/`:
@@ -60,4 +60,5 @@ adapters/  -->  sandbox/  <--  cmd/main
   - username and email are unique across both columns, ignoring case, and passwords need at least 8 characters;
   - a root can't remove their own account, and the last root can't be demoted.
 
-  Pages are rendered by `sandbox/internal/render/` from `assets/templates/`. An action answers `303` to `/admin/list-users?notice=<code>`, and `render.noticeOf` words each code.
+  Pages are rendered by `sandbox/internal/render/` from `assets/templates/` (`render.BackofficeUsers` → `backoffice_users.html`, `render.Add/EditBackofficeUserForm` → `backoffice_user_form.html`). An action answers `303` to `/admin/list-backoffice-users?notice=<code>`, and `render.noticeOf` words each code.
+- Everything here is named `backoffice*` because application users will come later. Don't give these routes, render helpers or templates generic `user` names.
