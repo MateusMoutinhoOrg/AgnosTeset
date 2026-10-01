@@ -24,6 +24,8 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`ANY /admin/* !(/admin/login)`](autentication.md) | Requires a valid backoffice session on /admin, except /admin/login |
 | [`ANY /admin/root/*`](root_guard.md) | Lets only root users reach /admin/root |
+| [`ANY /api/admin/* !(/api/admin/login)`](api_autentication.md) | Requires a valid Bearer token on /api/admin, except /api/admin/login |
+| [`ANY /api/admin/root/*`](api_root_guard.md) | Lets only root users reach /api/admin/root |
 
 ## Backoffice
 
@@ -43,6 +45,24 @@ it prints the address it took. Change it to wherever your server runs.
 | [`POST /admin/root/edit-backoffice-user/{Id:integer}`](edit_backoffice_user.md) | Edits a backoffice user; a blank password keeps the current one |
 | [`GET /admin/root/edit-backoffice-user/{Id:integer}`](edit_backoffice_user_page.md) | Shows the form that edits a backoffice user |
 | [`POST /admin/root/remove-backoffice-user/{Id:integer}`](remove_backoffice_user.md) | Removes a backoffice user and every session of it |
+
+## Backoffice Users API
+
+| Route | What it does |
+| --- | --- |
+| [`POST /api/admin/get-backoffice-user`](api_get_backoffice_user.md) | Answers one backoffice user by id |
+| [`POST /api/admin/list-backoffice-users`](api_list_backoffice_users.md) | Lists backoffice users, filtered and paginated |
+| [`POST /api/admin/root/add-backoffice-user`](api_add_backoffice_user.md) | Adds a backoffice user |
+| [`POST /api/admin/root/edit-backoffice-user`](api_edit_backoffice_user.md) | Edits a backoffice user; a missing or blank password keeps the current one |
+| [`POST /api/admin/root/remove-backoffice-user`](api_remove_backoffice_user.md) | Removes a backoffice user and every session of it |
+
+## Backoffice API
+
+| Route | What it does |
+| --- | --- |
+| [`POST /api/admin/login`](api_login.md) | Signs a backoffice user in and answers a Bearer token |
+| [`POST /api/admin/logout`](api_logout.md) | Ends the session of the Bearer token |
+| [`GET /api/admin/me`](api_me.md) | Answers the backoffice user of the Bearer token |
 
 ## Assets
 

@@ -132,21 +132,21 @@ func List(sandbox *api.Sandbox, query Query) (Listing, error) {
 }
 
 // Add inserts the user fields describe. It answers a message for the form when
-// fields are refused, "" once the user is added.
-func Add(sandbox *api.Sandbox, fields Fields) (string, error) {
+// fields are refused, and the user added with "" once it is.
+func Add(sandbox *api.Sandbox, fields Fields) (maindatabase.BackofficeuserItem, string, error) {
 	fields = trimmed(sandbox, fields)
 	message, err := validate(sandbox, fields, true, 0)
 	if err != nil || message != "" {
-		return message, err
+		return maindatabase.BackofficeuserItem{}, message, err
 	}
 
-	_, err = maindatabase.New(sandbox).AddBackofficeuser(maindatabase.BackofficeuserNew{
+	user, err := maindatabase.New(sandbox).AddBackofficeuser(maindatabase.BackofficeuserNew{
 		Username:    fields.Username,
 		Email:       fields.Email,
 		Passwordsha: backofficeauth.PasswordSha(sandbox, fields.Password),
 		Role:        fields.Role,
 	})
-	return "", err
+	return user, "", err
 }
 
 // Update writes fields over the user with id id, the password only when one

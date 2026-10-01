@@ -14,6 +14,16 @@ import (
 	routeslist_edit_backoffice_user_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/edit_backoffice_user_page"
 	routeslist_remove_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/remove_backoffice_user"
 	routeslist_root_guard "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/root_guard"
+	routeslist_api_autentication "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_autentication"
+	routeslist_api_get_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_get_backoffice_user"
+	routeslist_api_list_backoffice_users "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_list_backoffice_users"
+	routeslist_api_login "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_login"
+	routeslist_api_logout "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_logout"
+	routeslist_api_me "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_me"
+	routeslist_api_add_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_add_backoffice_user"
+	routeslist_api_edit_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_edit_backoffice_user"
+	routeslist_api_remove_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_remove_backoffice_user"
+	routeslist_api_root_guard "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_root_guard"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
@@ -30,10 +40,20 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 	server := api.Server{}
 
 	server.Routes = []*api.Route{
+		routeslist_api_autentication.NewRoute(sandbox),
 		routeslist_autentication.NewRoute(sandbox),
+		routeslist_api_root_guard.NewRoute(sandbox),
 		routeslist_root_guard.NewRoute(sandbox),
 		routeslist_add_backoffice_user.NewRoute(sandbox),
 		routeslist_add_backoffice_user_page.NewRoute(sandbox),
+		routeslist_api_add_backoffice_user.NewRoute(sandbox),
+		routeslist_api_edit_backoffice_user.NewRoute(sandbox),
+		routeslist_api_get_backoffice_user.NewRoute(sandbox),
+		routeslist_api_list_backoffice_users.NewRoute(sandbox),
+		routeslist_api_login.NewRoute(sandbox),
+		routeslist_api_logout.NewRoute(sandbox),
+		routeslist_api_me.NewRoute(sandbox),
+		routeslist_api_remove_backoffice_user.NewRoute(sandbox),
 		routeslist_edit_backoffice_user.NewRoute(sandbox),
 		routeslist_edit_backoffice_user_page.NewRoute(sandbox),
 		routeslist_health.NewRoute(sandbox),

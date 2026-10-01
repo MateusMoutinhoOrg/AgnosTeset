@@ -1,0 +1,38 @@
+body:
+    content-type: application/json
+    json-schema:
+        properties:
+            password:
+                type: string
+            username:
+                type: string
+        required:
+            - password
+            - username
+        type: object
+    max-bytes: 1048576
+    required: true
+    type: json
+category: Backoffice API
+examples:
+    - 'curl -X POST localhost:3000/api/admin/login -H ''Content-Type: application/json'' -d ''{"username":"root","password":"secret123"}'''
+help: Signs a backoffice user in and answers a Bearer token
+methods:
+    - POST
+parameters:
+    - description: the ip the request came from, set by the server and never by the client
+      fonts:
+        - header
+      id: XClientIp
+      key: x-client-ip
+      type: string
+paths:
+    - end: 2
+      id: ApiAdminLogin
+      start: 0
+      trigger:
+        type: equal
+        value: /api/admin/login
+priority: 100
+response-type: application/json
+segments: 3

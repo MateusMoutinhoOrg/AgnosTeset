@@ -1,0 +1,35 @@
+category: Middleware
+help: Requires a valid Bearer token on /api/admin, except /api/admin/login
+long-description: 'Every /api/admin route but POST /api/admin/login needs the token that login answers, sent as Authorization: Bearer <token>. The token is bound to the client ip it was issued to and lasts 30 minutes; a missing, invalid or expired one is answered 401 in JSON.'
+methods:
+    - ANY
+parameters:
+    - description: the session JWT answered by POST /api/admin/login, as Bearer <token>
+      fonts:
+        - header
+      id: Authorization
+      key: authorization
+      type: string
+    - description: the ip the request came from, set by the server and never by the client
+      fonts:
+        - header
+      id: XClientIp
+      key: x-client-ip
+      type: string
+paths:
+    - end: -1
+      id: Route
+      start: 0
+      trigger:
+        type: prefix
+        value: /api/admin
+    - description: the login route is reachable without a token
+      end: -1
+      id: NotLogin
+      start: 0
+      trigger:
+        negate: true
+        type: equal
+        value: /api/admin/login
+priority: 10
+response-type: application/json

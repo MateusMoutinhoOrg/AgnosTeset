@@ -62,3 +62,29 @@ adapters/  -->  sandbox/  <--  cmd/main
 
   Pages are rendered by `sandbox/internal/render/` from `assets/templates/` (`render.BackofficeUsers` → `backoffice_users.html`, `render.Add/EditBackofficeUserForm` → `backoffice_user_form.html`). An action answers `303` to `/admin/list-backoffice-users?notice=<code>`, and `render.noticeOf` words each code.
 - Everything here is named `backoffice*` because application users will come later. Don't give these routes, render helpers or templates generic `user` names.
+
+## Backoffice JSON API (`/api/admin/`)
+
+The JSON twin of the HTML routes above. It sits outside `/admin`, so the cookie `autentication` middleware never runs on it. Route names carry an `api-` prefix because a route name is unique across folders.
+
+- Every parameter arrives in a JSON body (`Content-Type: application/json`). Every action is a `POST`, except `GET /api/admin/me`, which takes no parameters.
+- Auth is `Authorization: Bearer <token>`. The token is the same session JWT that `backofficeauth.IssueToken` issues: it is bound to the client ip, and its `jti` names a `sessions` record. The API never reads the cookie.
+- `role` travels as its name (`"root"`/`"viewer"`), held by a schema `enum` and converted with `backofficeapi.Role`. A user is answered as `{id, username, email, role}`, never with `passwordsha`.
+- Failures go through `routeio.Fail`, so they come back as the default `{"error","field"}` of the `handle_*.go`:
+  - 401: missing or invalid token (with `WWW-Authenticate: Bearer`), or a bad login;
+  - 403: not root, or a root removing their own account;
+  - 404: unknown `id`;
+  - 400: a schema violation or a `backofficeusers` message.
+- `routeslist/api/admin/`:
+  - `api-autentication` (`ANY /api/admin/...` except `/api/admin/login`, priority 10);
+  - `api-login` (`{username, password}` → `{token, token_type, expires_in, user}`);
+  - `api-logout`;
+  - `api-me`;
+  - `api-list-backoffice-users` (`{search?, role?, page?, limit?}`; an empty body lists everything);
+  - `api-get-backoffice-user` (`{id}`).
+- `routeslist/api/admin/root/`:
+  - `api-root-guard` (priority 11);
+  - `api-add-backoffice-user` (`201`);
+  - `api-edit-backoffice-user` (`{id, username, email, role, password?}`);
+  - `api-remove-backoffice-user` (`{id}`).
+- The JSON documents are built in `sandbox/internal/backofficeapi/`, the JSON counterpart of `render`.

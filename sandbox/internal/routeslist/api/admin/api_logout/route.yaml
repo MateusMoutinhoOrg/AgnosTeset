@@ -1,0 +1,16 @@
+category: Backoffice API
+examples:
+    - 'curl -X POST localhost:3000/api/admin/logout -H "Authorization: Bearer $TOKEN"'
+help: Ends the session of the Bearer token
+methods:
+    - POST
+paths:
+    - end: 2
+      id: ApiAdminLogout
+      start: 0
+      trigger:
+        type: equal
+        value: /api/admin/logout
+priority: 100
+response-type: application/json
+segments: 3

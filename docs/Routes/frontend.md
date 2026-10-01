@@ -35,6 +35,9 @@ or `403`, for example — or let it through to this route.
 | [`add-backoffice-user-page`](add_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`edit-backoffice-user-page`](edit_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`root-guard`](root_guard.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-autentication`](api_autentication.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-me`](api_me.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-root-guard`](api_root_guard.md) | depends on the address — `explain-route` gives the exact answer |
 | [`health`](health.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
