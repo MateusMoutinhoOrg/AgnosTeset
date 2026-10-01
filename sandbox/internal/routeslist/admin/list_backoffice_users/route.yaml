@@ -1,4 +1,4 @@
-category: Admin
+category: Backoffice Users
 help: Lists backoffice users, filtered and paginated
 methods:
     - GET

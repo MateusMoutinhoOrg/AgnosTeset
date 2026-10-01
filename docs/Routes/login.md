@@ -1,5 +1,7 @@
 # `POST /admin/login`
 
+Signs a backoffice user in and sets the session cookie
+
 ## Try it
 
 Only what is required:
@@ -62,4 +64,4 @@ or `403`, for example — or let it through to this route.
 
 ---
 
-For developers: `sandbox/internal/routeslist/login/` · frontend · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+For developers: `sandbox/internal/routeslist/login/` · Backoffice · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

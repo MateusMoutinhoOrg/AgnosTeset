@@ -24,8 +24,8 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.ResponseType = "text/html"
 	self.Segments = 2
 	self.Pattern = "/admin/home"
-	self.Category = "Routes"
-	self.Help = ""
+	self.Category = "Backoffice"
+	self.Help = "Shows the backoffice home page to the signed-in user"
 	self.LongDescription = ""
 	self.Examples = []string{}
 	self.Hidden = false

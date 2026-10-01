@@ -1,4 +1,4 @@
-category: Admin
+category: Backoffice Users
 help: Shows the form that adds a backoffice user
 methods:
     - GET

@@ -22,17 +22,18 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`ANY /admin/* !(/admin/login)`](autentication.md) |  |
+| [`ANY /admin/* !(/admin/login)`](autentication.md) | Requires a valid backoffice session on /admin, except /admin/login |
 | [`ANY /admin/root/*`](root_guard.md) | Lets only root users reach /admin/root |
 
-## Routes
+## Backoffice
 
 | Route | What it does |
 | --- | --- |
-| [`GET /admin/home`](home.md) |  |
+| [`GET /admin/home`](home.md) | Shows the backoffice home page to the signed-in user |
+| [`POST /admin/login`](login.md) | Signs a backoffice user in and sets the session cookie |
 | [`POST /admin/logout`](logout.md) | Ends the current session |
 
-## Admin
+## Backoffice Users
 
 | Route | What it does |
 | --- | --- |
@@ -42,12 +43,6 @@ it prints the address it took. Change it to wherever your server runs.
 | [`POST /admin/root/edit-backoffice-user/{Id:integer}`](edit_backoffice_user.md) | Edits a backoffice user; a blank password keeps the current one |
 | [`GET /admin/root/edit-backoffice-user/{Id:integer}`](edit_backoffice_user_page.md) | Shows the form that edits a backoffice user |
 | [`POST /admin/root/remove-backoffice-user/{Id:integer}`](remove_backoffice_user.md) | Removes a backoffice user and every session of it |
-
-## frontend
-
-| Route | What it does |
-| --- | --- |
-| [`POST /admin/login`](login.md) |  |
 
 ## Assets
 

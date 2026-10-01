@@ -1,5 +1,5 @@
-category: Routes
-help: ""
+category: Backoffice
+help: Shows the backoffice home page to the signed-in user
 methods:
     - GET
 paths:

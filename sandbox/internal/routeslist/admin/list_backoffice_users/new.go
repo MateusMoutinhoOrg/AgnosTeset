@@ -24,7 +24,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.ResponseType = "text/html"
 	self.Segments = 2
 	self.Pattern = "/admin/list-backoffice-users"
-	self.Category = "Admin"
+	self.Category = "Backoffice Users"
 	self.Help = "Lists backoffice users, filtered and paginated"
 	self.LongDescription = ""
 	self.Examples = []string{}

@@ -18,7 +18,7 @@ body:
     max-bytes: 1048576
     required: true
     type: form
-category: Admin
+category: Backoffice Users
 help: Edits a backoffice user; a blank password keeps the current one
 methods:
     - POST

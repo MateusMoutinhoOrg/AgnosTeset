@@ -25,7 +25,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Segments = 0
 	self.Pattern = "/admin/* !(/admin/login)"
 	self.Category = "Middleware"
-	self.Help = ""
+	self.Help = "Requires a valid backoffice session on /admin, except /admin/login"
 	self.LongDescription = ""
 	self.Examples = []string{}
 	self.Hidden = false

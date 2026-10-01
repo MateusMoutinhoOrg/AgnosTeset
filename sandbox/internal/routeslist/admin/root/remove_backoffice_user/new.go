@@ -24,7 +24,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.ResponseType = "text/html"
 	self.Segments = 4
 	self.Pattern = "/admin/root/remove-backoffice-user/{Id:integer}"
-	self.Category = "Admin"
+	self.Category = "Backoffice Users"
 	self.Help = "Removes a backoffice user and every session of it"
 	self.LongDescription = ""
 	self.Examples = []string{}

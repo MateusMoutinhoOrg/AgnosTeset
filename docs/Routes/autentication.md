@@ -1,5 +1,7 @@
 # `ANY /admin/* !(/admin/login)`
 
+Requires a valid backoffice session on /admin, except /admin/login
+
 ## Try it
 
 Only what is required:

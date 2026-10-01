@@ -1,5 +1,5 @@
 category: Middleware
-help: ""
+help: Requires a valid backoffice session on /admin, except /admin/login
 methods:
     - ANY
 parameters:

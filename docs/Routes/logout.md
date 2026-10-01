@@ -27,4 +27,4 @@ or `403`, for example — or let it through to this route.
 
 ---
 
-For developers: `sandbox/internal/routeslist/logout/` · Routes · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+For developers: `sandbox/internal/routeslist/logout/` · Backoffice · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

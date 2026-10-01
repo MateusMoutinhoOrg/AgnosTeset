@@ -1,4 +1,4 @@
-category: Admin
+category: Backoffice Users
 help: Removes a backoffice user and every session of it
 methods:
     - POST

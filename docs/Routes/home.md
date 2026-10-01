@@ -1,5 +1,7 @@
 # `GET /admin/home`
 
+Shows the backoffice home page to the signed-in user
+
 ## Try it
 
 ```bash
@@ -25,4 +27,4 @@ or `403`, for example — or let it through to this route.
 
 ---
 
-For developers: `sandbox/internal/routeslist/home/` · Routes · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+For developers: `sandbox/internal/routeslist/home/` · Backoffice · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

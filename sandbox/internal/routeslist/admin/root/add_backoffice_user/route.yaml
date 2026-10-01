@@ -19,7 +19,7 @@ body:
     max-bytes: 1048576
     required: true
     type: form
-category: Admin
+category: Backoffice Users
 help: Adds a backoffice user
 methods:
     - POST

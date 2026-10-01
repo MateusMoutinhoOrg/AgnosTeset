@@ -46,4 +46,4 @@ or `403`, for example — or let it through to this route.
 
 ---
 
-For developers: `sandbox/internal/routeslist/list_backoffice_users/` · Admin · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+For developers: `sandbox/internal/routeslist/list_backoffice_users/` · Backoffice Users · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

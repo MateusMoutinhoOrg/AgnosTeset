@@ -13,8 +13,8 @@ body:
     max-bytes: 1048576
     required: true
     type: form
-category: frontend
-help: ""
+category: Backoffice
+help: Signs a backoffice user in and sets the session cookie
 methods:
     - POST
 parameters:

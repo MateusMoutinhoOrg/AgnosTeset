@@ -24,7 +24,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.ResponseType = "text/html"
 	self.Segments = 3
 	self.Pattern = "/admin/root/add-backoffice-user"
-	self.Category = "Admin"
+	self.Category = "Backoffice Users"
 	self.Help = "Adds a backoffice user"
 	self.LongDescription = ""
 	self.Examples = []string{}

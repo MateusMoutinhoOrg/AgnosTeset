@@ -1,4 +1,4 @@
-category: Routes
+category: Backoffice
 help: Ends the current session
 methods:
     - POST
