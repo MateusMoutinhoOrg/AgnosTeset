@@ -1,14 +1,26 @@
+## Novas rotas:
 
-- adicione uma subtabela chamada hosts na tabela de backofficeuser , essa tabela tera as seguintes colunas~~
-  - host string 
-  - mincreation time.time
+- /admin/liist-users
+  lista os usuarios , permitindo parametros de filtragem, quantidade, paginacao 
+   permissao: qualquer usuario do backoffice 
 
-- Adicione a propriedade  Host ao token jtw 
+- /admin/root/* 
+  middlware que garante que o usuario seja root 
 
-- Na autenticacao, alem de verificar o token, verifique se o host bate. (impedimento de cross site request)
- e se o tokenjtw foi criado apos o mintimecreation do host
 
-- adicione a rota /admin/logout, essa rota ira buscar o host, e adicionar o mincreation com o tempo unix atual, de modo que invalide
-qualquer token criado antes do mincreation atual.
+- /admin/root/remove-user/{id_do_usuario}
+  remove o usuario
+   permissao: apenas usuarios roots 
 
-- adicione na home um botao de logunt.
+- /admin/root/edit-user/{id_do_usuario}
+  edita o usuario
+   permissao: apenas usuarios roots 
+
+- /admin/root/add-user
+  adiciona um usuario
+   permissao: apenas usuarios roots 
+
+
+
+## Importante 
+precisa implementar as interfaces para controlar essas rotas. 
