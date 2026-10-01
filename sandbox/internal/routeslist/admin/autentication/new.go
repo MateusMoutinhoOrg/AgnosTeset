@@ -62,14 +62,14 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
 		{
-			Id:          "Host",
-			Key:         "host",
+			Id:          "XClientIp",
+			Key:         "x-client-ip",
 			Fonts:       []api.ParameterFont{api.HeaderParam},
 			Required:    false,
 			Type:        api.StringType,
 			Default:     "",
 			HasDefault:  false,
-			Description: "the host the request was sent to",
+			Description: "the ip the request came from, set by the server and never by the client",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
 	}

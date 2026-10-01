@@ -29,7 +29,7 @@ it prints the address it took. Change it to wherever your server runs.
 | Route | What it does |
 | --- | --- |
 | [`GET /admin/home`](home.md) |  |
-| [`POST /admin/logout`](logout.md) | Ends the session on this host |
+| [`POST /admin/logout`](logout.md) | Ends the current session |
 
 ## frontend
 

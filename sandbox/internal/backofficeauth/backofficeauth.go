@@ -65,12 +65,12 @@ func Authenticate(sandbox *api.Sandbox, login string, password string) (maindata
 	return user, true, nil
 }
 
-// IssueToken opens a session for user on host and signs its token, valid for
-// SessionSeconds. The session is a sessions record under user, living as long
+// IssueToken opens a session for user, whose request came from the client ip
+// ip, and signs its token, valid for SessionSeconds and bound to ip. The session is a sessions record under user, living as long
 // as the token; its id travels as the token's `jti`, so the autentication
 // middleware can tell whether that one session is still open. The user's
 // expired sessions are dropped first, so they never pile up.
-func IssueToken(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, host string) (string, error) {
+func IssueToken(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, ip string) (string, error) {
 	now := nowSeconds(sandbox)
 	err := dropExpired(sandbox, user.Id, now)
 	if err != nil {
@@ -78,7 +78,6 @@ func IssueToken(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, host
 	}
 
 	session, err := maindatabase.New(sandbox).AddBackofficeuserSessions(user.Id, maindatabase.SessionsNew{
-		Host:      host,
 		Expiresat: now + SessionSeconds,
 	})
 	if err != nil {
@@ -90,7 +89,7 @@ func IssueToken(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, host
 		Subject:   sandbox.Deps.Stringsdeps.FormatInt(user.Id, 10),
 		IssuedAt:  now,
 		ExpiresAt: now + SessionSeconds,
-		Host:      host,
+		Ip:        ip,
 	}, sandbox.Config.Secret)
 }
 
@@ -140,17 +139,17 @@ func findSession(sandbox *api.Sandbox, userId int64, sessionId int64) (maindatab
 
 // SessionOfToken answers the user a session token was issued for and the
 // session it names, or false when the token is invalid or expired, was issued
-// on another host than host, names a session that was closed by a logout, or
-// its user no longer exists.
-func SessionOfToken(sandbox *api.Sandbox, token string, host string) (maindatabase.BackofficeuserItem, maindatabase.SessionsItem, bool) {
+// to another client ip than ip, names a session that was closed by a logout,
+// or its user no longer exists.
+func SessionOfToken(sandbox *api.Sandbox, token string, ip string) (maindatabase.BackofficeuserItem, maindatabase.SessionsItem, bool) {
 	none := func() (maindatabase.BackofficeuserItem, maindatabase.SessionsItem, bool) {
 		return maindatabase.BackofficeuserItem{}, maindatabase.SessionsItem{}, false
 	}
-	if token == "" || host == "" {
+	if token == "" || ip == "" {
 		return none()
 	}
 	claims, err := sandbox.Deps.Jwtdeps.Parse(token, sandbox.Config.Secret)
-	if err != nil || claims.Host != host {
+	if err != nil || claims.Ip != ip {
 		return none()
 	}
 	userId, err := sandbox.Deps.Stringsdeps.ParseInt(claims.Subject, 10, 64)
@@ -166,7 +165,7 @@ func SessionOfToken(sandbox *api.Sandbox, token string, host string) (maindataba
 		return none()
 	}
 	session, ok := findSession(sandbox, user.Id, sessionId)
-	if !ok || session.Host != host || session.Expiresat <= nowSeconds(sandbox) {
+	if !ok || session.Expiresat <= nowSeconds(sandbox) {
 		return none()
 	}
 	return user, session, true

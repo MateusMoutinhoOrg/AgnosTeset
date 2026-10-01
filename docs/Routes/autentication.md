@@ -12,7 +12,7 @@ With every value it reads:
 
 ```bash
 curl localhost:3000/admin \
-  -H 'host: my-host' \
+  -H 'x-client-ip: my-x-client-ip' \
   -b 'admin_token=my-admin-token'
 ```
 
@@ -27,7 +27,7 @@ curl localhost:3000/admin \
 | Name | Sent in | What goes there | Required | Example | Description |
 | --- | --- | --- | --- | --- | --- |
 | `admin_token` | cookie | text | no | `my-admin-token` | the session JWT set by POST /admin/login |
-| `host` | header | text | no | `my-host` | the host the request was sent to |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip the request came from, set by the server and never by the client |
 
 ## What comes back
 

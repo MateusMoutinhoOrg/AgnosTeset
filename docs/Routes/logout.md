@@ -1,6 +1,6 @@
 # `POST /admin/logout`
 
-Ends the session on this host
+Ends the current session
 
 ## Try it
 

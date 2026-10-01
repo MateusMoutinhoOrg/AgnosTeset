@@ -12,7 +12,6 @@
 | `passwordsha` | `string` | yes |  |
 | `role` | `int` |  |  |
 | `sessions` | `database` |  |  |
-| `sessions.host` | `string` | yes |  |
 | `sessions.expiresat` | `int` | yes |  |
 
 ## Methods

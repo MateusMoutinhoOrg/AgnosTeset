@@ -11,5 +11,5 @@ type Entries struct {
 	Admin      string `id:"Admin"`
 	NotLogin   string `id:"NotLogin"`
 	AdminToken string `id:"AdminToken"`
-	Host       string `id:"Host"`
+	XClientIp  string `id:"XClientIp"`
 }

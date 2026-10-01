@@ -27,7 +27,7 @@ type Sandbox struct {
 }
 
 // Claims is the set of registered claims a token carries, plus the private
-// `host` claim.
+// `ip` claim.
 type Claims struct {
 	// Id is the `jti` claim: the one token among every token issued.
 	Id string
@@ -38,6 +38,6 @@ type Claims struct {
 	// ExpiresAt is the `exp` claim, in seconds since the Unix epoch. A token
 	// is refused by Parse from that instant on.
 	ExpiresAt int64
-	// Host is the private `host` claim: the host the token was issued on.
-	Host string
+	// Ip is the private `ip` claim: the client ip the token was issued to.
+	Ip string
 }

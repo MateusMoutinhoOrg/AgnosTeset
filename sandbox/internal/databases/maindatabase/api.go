@@ -45,13 +45,11 @@ type BackofficeuserFiltrage struct {
 // plain field the declaration gives it.
 type SessionsItem struct {
 	Id        int64
-	Host      string
 	Expiresat int64
 }
 
 // SessionsNew is one insert into sessions: the fields a new record carries.
 type SessionsNew struct {
-	Host      string
 	Expiresat int64
 }
 

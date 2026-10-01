@@ -14,9 +14,6 @@ tables:
         - name: role
           type: int
         - fields:
-            - name: host
-              required: true
-              type: string
             - name: expiresat
               required: true
               type: int

@@ -12,10 +12,10 @@ import (
 )
 
 // claimsSet is what a token carries on the wire: the registered claims and
-// the private `host` claim.
+// the private `ip` claim.
 type claimsSet struct {
 	jwt.RegisteredClaims
-	Host string `json:"host,omitempty"`
+	Ip string `json:"ip,omitempty"`
 }
 
 // sign fills jwtdeps.Sandbox.Sign: the claims become a claimsSet and are
@@ -31,7 +31,7 @@ func sign(claims jwtdeps.Claims, secret string) (string, error) {
 			IssuedAt:  jwt.NewNumericDate(time.Unix(claims.IssuedAt, 0)),
 			ExpiresAt: jwt.NewNumericDate(time.Unix(claims.ExpiresAt, 0)),
 		},
-		Host: claims.Host,
+		Ip: claims.Ip,
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, set).SignedString([]byte(secret))
 }
@@ -49,7 +49,7 @@ func parse(token string, secret string) (jwtdeps.Claims, error) {
 	if err != nil {
 		return jwtdeps.Claims{}, err
 	}
-	claims := jwtdeps.Claims{Id: set.ID, Subject: set.Subject, Host: set.Host}
+	claims := jwtdeps.Claims{Id: set.ID, Subject: set.Subject, Ip: set.Ip}
 	if set.IssuedAt != nil {
 		claims.IssuedAt = set.IssuedAt.Unix()
 	}

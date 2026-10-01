@@ -23,7 +23,6 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 					{Name: "passwordsha", Type: database.String, Required: true},
 					{Name: "role", Type: database.Int},
 					{Name: "sessions", Type: database.Database, Itens: []database.Item{
-						{Name: "host", Type: database.String, Required: true},
 						{Name: "expiresat", Type: database.Int, Required: true}}},
 				},
 			},

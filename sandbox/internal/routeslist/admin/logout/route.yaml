@@ -1,5 +1,5 @@
 category: Routes
-help: Ends the session on this host
+help: Ends the current session
 methods:
     - POST
 paths:

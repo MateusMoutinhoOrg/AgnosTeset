@@ -18,11 +18,11 @@ help: ""
 methods:
     - POST
 parameters:
-    - description: the host the request was sent to
+    - description: the ip the request came from, set by the server and never by the client
       fonts:
         - header
-      id: Host
-      key: host
+      id: XClientIp
+      key: x-client-ip
       type: string
 paths:
     - end: 1

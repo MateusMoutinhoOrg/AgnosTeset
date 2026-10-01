@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps"
@@ -100,8 +101,11 @@ func newRequest(request *http.Request) serverdeps.Request {
 		},
 		GetHeader: func(key string) string {
 			// net/http moves Host off the header map onto request.Host.
-			if http.CanonicalHeaderKey(key) == "Host" {
+			switch http.CanonicalHeaderKey(key) {
+			case "Host":
 				return request.Host
+			case ClientIpHeader:
+				return clientIp(request)
 			}
 			return request.Header.Get(key)
 		},
@@ -110,10 +114,14 @@ func newRequest(request *http.Request) serverdeps.Request {
 			for key, values := range request.Header {
 				headers[key] = append([]string{}, values...)
 			}
+			headers[ClientIpHeader] = []string{clientIp(request)}
 			return headers
 		},
 		GetHost: func() string {
 			return request.Host
+		},
+		GetClientIp: func() string {
+			return clientIp(request)
 		},
 		GetCookie: func(name string) string {
 			cookie, err := request.Cookie(name)
@@ -144,6 +152,45 @@ func newRequest(request *http.Request) serverdeps.Request {
 			return request.RemoteAddr
 		},
 	}
+}
+
+// ClientIpHeader is the header GetHeader answers the client's ip under. It is
+// never read off the request: what a client sends under that name is dropped,
+// so a route may declare it as a header parameter and trust what it binds.
+const ClientIpHeader = "X-Client-Ip"
+
+// clientIp is the ip the request came from, port dropped, in one spelling
+// whatever way it arrived. When the connection is from a loopback or private
+// address, it is taken to come from a reverse proxy on the same machine or
+// network (nginx, docker), and the ip is the last entry of X-Forwarded-For —
+// the one that proxy appended; the ones before it are the client's to forge.
+// From any other address the server is exposed directly, X-Forwarded-For is
+// ignored and the ip is the connection's own.
+//
+// Two setups this does not see through: a proxy reaching the server over a
+// public address (Cloudflare straight to the origin) answers the proxy's ip,
+// and on a server exposed directly, a client on its private network can
+// forge X-Forwarded-For.
+func clientIp(request *http.Request) string {
+	host, _, err := net.SplitHostPort(request.RemoteAddr)
+	if err != nil {
+		host = request.RemoteAddr
+	}
+	peer := net.ParseIP(host)
+	if peer == nil {
+		return host
+	}
+	if peer.IsLoopback() || peer.IsPrivate() {
+		forwarded := request.Header.Values("X-Forwarded-For")
+		if len(forwarded) > 0 {
+			entries := strings.Split(forwarded[len(forwarded)-1], ",")
+			last := net.ParseIP(strings.TrimSpace(entries[len(entries)-1]))
+			if last != nil {
+				return last.String()
+			}
+		}
+	}
+	return peer.String()
 }
 
 // readBody drains the request body, refusing one longer than limit. A limit

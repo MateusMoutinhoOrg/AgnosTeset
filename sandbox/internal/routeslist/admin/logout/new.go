@@ -25,7 +25,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Segments = 2
 	self.Pattern = "/admin/logout"
 	self.Category = "Routes"
-	self.Help = "Ends the session on this host"
+	self.Help = "Ends the current session"
 	self.LongDescription = ""
 	self.Examples = []string{}
 	self.Hidden = false

@@ -271,7 +271,6 @@ func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage
 // newSessionsFields is one insert into sessions as the stored field map.
 func newSessionsFields(props SessionsNew) map[string]any {
 	return map[string]any{
-		"host":      props.Host,
 		"expiresat": props.Expiresat,
 	}
 }
@@ -281,12 +280,6 @@ func newSessionsFields(props SessionsNew) map[string]any {
 // than a panic.
 func buildSessionsItem(sandbox *api.Sandbox, item database.SchemaItem) (SessionsItem, error) {
 	built := SessionsItem{Id: item.Id}
-
-	host_value, err := databaseio.ReadString(sandbox, item, "host")
-	if err != nil {
-		return built, err
-	}
-	built.Host = host_value
 
 	expiresat_value, err := databaseio.ReadInt(sandbox, item, "expiresat")
 	if err != nil {

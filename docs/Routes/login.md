@@ -14,7 +14,7 @@ With every value it reads:
 
 ```bash
 curl -X POST localhost:3000/admin/login \
-  -H 'host: my-host' \
+  -H 'x-client-ip: my-x-client-ip' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'password=text&username=text'
 ```
@@ -23,7 +23,7 @@ curl -X POST localhost:3000/admin/login \
 
 | Name | Sent in | What goes there | Required | Example | Description |
 | --- | --- | --- | --- | --- | --- |
-| `host` | header | text | no | `my-host` | the host the request was sent to |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip the request came from, set by the server and never by the client |
 
 ## Body
 
