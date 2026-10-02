@@ -14,8 +14,8 @@
 | `README.md` | `build` | always. `ReadmeHeader.md` + one index section per theme of `themes.yaml` |
 | `sandbox/new.go` | `build` | always. One `<x>.Constructor(&self)` per directory of `sandbox/constructors/` |
 | `sandbox/constructors/<x>/constructor.go` | `build` | once, per contract of `sandbox/api/` that has a `sandbox/internal/<x>/new.go`. Then yours — write your own package there and `new.go` calls it too |
-| `sandbox/api/sandbox.go` | `build` | always. Every struct of `sandbox/api/usersandbox*.go` embedded, one field per other file of `sandbox/api/`, plus `Deps` while the project carries the deps layer |
-| `sandbox/api/config.go` | `build` | always. The `Config` contract: every struct of `sandbox/api/userconfig*.go` embedded, `ProjectName`, `Version` |
+| `sandbox/api/sandbox.go` | `build` | always. Every struct of `sandbox/api/<x>sandbox.go` embedded, plus `Config` and `Deps` while the project carries the deps layer |
+| `sandbox/api/config.go` | `build` | always. The `Config` contract: every struct of `sandbox/api/<x>config.go` embedded, `ProjectName`, `Version` |
 | `sandbox/api/usersandbox.go` | `start` | once. `api.UserSandbox`, embedded in `api.Sandbox` — declare the project's own fields of the sandbox there |
 | `sandbox/api/userconfig.go` | `start` | once. `api.UserConfig`, embedded in `api.Config` — declare the project's own config fields there |
 | `sandbox/internal/generated/config/new.go` | `build` | always. `NewConfig`, filled with `ProjectName` and `Version` from `project.yaml` |
@@ -36,6 +36,7 @@
 | `docs/Commands/<command>.md` | `build` | always. One page per visible command; `docs/Commands/doc.md` indexes them |
 | `docs/CliExamples/` | `build` | always. Both `doc.md` and `props.yaml` |
 | `sandbox/api/cli.go`, `sandbox/api/command.go` | `build` | always |
+| `sandbox/api/clisandbox.go` | `build` | always. `api.CliSandbox`, the part of `api.Sandbox` holding `Cli` |
 | `sandbox/internal/generated/cli/cli/new.go` | `build` | always. `NewCli` builds `Cli.Commands` from every command's `NewCommand` |
 | `sandbox/internal/generated/cli/cli/climain.go` | `build` | always. `CliMain`, the one dispatch every command goes through |
 | `sandbox/internal/generated/cli/command/*.go` | `build` | always. The generic base every command is built on: the matcher and the `Entries` binder |
@@ -49,6 +50,7 @@
 | `sandbox/internal/commandprops/commandprops.go` | `build` | always. `commandprops.CommandProps`, what one command line's chain of commands shares: every struct of the package embedded |
 | `sandbox/internal/commandprops/project.go` | `build` | once, while the package has no other part. `Project`, the project's own fields of `CommandProps` |
 | `sandbox/api/{server.go,route.go}` | `build` | always |
+| `sandbox/api/serversandbox.go` | `build` | always. `api.ServerSandbox`, the part of `api.Sandbox` holding `Server` |
 | `sandbox/internal/generated/server/server/new.go` | `build` | always. `NewServer` builds `Server.Routes` from every route's `NewRoute` |
 | `sandbox/internal/generated/server/server/servermain.go` | `build` | always. `ServerMain` + the one dispatch that runs `Server.Routes` as a chain |
 | `sandbox/internal/generated/server/route/{new.go,IsActionable.go,RequestHandler.go}` | `build` | always. The generic base every route is built on: the matcher and the `Entries` binder |
@@ -74,7 +76,7 @@
 | `sandbox/internal/server/backoffice/**`, `sandbox/internal/databases/backofficedb/{specs.yaml,methods_custom.go}` | `backoffice-init` | once. Then the project's; `backoffice-purge` removes them |
 | the backoffice's `route.yaml` + `InternalPureHandler.go` under `sandbox/internal/routeslist/{admin,api/admin,client_ip,security_headers}` | `backoffice-init` | once. Then edited like any route |
 | `sandbox/internal/commands/backoffice/{add_backoffice_user,backoffice_server}/{command.yaml,InternalPureHandler.go}` | `backoffice-init` | once. Then edited like any command |
-| `sandbox/internal/routeprops/backoffice.go`, `sandbox/api/userconfig_backoffice.go` | `backoffice-init` | once. The backoffice's part of `RouteProps` and of `api.Config` |
+| `sandbox/internal/routeprops/backoffice.go`, `sandbox/api/backofficeconfig.go` | `backoffice-init` | once. The backoffice's part of `RouteProps` and of `api.Config` |
 | `assets/backoffice/*.html`, `assets/frontend/admin/backoffice.js` | `backoffice-init` | once. Copied verbatim: the pages are the project's runtime templates |
 | `sandbox/internal/generated/frontio/frontio.go` | `build` | always. `Resolve`, `SafePath`, `ContentTypeOf` |
 | `docs/FrontUsage/` | `build` | always. Both `doc.md` and `props.yaml` |

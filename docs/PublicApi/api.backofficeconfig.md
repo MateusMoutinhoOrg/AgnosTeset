@@ -1,4 +1,4 @@
-# `sandbox/api/userconfig_backoffice.go`
+# `sandbox/api/backofficeconfig.go`
 
 ## `BackofficeConfig`
 

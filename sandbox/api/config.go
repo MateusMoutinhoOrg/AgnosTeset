@@ -6,15 +6,15 @@ package api
 // caller may replace it — a test that runs the cli under another name, say —
 // and every reader of it follows.
 type Config struct {
-	// BackofficeConfig is a part of the Config, declared in sandbox/api/userconfig_backoffice.go.
+	// BackofficeConfig is a part of the Config, declared in sandbox/api/backofficeconfig.go.
 	// Embedded, so each of its fields is read as sandbox.Config.<Field>.
-	// Every struct of a sandbox/api/userconfig*.go file is one, so a
+	// Every struct of a sandbox/api/<x>config.go file is one, so a
 	// mechanic adds its own part beside the project's rather than editing it.
 	BackofficeConfig
 
 	// UserConfig is a part of the Config, declared in sandbox/api/userconfig.go.
 	// Embedded, so each of its fields is read as sandbox.Config.<Field>.
-	// Every struct of a sandbox/api/userconfig*.go file is one, so a
+	// Every struct of a sandbox/api/<x>config.go file is one, so a
 	// mechanic adds its own part beside the project's rather than editing it.
 	UserConfig
 

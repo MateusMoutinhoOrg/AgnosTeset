@@ -24,14 +24,16 @@ struct of function fields, filled by a binder.
 | Page | Declares |
 | --- | --- |
 | [`sandbox/api/sandbox.go`](api.sandbox.md) | `Sandbox` |
+| [`sandbox/api/backofficeconfig.go`](api.backofficeconfig.md) | `BackofficeConfig` |
 | [`sandbox/api/cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
+| [`sandbox/api/clisandbox.go`](api.clisandbox.md) | `CliSandbox` |
 | [`sandbox/api/command.go`](api.command.md) | `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Error`, `NewCommand`, `BindCommand` |
 | [`sandbox/api/config.go`](api.config.md) | `Config` |
 | [`sandbox/api/route.go`](api.route.md) | `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Error`, `NewRoute`, `BindRoute` |
 | [`sandbox/api/server.go`](api.server.md) | `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `Server`, `ServeProps` |
+| [`sandbox/api/serversandbox.go`](api.serversandbox.md) | `ServerSandbox` |
 | [`sandbox/api/trigger.go`](api.trigger.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `TriggerType`, `Trigger` |
 | [`sandbox/api/userconfig.go`](api.userconfig.md) | `UserConfig` |
-| [`sandbox/api/userconfig_backoffice.go`](api.userconfig_backoffice.md) | `BackofficeConfig` |
 | [`sandbox/api/usersandbox.go`](api.usersandbox.md) | `UserSandbox` |
 
 ## Dependency contracts
