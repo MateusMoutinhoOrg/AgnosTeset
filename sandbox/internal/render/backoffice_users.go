@@ -69,6 +69,8 @@ func noticeOf(sandbox *api.Sandbox, code string) Notice {
 		return Notice{Text: "User added.", Kind: "ok"}
 	case backofficeusers.NoticeUpdated:
 		return Notice{Text: "User updated.", Kind: "ok"}
+	case backofficeusers.NoticePasswordChanged:
+		return Notice{Text: "User updated. Their sessions were ended and their API tokens revoked.", Kind: "ok"}
 	case backofficeusers.NoticeRemoved:
 		return Notice{Text: "User removed.", Kind: "ok"}
 	case backofficeusers.NoticeNotFound:

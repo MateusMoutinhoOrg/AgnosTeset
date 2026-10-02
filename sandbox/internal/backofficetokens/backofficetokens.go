@@ -4,6 +4,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/httpguard"
 )
 
 // An API token is what the /api/admin routes authenticate with, sent as
@@ -62,13 +63,6 @@ const (
 	// the user may not revoke.
 	NoticeNotFound = "not-found"
 )
-
-// ipv4Pattern is a dotted IPv4 address, every byte within 0-255.
-const ipv4Pattern = `^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$`
-
-// ipv6Pattern is an IPv6 address in lower case, groups of up to four hex
-// digits around colons, a `::` included.
-const ipv6Pattern = `^[0-9a-f]{0,4}(:[0-9a-f]{0,4}){2,7}$`
 
 // Expiration is one choice of the form's expiration field.
 type Expiration struct {
@@ -374,7 +368,7 @@ func normalizeIps(sandbox *api.Sandbox, list string) (string, string, error) {
 		if ip == "" || seen[ip] {
 			continue
 		}
-		valid, err := isIp(sandbox, ip)
+		valid, err := httpguard.IsIp(sandbox, ip)
 		if err != nil {
 			return "", "", err
 		}
@@ -385,13 +379,4 @@ func normalizeIps(sandbox *api.Sandbox, list string) (string, string, error) {
 		kept = append(kept, ip)
 	}
 	return strings.Join(kept, ","), "", nil
-}
-
-// isIp tells whether ip, already lower case, is an IPv4 or an IPv6 address.
-func isIp(sandbox *api.Sandbox, ip string) (bool, error) {
-	ipv4, err := sandbox.Deps.Stringsdeps.MatchPattern(ipv4Pattern, ip)
-	if err != nil || ipv4 {
-		return ipv4, err
-	}
-	return sandbox.Deps.Stringsdeps.MatchPattern(ipv6Pattern, ip)
 }

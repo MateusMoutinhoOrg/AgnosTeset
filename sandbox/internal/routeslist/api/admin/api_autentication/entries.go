@@ -10,5 +10,4 @@ type Entries struct {
 	FullRoute     string `id:"FullRoute"`
 	Route         string `id:"Route"`
 	Authorization string `id:"Authorization"`
-	XClientIp     string `id:"XClientIp"`
 }

@@ -2,30 +2,42 @@ package add_backoffice_user
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeusers"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commandprops"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/cliio"
 )
 
-// InternalPureHandler answers `add-backoffice-user`. It prepends the secret
-// to the password, hashes the result with SHA-256, and inserts one
-// backoffice user record into the database.
+// InternalPureHandler answers `add-backoffice-user`. It generates the user's
+// password — so none travels on the command line, where every user of the
+// machine and the shell history read it — and adds the user through
+// backofficeusers.Add, refused on the same grounds as the add form: a username
+// or email already in use, an invalid email. The password is printed once.
 func InternalPureHandler(sandbox *api.Sandbox, props *commandprops.CommandProps, entries *Entries, response *api.CommandResponse) error {
-	// Hash: SHA-256(secret + password)
-	combined := entries.Secret + entries.Password
-	passwordSha := sandbox.Deps.Hashdeps.Sha256Hex([]byte(combined))
+	role, ok := backofficeauth.ParseRole(sandbox, entries.Role)
+	if !ok {
+		return cliio.Fail(sandbox, api.ExitUsage, "", "unknown role "+entries.Role)
+	}
+	password, err := backofficeusers.GeneratePassword(sandbox)
+	if err != nil {
+		return cliio.Fail(sandbox, api.ExitFailure, "", "failed to generate a password: "+err.Error())
+	}
 
-	db := maindatabase.New(sandbox)
-	_, err := db.AddBackofficeuser(maindatabase.BackofficeuserNew{
-		Username:    entries.Username,
-		Email:       entries.Email,
-		Passwordsha: passwordSha,
+	user, message, err := backofficeusers.Add(sandbox, backofficeusers.Fields{
+		Username: entries.Username,
+		Email:    entries.Email,
+		Password: password,
+		Role:     int64(role),
 	})
 	if err != nil {
 		return cliio.Fail(sandbox, api.ExitFailure, "", "failed to add backoffice user: "+err.Error())
 	}
+	if message != "" {
+		return cliio.Fail(sandbox, api.ExitFailure, "", message)
+	}
 
-	response.Printf("backoffice user %s <%s> created successfully\n", entries.Username, entries.Email)
+	response.Printf("backoffice user %s <%s> created with the %s role\n", user.Username, user.Email, backofficeauth.RoleName(sandbox, role))
+	response.Printf("password: %s\n", password)
+	response.Printf("It is shown only this once. Change it on /admin/root/edit-backoffice-user/%d.\n", user.Id)
 	return nil
 }
-

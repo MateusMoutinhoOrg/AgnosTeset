@@ -18,6 +18,7 @@ import (
 	routeslist_edit_backoffice_user_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/edit_backoffice_user_page"
 	routeslist_remove_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/remove_backoffice_user"
 	routeslist_root_guard "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/root_guard"
+	routeslist_same_origin "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/same_origin"
 	routeslist_api_autentication "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_autentication"
 	routeslist_api_get_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_get_backoffice_user"
 	routeslist_api_list_backoffice_users "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_list_backoffice_users"
@@ -26,8 +27,10 @@ import (
 	routeslist_api_edit_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_edit_backoffice_user"
 	routeslist_api_remove_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_remove_backoffice_user"
 	routeslist_api_root_guard "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_root_guard"
+	routeslist_client_ip "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/client_ip"
 	routeslist_frontend "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/frontend"
 	routeslist_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/health"
+	routeslist_security_headers "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/security_headers"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
 )
 
@@ -42,6 +45,9 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 	server := api.Server{}
 
 	server.Routes = []*api.Route{
+		routeslist_client_ip.NewRoute(sandbox),
+		routeslist_security_headers.NewRoute(sandbox),
+		routeslist_same_origin.NewRoute(sandbox),
 		routeslist_api_autentication.NewRoute(sandbox),
 		routeslist_autentication.NewRoute(sandbox),
 		routeslist_api_root_guard.NewRoute(sandbox),

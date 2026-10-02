@@ -20,6 +20,7 @@ body:
     type: form
 category: Backoffice Users
 help: Edits a backoffice user; a blank password keeps the current one
+long-description: A new password ends every session of the user and revokes every API token of theirs; when a root changes their own password, the session they sent it from stays open.
 methods:
     - POST
 paths:

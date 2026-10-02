@@ -29,13 +29,6 @@ category: Backoffice API Tokens
 help: Creates an API token and shows it once
 methods:
     - POST
-parameters:
-    - description: the ip the request came from, set by the server and never by the client
-      fonts:
-        - header
-      id: XClientIp
-      key: x-client-ip
-      type: string
 paths:
     - end: 1
       id: AdminCreateBackofficeApiToken

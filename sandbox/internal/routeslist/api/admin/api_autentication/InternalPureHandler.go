@@ -4,6 +4,7 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficethrottle"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficetokens"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
@@ -16,12 +17,19 @@ import (
 // the backoffice page, not revoked, not expired, and allowed from the client
 // ip this request came from — puts the user it belongs to on props.User and
 // the token on props.ApiToken and declines, so the route after it runs.
-// Anything else is refused with a 401 in JSON. The session cookie is never
+// Anything else is refused with a 401 in JSON. Once the client ip sent
+// backofficethrottle.MaxTokenFailuresPerIp invalid tokens, every token it
+// sends is refused with a 429, unchecked, until the window closes. The
+// session cookie is never
 // read here, so a browser carrying one cannot be made to call these routes by
 // another site, and the api issues no token of its own.
 func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	token := backofficeauth.BearerToken(sandbox, entries.Authorization)
-	user, apiToken, ok, err := backofficetokens.Resolve(sandbox, token, entries.XClientIp)
+	if token != "" && !backofficethrottle.TokenAllowed(sandbox, props.ClientIp) {
+		response.SetHeader("Retry-After", backofficethrottle.RetryAfter(sandbox))
+		return routeio.Fail(sandbox, api.StatusTooManyRequests, "authorization", "too many invalid tokens from this ip, try again later")
+	}
+	user, apiToken, ok, err := backofficetokens.Resolve(sandbox, token, props.ClientIp)
 	if err != nil {
 		return err
 	}
@@ -29,6 +37,9 @@ func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, ent
 		props.User = &user
 		props.ApiToken = &apiToken
 		return nil
+	}
+	if token != "" {
+		backofficethrottle.TokenFailed(sandbox, props.ClientIp)
 	}
 
 	response.SetHeader("WWW-Authenticate", "Bearer")

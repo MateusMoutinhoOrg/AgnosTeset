@@ -8,7 +8,7 @@ tables:
         - name: email
           required: true
           type: string
-        - name: passwordsha
+        - name: passwordhash
           required: true
           type: string
         - name: role

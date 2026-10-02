@@ -11,7 +11,10 @@ import (
 
 // InternalPureHandler answers POST /admin/root/edit-backoffice-user/{id}. The
 // user's username, email and role are written, and their password when one was
-// given, then the browser is sent to the list; a refused edit answers the form
+// given, then the browser is sent to the list. A new password ends every
+// session of the user and revokes their API tokens — the session of this
+// request survives when a root edits their own account — and the list says
+// so. A refused edit answers the form
 // again, filled with what was sent but the password, under a 400 with the
 // reason above it. A user that does not exist sends the browser back to the
 // list.
@@ -32,12 +35,12 @@ func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, ent
 		Password: entries.Body.Password,
 		Role:     int64(entries.Body.Role),
 	}
-	message, err := backofficeusers.Update(sandbox, id, fields)
+	message, notice, err := backofficeusers.Update(sandbox, *props.User, props.Session, id, fields)
 	if err != nil {
 		return err
 	}
 	if message != "" {
 		return render.EditBackofficeUserForm(sandbox, response, api.StatusBadRequest, props.User, id, fields, message)
 	}
-	return routeio.Redirect(*response, api.StatusSeeOther, backofficeusers.ListLocation(sandbox, backofficeusers.NoticeUpdated))
+	return routeio.Redirect(*response, api.StatusSeeOther, backofficeusers.ListLocation(sandbox, notice))
 }

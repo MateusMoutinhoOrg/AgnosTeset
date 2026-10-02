@@ -26,7 +26,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Pattern = "/admin/root/edit-backoffice-user/{Id:integer}"
 	self.Category = "Backoffice Users"
 	self.Help = "Edits a backoffice user; a blank password keeps the current one"
-	self.LongDescription = ""
+	self.LongDescription = "A new password ends every session of the user and revokes every API token of theirs; when a root changes their own password, the session they sent it from stays open."
 	self.Examples = []string{}
 	self.Hidden = false
 

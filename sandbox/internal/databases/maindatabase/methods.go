@@ -130,8 +130,8 @@ func UpdateBackofficeuserEmail(sandbox *api.Sandbox, self *Maindatabase, id int6
 	return databaseio.Fail(sandbox, item.Update("email", value))
 }
 
-// UpdateBackofficeuserPasswordsha writes a new passwordsha on one backofficeuser record.
-func UpdateBackofficeuserPasswordsha(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+// UpdateBackofficeuserPasswordhash writes a new passwordhash on one backofficeuser record.
+func UpdateBackofficeuserPasswordhash(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
 	schema, err := databaseio.Schema(sandbox, self.handle, "backofficeuser")
 	if err != nil {
 		return err
@@ -140,7 +140,7 @@ func UpdateBackofficeuserPasswordsha(sandbox *api.Sandbox, self *Maindatabase, i
 	if !ok {
 		return sandbox.Deps.Std.Errorf("backofficeuser %d not found", id)
 	}
-	return databaseio.Fail(sandbox, item.Update("passwordsha", value))
+	return databaseio.Fail(sandbox, item.Update("passwordhash", value))
 }
 
 // UpdateBackofficeuserRole writes a new role on one backofficeuser record.
@@ -449,10 +449,10 @@ func RemoveApitoken(sandbox *api.Sandbox, self *Maindatabase, id int64) error {
 // newBackofficeuserFields is one insert into backofficeuser as the stored field map.
 func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
 	return map[string]any{
-		"username":    props.Username,
-		"email":       props.Email,
-		"passwordsha": props.Passwordsha,
-		"role":        props.Role,
+		"username":     props.Username,
+		"email":        props.Email,
+		"passwordhash": props.Passwordhash,
+		"role":         props.Role,
 	}
 }
 
@@ -474,11 +474,11 @@ func buildBackofficeuserItem(sandbox *api.Sandbox, item database.SchemaItem) (Ba
 	}
 	built.Email = email_value
 
-	passwordsha_value, err := databaseio.ReadString(sandbox, item, "passwordsha")
+	passwordhash_value, err := databaseio.ReadString(sandbox, item, "passwordhash")
 	if err != nil {
 		return built, err
 	}
-	built.Passwordsha = passwordsha_value
+	built.Passwordhash = passwordhash_value
 
 	role_value, err := databaseio.ReadInt(sandbox, item, "role")
 	if err != nil {
@@ -498,7 +498,7 @@ func matchBackofficeuser(sandbox *api.Sandbox, item BackofficeuserItem, filtrage
 	if !databaseio.TextMatches(sandbox, item.Email, filtrage.EmailStartsWith, filtrage.EmailEquals) {
 		return false
 	}
-	if !databaseio.TextMatches(sandbox, item.Passwordsha, filtrage.PasswordshaStartsWith, filtrage.PasswordshaEquals) {
+	if !databaseio.TextMatches(sandbox, item.Passwordhash, filtrage.PasswordhashStartsWith, filtrage.PasswordhashEquals) {
 		return false
 	}
 	if !databaseio.IntInRange(item.Role, filtrage.RoleMin, filtrage.RoleMax) {

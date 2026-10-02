@@ -20,7 +20,7 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 				Itens: []database.Item{
 					{Name: "username", Type: database.String, Required: true},
 					{Name: "email", Type: database.String, Required: true},
-					{Name: "passwordsha", Type: database.String, Required: true},
+					{Name: "passwordhash", Type: database.String, Required: true},
 					{Name: "role", Type: database.Int},
 					{Name: "sessions", Type: database.Database, Itens: []database.Item{
 						{Name: "expiresat", Type: database.Int, Required: true}}},
@@ -67,8 +67,8 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 	self.UpdateBackofficeuserEmail = func(id int64, value string) error {
 		return UpdateBackofficeuserEmail(self.sandbox, &self, id, value)
 	}
-	self.UpdateBackofficeuserPasswordsha = func(id int64, value string) error {
-		return UpdateBackofficeuserPasswordsha(self.sandbox, &self, id, value)
+	self.UpdateBackofficeuserPasswordhash = func(id int64, value string) error {
+		return UpdateBackofficeuserPasswordhash(self.sandbox, &self, id, value)
 	}
 	self.UpdateBackofficeuserRole = func(id int64, value int64) error {
 		return UpdateBackofficeuserRole(self.sandbox, &self, id, value)

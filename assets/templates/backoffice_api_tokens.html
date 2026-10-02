@@ -474,27 +474,12 @@
       <h2>Token &ldquo;{{html .Created.Name}}&rdquo; created</h2>
       <p class="warning">Copy it now. It will not be shown again: only a hash of it is stored.</p>
       <div class="secret">
-        <input type="text" id="new-token" value="{{html .Created.Token}}" readonly spellcheck="false" onfocus="this.select()">
+        <input type="text" id="new-token" value="{{html .Created.Token}}" readonly spellcheck="false">
         <button type="button" class="btn" id="copy-token">Copy</button>
       </div>
       <p class="muted" style="margin-bottom: 0.5rem;">Send it in the Authorization header:</p>
       <code class="example" id="token-example">curl -H "Authorization: Bearer {{html .Created.Token}}" <span id="origin"></span>/api/admin/me</code>
     </section>
-    <script>
-      document.getElementById('origin').textContent = location.origin;
-      document.getElementById('copy-token').addEventListener('click', function () {
-        var field = document.getElementById('new-token');
-        var button = this;
-        field.select();
-        var done = function () { button.textContent = 'Copied'; };
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(field.value).then(done, function () { document.execCommand('copy'); done(); });
-        } else {
-          document.execCommand('copy');
-          done();
-        }
-      });
-    </script>
     {{end}}
 
     <div class="card table-card">
@@ -522,7 +507,7 @@
             <td data-label="Last used">{{html .LastUsed}}</td>
             <td data-label="Actions">
               <div class="row-actions">
-                <form action="/admin/revoke-backoffice-api-token/{{.Id}}" method="POST" data-name="{{html .Name}}" onsubmit="return confirm('Revoke the token ' + this.dataset.name + '? Anything using it will stop working.');">
+                <form action="/admin/revoke-backoffice-api-token/{{.Id}}" method="POST" data-confirm="Revoke the token {{html .Name}}? Anything using it will stop working.">
                   <button type="submit" class="btn btn-small btn-danger">Revoke</button>
                 </form>
               </div>
@@ -536,5 +521,6 @@
       {{end}}
     </div>
   </main>
+  <script src="/admin/backoffice.js" defer></script>
 </body>
 </html>

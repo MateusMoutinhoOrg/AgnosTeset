@@ -9,7 +9,7 @@
 | --- | --- | --- | --- |
 | `username` | `string` | yes |  |
 | `email` | `string` | yes |  |
-| `passwordsha` | `string` | yes |  |
+| `passwordhash` | `string` | yes |  |
 | `role` | `int` |  |  |
 | `sessions` | `database` |  |  |
 | `sessions.expiresat` | `int` | yes |  |
@@ -39,7 +39,7 @@
 | `CountBackofficeuser() (int, error)` | is how many backofficeuser records are live |
 | `UpdateBackofficeuserUsername(id int64, value string) error` | writes a new username on one backofficeuser record |
 | `UpdateBackofficeuserEmail(id int64, value string) error` | writes a new email on one backofficeuser record |
-| `UpdateBackofficeuserPasswordsha(id int64, value string) error` | writes a new passwordsha on one backofficeuser record |
+| `UpdateBackofficeuserPasswordhash(id int64, value string) error` | writes a new passwordhash on one backofficeuser record |
 | `UpdateBackofficeuserRole(id int64, value int64) error` | writes a new role on one backofficeuser record |
 | `RemoveBackofficeuser(id int64) error` | deletes one backofficeuser record and everything nested under it |
 | `AddBackofficeuserSessions(parent_id int64, props SessionsNew) (SessionsItem, error)` | inserts one sessions record under one backofficeuser record |

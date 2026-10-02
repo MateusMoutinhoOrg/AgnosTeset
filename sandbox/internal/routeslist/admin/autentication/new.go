@@ -61,17 +61,6 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Description: "the session JWT set by POST /admin/login",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
-		{
-			Id:          "XClientIp",
-			Key:         "x-client-ip",
-			Fonts:       []api.ParameterFont{api.HeaderParam},
-			Required:    false,
-			Type:        api.StringType,
-			Default:     "",
-			HasDefault:  false,
-			Description: "the ip the request came from, set by the server and never by the client",
-			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-		},
 	}
 
 	self.Body = api.RouteBody{

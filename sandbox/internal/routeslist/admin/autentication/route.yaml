@@ -9,12 +9,6 @@ parameters:
       id: AdminToken
       key: admin_token
       type: string
-    - description: the ip the request came from, set by the server and never by the client
-      fonts:
-        - header
-      id: XClientIp
-      key: x-client-ip
-      type: string
 paths:
     - end: -1
       id: Admin

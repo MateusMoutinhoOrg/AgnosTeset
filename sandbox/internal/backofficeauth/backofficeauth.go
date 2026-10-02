@@ -13,6 +13,14 @@ const CookieName = "admin_token"
 // SessionSeconds is how long a session token is valid after login.
 const SessionSeconds = 30 * 60
 
+// SecretEnv is the environment variable start-server reads the secret that
+// signs session tokens from. It is never a flag — every user of the machine
+// reads a command line — nor a file, which can end up committed with the code.
+const SecretEnv = "TESTE_SECRET"
+
+// MinSecretLength is the fewest characters the secret may have.
+const MinSecretLength = 32
+
 // Role is what the role column of a backofficeuser stands for.
 type Role int64
 
@@ -64,39 +72,57 @@ func nowSeconds(sandbox *api.Sandbox) int64 {
 	return sandbox.Deps.Std.Now() / 1_000_000_000
 }
 
-// PasswordSha is how add-backoffice-user stores a password: SHA-256 of the
-// server secret followed by the password, lower-case hex.
-func PasswordSha(sandbox *api.Sandbox, password string) string {
-	return sandbox.Deps.Hashdeps.Sha256Hex([]byte(sandbox.Config.Secret + password))
+// ReadSecret is the secret that signs session tokens, read from the SecretEnv
+// environment variable. It refuses one that is unset or shorter than
+// MinSecretLength, saying how to set it.
+func ReadSecret(sandbox *api.Sandbox) (string, error) {
+	secret := sandbox.Deps.Envdeps.Getenv(SecretEnv)
+	if len(secret) < MinSecretLength {
+		return "", sandbox.Deps.Std.Errorf("set the %s environment variable to a random secret of at least %d characters (openssl rand -hex 32); it signs the backoffice sessions", SecretEnv, MinSecretLength)
+	}
+	return secret, nil
 }
 
-// FindByLogin looks a backoffice user up by username, then by email.
+// HashPassword is how a backoffice password is stored: a salted, deliberately
+// slow hash of it, with a salt of its own, so equal passwords never share a
+// hash and a leaked database is slow to guess at.
+func HashPassword(sandbox *api.Sandbox, password string) (string, error) {
+	return sandbox.Deps.Passworddeps.Hash(password)
+}
+
+// FindByLogin looks a backoffice user up by username or email. It reads every
+// user once whichever the login is, so a username, an email and a login that
+// names nobody take the same time.
 func FindByLogin(sandbox *api.Sandbox, login string) (maindatabase.BackofficeuserItem, bool, error) {
-	db := maindatabase.New(sandbox)
-	for _, filtrage := range []maindatabase.BackofficeuserFiltrage{
-		{UsernameEquals: login},
-		{EmailEquals: login},
-	} {
-		found, err := db.ListBackofficeuser(filtrage)
-		if err != nil {
-			return maindatabase.BackofficeuserItem{}, false, err
-		}
-		if len(found) > 0 {
-			return found[0], true, nil
+	users, err := maindatabase.New(sandbox).ListBackofficeuser(maindatabase.BackofficeuserFiltrage{})
+	if err != nil {
+		return maindatabase.BackofficeuserItem{}, false, err
+	}
+	for _, user := range users {
+		if user.Username == login || user.Email == login {
+			return user, true, nil
 		}
 	}
 	return maindatabase.BackofficeuserItem{}, false, nil
 }
 
 // Authenticate answers the user whose login (username or email) and password
-// match, or false when either does not.
+// match, or false when either does not. A login that names nobody still costs
+// one password hash, so how long a refusal takes never tells an unknown login
+// from a wrong password.
 func Authenticate(sandbox *api.Sandbox, login string, password string) (maindatabase.BackofficeuserItem, bool, error) {
+	none := maindatabase.BackofficeuserItem{}
 	user, ok, err := FindByLogin(sandbox, login)
-	if err != nil || !ok {
-		return user, false, err
+	if err != nil {
+		return none, false, err
 	}
-	if user.Passwordsha != PasswordSha(sandbox, password) {
-		return maindatabase.BackofficeuserItem{}, false, nil
+	if !ok {
+		_, err = HashPassword(sandbox, password)
+		return none, false, err
+	}
+	match, err := sandbox.Deps.Passworddeps.Verify(user.Passwordhash, password)
+	if err != nil || !match {
+		return none, false, err
 	}
 	return user, true, nil
 }
@@ -130,14 +156,25 @@ func IssueToken(sandbox *api.Sandbox, user maindatabase.BackofficeuserItem, ip s
 }
 
 // SessionCookie is the Set-Cookie value carrying token: HttpOnly,
-// SameSite=Strict, on every path, expiring with the token.
+// SameSite=Strict, Secure unless start-server serves plain http, on every
+// path, expiring with the token.
 func SessionCookie(sandbox *api.Sandbox, token string) string {
-	return sandbox.Deps.Std.Sprintf("%s=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=Strict", CookieName, token, SessionSeconds)
+	return sandbox.Deps.Std.Sprintf("%s=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=Strict%s", CookieName, token, SessionSeconds, secureAttribute(sandbox))
 }
 
 // ClearedCookie is the Set-Cookie value that removes the session cookie.
 func ClearedCookie(sandbox *api.Sandbox) string {
-	return sandbox.Deps.Std.Sprintf("%s=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict", CookieName)
+	return sandbox.Deps.Std.Sprintf("%s=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict%s", CookieName, secureAttribute(sandbox))
+}
+
+// secureAttribute is the Secure attribute of the session cookie, which keeps
+// the browser from sending it over plain http; "" when start-server serves
+// plain http, for local development.
+func secureAttribute(sandbox *api.Sandbox) string {
+	if sandbox.Config.InsecureHttp {
+		return ""
+	}
+	return "; Secure"
 }
 
 // BearerToken is the token an Authorization header carries in the Bearer
@@ -217,6 +254,28 @@ func SessionOfToken(sandbox *api.Sandbox, token string, ip string) (maindatabase
 		return none()
 	}
 	return user, session, true
+}
+
+// CloseSessions closes every session of the user with id userId but keep, so
+// their tokens are refused from here on; nil keep closes them all. It runs
+// when the user's password changes, so a session opened with the old one
+// does not outlive it.
+func CloseSessions(sandbox *api.Sandbox, userId int64, keep *maindatabase.SessionsItem) error {
+	db := maindatabase.New(sandbox)
+	sessions, err := db.ListBackofficeuserSessions(userId)
+	if err != nil {
+		return err
+	}
+	for _, session := range sessions {
+		if keep != nil && session.Id == keep.Id {
+			continue
+		}
+		err = maindatabase.RemoveBackofficeuserSessions(sandbox, db, userId, session.Id)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Logout closes session of user: its record is deleted, so its token is

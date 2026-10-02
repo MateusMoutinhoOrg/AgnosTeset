@@ -4,9 +4,12 @@ import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/argvdeps"
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/embeddeps"
+	envdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/envdeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/hashdeps"
 	jwtdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/jwtdeps"
+	passworddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/passworddeps"
 	randdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/randdeps"
+	ratelimitdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/ratelimitdeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serverdeps"
@@ -23,9 +26,12 @@ func New() deps.Deps {
 	argvdeps.Bind(&deps)
 	database.Bind(&deps)
 	embeddeps.Bind(&deps)
+	envdeps.Bind(&deps)
 	hashdeps.Bind(&deps)
 	jwtdeps.Bind(&deps)
+	passworddeps.Bind(&deps)
 	randdeps.Bind(&deps)
+	ratelimitdeps.Bind(&deps)
 	reflectdeps.Bind(&deps)
 	serializables.Bind(&deps)
 	serverdeps.Bind(&deps)

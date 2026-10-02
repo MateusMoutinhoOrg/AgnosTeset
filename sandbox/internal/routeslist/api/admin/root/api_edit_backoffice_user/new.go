@@ -26,7 +26,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Pattern = "/api/admin/root/edit-backoffice-user"
 	self.Category = "Backoffice Users API"
 	self.Help = "Edits a backoffice user; a missing or blank password keeps the current one"
-	self.LongDescription = ""
+	self.LongDescription = "A new password ends every session of the user and revokes every API token of theirs, the token this request carries included when a root changes their own password."
 	self.Examples = []string{"curl -X POST localhost:3000/api/admin/root/edit-backoffice-user -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"id\":2,\"username\":\"ana\",\"email\":\"ana@example.com\",\"role\":\"root\"}'"}
 	self.Hidden = false
 

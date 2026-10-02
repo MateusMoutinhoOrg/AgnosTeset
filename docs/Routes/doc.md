@@ -24,8 +24,11 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`ANY /admin/* !(/admin/login)`](autentication.md) | Requires a valid backoffice session on /admin, except /admin/login |
 | [`ANY /admin/root/*`](root_guard.md) | Lets only root users reach /admin/root |
+| [`ANY /admin/*`](same_origin.md) | Refuses a request to /admin another site's page sent |
 | [`ANY /api/admin/*`](api_autentication.md) | Requires a valid API token on every /api/admin route |
 | [`ANY /api/admin/root/*`](api_root_guard.md) | Lets only root users reach /api/admin/root |
+| [`ANY /*`](client_ip.md) | Works out the client ip every route after it reads, from the connection or the reverse proxy in front |
+| [`ANY /~(^/(api/)?admin(/|$))`](security_headers.md) | Sends the security headers on every /admin and /api/admin response |
 
 ## Backoffice API Tokens
 

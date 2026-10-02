@@ -17,7 +17,8 @@ With every value it reads:
 ```bash
 curl localhost:3000/api/admin/root \
   -H 'authorization: my-authorization' \
-  -H 'x-client-ip: my-x-client-ip'
+  -H 'x-client-ip: my-x-client-ip' \
+  -H 'x-forwarded-for: my-x-forwarded-for'
 ```
 
 ## Query string, headers and cookies
@@ -25,7 +26,8 @@ curl localhost:3000/api/admin/root \
 | Name | Sent in | What goes there | Required | Example | Description |
 | --- | --- | --- | --- | --- | --- |
 | `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> — read by [`api-autentication`](api_autentication.md), which runs first |
-| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip the request came from, set by the server and never by the client — read by [`api-autentication`](api_autentication.md), which runs first |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`client-ip`](client_ip.md), which runs first |
+| `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`client-ip`](client_ip.md), which runs first |
 
 ## What comes back
 
@@ -43,6 +45,8 @@ or `403`, for example — or let it through to this route.
 | Route | When |
 | --- | --- |
 | [`api-autentication`](api_autentication.md) | always |
+| [`client-ip`](client_ip.md) | always |
+| [`security-headers`](security_headers.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 

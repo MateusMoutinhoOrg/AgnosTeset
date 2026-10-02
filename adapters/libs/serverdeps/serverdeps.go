@@ -106,6 +106,8 @@ func newRequest(request *http.Request) serverdeps.Request {
 				return request.Host
 			case ClientIpHeader:
 				return clientIp(request)
+			case ForwardedForHeader:
+				return strings.Join(request.Header.Values(ForwardedForHeader), ", ")
 			}
 			return request.Header.Get(key)
 		},
@@ -159,18 +161,16 @@ func newRequest(request *http.Request) serverdeps.Request {
 // so a route may declare it as a header parameter and trust what it binds.
 const ClientIpHeader = "X-Client-Ip"
 
-// clientIp is the ip the request came from, port dropped, in one spelling
-// whatever way it arrived. When the connection is from a loopback or private
-// address, it is taken to come from a reverse proxy on the same machine or
-// network (nginx, docker), and the ip is the last entry of X-Forwarded-For —
-// the one that proxy appended; the ones before it are the client's to forge.
-// From any other address the server is exposed directly, X-Forwarded-For is
-// ignored and the ip is the connection's own.
-//
-// Two setups this does not see through: a proxy reaching the server over a
-// public address (Cloudflare straight to the origin) answers the proxy's ip,
-// and on a server exposed directly, a client on its private network can
-// forge X-Forwarded-For.
+// ForwardedForHeader is the header a reverse proxy appends the ip it was
+// reached from to. GetHeader answers every line of it joined by commas, the
+// way one line spells several entries, so a line the client sent ahead of
+// the proxy's cannot hide the entry the proxy appended.
+const ForwardedForHeader = "X-Forwarded-For"
+
+// clientIp is the ip of the connection the request came on, port dropped, in
+// one spelling whatever way it arrived. X-Forwarded-For is never read here:
+// anyone may send it, and only the project knows whether a proxy it trusts
+// stands in front of the server, so trusting it is the sandbox's decision.
 func clientIp(request *http.Request) string {
 	host, _, err := net.SplitHostPort(request.RemoteAddr)
 	if err != nil {
@@ -179,16 +179,6 @@ func clientIp(request *http.Request) string {
 	peer := net.ParseIP(host)
 	if peer == nil {
 		return host
-	}
-	if peer.IsLoopback() || peer.IsPrivate() {
-		forwarded := request.Header.Values("X-Forwarded-For")
-		if len(forwarded) > 0 {
-			entries := strings.Split(forwarded[len(forwarded)-1], ",")
-			last := net.ParseIP(strings.TrimSpace(entries[len(entries)-1]))
-			if last != nil {
-				return last.String()
-			}
-		}
 	}
 	return peer.String()
 }

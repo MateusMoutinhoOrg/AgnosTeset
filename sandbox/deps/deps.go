@@ -4,9 +4,12 @@ import (
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/argvdeps"
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
+	envdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/envdeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/hashdeps"
 	jwtdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/jwtdeps"
+	passworddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/passworddeps"
 	randdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/randdeps"
+	ratelimitdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/ratelimitdeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
@@ -24,9 +27,12 @@ type Deps struct {
 	Argvdeps      argvdeps.Sandbox
 	Database      database.Sandbox
 	Embeddeps     embeddeps.Sandbox
+	Envdeps       envdeps.Sandbox
 	Hashdeps      hashdeps.Sandbox
 	Jwtdeps       jwtdeps.Sandbox
+	Passworddeps  passworddeps.Sandbox
 	Randdeps      randdeps.Sandbox
+	Ratelimitdeps ratelimitdeps.Sandbox
 	Reflectdeps   reflectdeps.Sandbox
 	Serializables serializables.Sandbox
 	Serverdeps    serverdeps.Sandbox

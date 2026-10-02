@@ -19,6 +19,10 @@ const MaxLimit = 100
 // MinPasswordLength is the fewest characters a new password may have.
 const MinPasswordLength = 8
 
+// GeneratedPasswordBytes is how many random bytes a password GeneratePassword
+// makes carries, spelled in hex: twice as many characters.
+const GeneratedPasswordBytes = 16
+
 // emailPattern is the shape an email has to have: something, an @, a domain
 // with a dot. The mailbox itself is never checked.
 const emailPattern = `^[^@\s]+@[^@\s]+\.[^@\s]+$`
@@ -31,6 +35,9 @@ const (
 	NoticeAdded = "added"
 	// NoticeUpdated follows a user edited.
 	NoticeUpdated = "updated"
+	// NoticePasswordChanged follows a user edited with a new password, which
+	// ended their sessions and revoked their API tokens.
+	NoticePasswordChanged = "password-changed"
 	// NoticeRemoved follows a user removed.
 	NoticeRemoved = "removed"
 	// NoticeNotFound follows an edit or a remove of a user that does not exist.
@@ -132,70 +139,104 @@ func List(sandbox *api.Sandbox, query Query) (Listing, error) {
 	return listing, nil
 }
 
+// GeneratePassword is a random password for a new user, of
+// GeneratedPasswordBytes random bytes: what add-backoffice-user gives the user
+// it creates, so no password ever travels on a command line.
+func GeneratePassword(sandbox *api.Sandbox) (string, error) {
+	return sandbox.Deps.Randdeps.Hex(GeneratedPasswordBytes)
+}
+
 // Add inserts the user fields describe. It answers a message for the form when
 // fields are refused, and the user added with "" once it is.
 func Add(sandbox *api.Sandbox, fields Fields) (maindatabase.BackofficeuserItem, string, error) {
+	none := maindatabase.BackofficeuserItem{}
 	fields = trimmed(sandbox, fields)
 	message, err := validate(sandbox, fields, true, 0)
 	if err != nil || message != "" {
-		return maindatabase.BackofficeuserItem{}, message, err
+		return none, message, err
 	}
 
+	hash, err := backofficeauth.HashPassword(sandbox, fields.Password)
+	if err != nil {
+		return none, "", err
+	}
 	user, err := maindatabase.New(sandbox).AddBackofficeuser(maindatabase.BackofficeuserNew{
-		Username:    fields.Username,
-		Email:       fields.Email,
-		Passwordsha: backofficeauth.PasswordSha(sandbox, fields.Password),
-		Role:        fields.Role,
+		Username:     fields.Username,
+		Email:        fields.Email,
+		Passwordhash: hash,
+		Role:         fields.Role,
 	})
 	return user, "", err
 }
 
-// Update writes fields over the user with id id, the password only when one
-// was given. It answers a message for the form when fields are refused —
-// demoting the last root among them — and "" once the user is written. The
-// user's sessions stay open, and a new role holds from their next request,
-// because the autentication middleware reads the user afresh on each one.
-func Update(sandbox *api.Sandbox, id int64, fields Fields) (string, error) {
+// Update writes fields over the user with id id on behalf of actor, the
+// password only when one was given. It answers a message for the form when
+// fields are refused — demoting the last root among them — and, once the user
+// is written, the notice the list page shows next. A new role holds from the
+// user's next request, because the autentication middlewares read the user
+// afresh on each one. A new password ends every session of the user and
+// revokes every API token of theirs, so whoever held one opened with the old
+// password is out; only session, the actor's own, is spared when actor edits
+// their own account.
+func Update(sandbox *api.Sandbox, actor maindatabase.BackofficeuserItem, session *maindatabase.SessionsItem, id int64, fields Fields) (string, string, error) {
 	fields = trimmed(sandbox, fields)
 	message, err := validate(sandbox, fields, false, id)
 	if err != nil || message != "" {
-		return message, err
+		return message, "", err
 	}
 
 	user, ok := Find(sandbox, id)
 	if !ok {
-		return "That user no longer exists.", nil
+		return "That user no longer exists.", "", nil
 	}
 	if backofficeauth.Role(user.Role) == backofficeauth.RoleRoot && backofficeauth.Role(fields.Role) != backofficeauth.RoleRoot {
 		roots, err := countRoots(sandbox)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 		if roots <= 1 {
-			return "This is the last root user, so it has to stay root.", nil
+			return "This is the last root user, so it has to stay root.", "", nil
 		}
 	}
 
 	db := maindatabase.New(sandbox)
 	err = db.UpdateBackofficeuserUsername(id, fields.Username)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	err = db.UpdateBackofficeuserEmail(id, fields.Email)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	err = db.UpdateBackofficeuserRole(id, fields.Role)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	if fields.Password != "" {
-		err = db.UpdateBackofficeuserPasswordsha(id, backofficeauth.PasswordSha(sandbox, fields.Password))
-		if err != nil {
-			return "", err
-		}
+	if fields.Password == "" {
+		return "", NoticeUpdated, nil
 	}
-	return "", nil
+
+	hash, err := backofficeauth.HashPassword(sandbox, fields.Password)
+	if err != nil {
+		return "", "", err
+	}
+	err = db.UpdateBackofficeuserPasswordhash(id, hash)
+	if err != nil {
+		return "", "", err
+	}
+	var keep *maindatabase.SessionsItem
+	if actor.Id == id {
+		keep = session
+	}
+	err = backofficeauth.CloseSessions(sandbox, id, keep)
+	if err != nil {
+		return "", "", err
+	}
+	err = backofficetokens.RemoveOfOwner(sandbox, id)
+	if err != nil {
+		return "", "", err
+	}
+	return "", NoticePasswordChanged, nil
 }
 
 // Remove deletes the user with id id, and every session and API token of it

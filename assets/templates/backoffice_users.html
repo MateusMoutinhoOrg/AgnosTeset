@@ -471,7 +471,7 @@
               <div class="row-actions">
                 <a class="btn btn-small" href="/admin/root/edit-backoffice-user/{{.Id}}">Edit</a>
                 {{if not .IsSelf}}
-                <form action="/admin/root/remove-backoffice-user/{{.Id}}" method="POST" data-name="{{html .Username}}" onsubmit="return confirm('Remove the user ' + this.dataset.name + '? This cannot be undone.');">
+                <form action="/admin/root/remove-backoffice-user/{{.Id}}" method="POST" data-confirm="Remove the user {{html .Username}}? This cannot be undone.">
                   <button type="submit" class="btn btn-small btn-danger">Remove</button>
                 </form>
                 {{end}}
@@ -496,5 +496,6 @@
       </div>
     </nav>
   </main>
+  <script src="/admin/backoffice.js" defer></script>
 </body>
 </html>

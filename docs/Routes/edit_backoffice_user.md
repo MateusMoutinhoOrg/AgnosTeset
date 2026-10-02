@@ -2,6 +2,8 @@
 
 Edits a backoffice user; a blank password keeps the current one
 
+A new password ends every session of the user and revokes every API token of theirs; when a root changes their own password, the session they sent it from stays open.
+
 ## Try it
 
 Only what is required:
@@ -16,6 +18,10 @@ With every value it reads:
 
 ```bash
 curl -X POST localhost:3000/admin/root/edit-backoffice-user/1 \
+  -H 'origin: my-origin' \
+  -H 'host: my-host' \
+  -H 'x-client-ip: my-x-client-ip' \
+  -H 'x-forwarded-for: my-x-forwarded-for' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'email=text&password=text&role=1&username=text'
 ```
@@ -25,6 +31,15 @@ curl -X POST localhost:3000/admin/root/edit-backoffice-user/1 \
 | Part | What goes there | Example | Description |
 | --- | --- | --- | --- |
 | `{Id:integer}` | whole number | `1` |  |
+
+## Query string, headers and cookies
+
+| Name | Sent in | What goes there | Required | Example | Description |
+| --- | --- | --- | --- | --- | --- |
+| `origin` | header | text | no | `my-origin` | the origin of the page that sent the request, sent by the browser — read by [`same-origin`](same_origin.md), which runs first |
+| `host` | header | text | no | `my-host` | the host the request was sent to — read by [`same-origin`](same_origin.md), which runs first |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`client-ip`](client_ip.md), which runs first |
+| `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`client-ip`](client_ip.md), which runs first |
 
 ## Body
 
@@ -64,6 +79,9 @@ or `403`, for example — or let it through to this route.
 | --- | --- |
 | [`autentication`](autentication.md) | depends on the address — `explain-route` gives the exact answer |
 | [`root-guard`](root_guard.md) | always |
+| [`same-origin`](same_origin.md) | always |
+| [`client-ip`](client_ip.md) | always |
+| [`security-headers`](security_headers.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 

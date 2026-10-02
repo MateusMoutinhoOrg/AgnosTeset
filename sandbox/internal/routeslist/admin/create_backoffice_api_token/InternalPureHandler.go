@@ -31,7 +31,7 @@ func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, ent
 		return err
 	}
 	if message != "" {
-		return render.CreateBackofficeApiTokenForm(sandbox, response, api.StatusBadRequest, props.User, fields, entries.XClientIp, message)
+		return render.CreateBackofficeApiTokenForm(sandbox, response, api.StatusBadRequest, props.User, fields, props.ClientIp, message)
 	}
 
 	listed, err := backofficetokens.List(sandbox, *props.User)

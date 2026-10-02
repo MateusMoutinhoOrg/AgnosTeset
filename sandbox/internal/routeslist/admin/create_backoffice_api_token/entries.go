@@ -15,7 +15,6 @@ import (
 type Entries struct {
 	FullRoute                     string `id:"FullRoute"`
 	AdminCreateBackofficeApiToken string `id:"AdminCreateBackofficeApiToken"`
-	XClientIp                     string `id:"XClientIp"`
 	Body                          Body   `id:"Body"`
 }
 

@@ -82,9 +82,12 @@ The contracts available to patch:
 | `deps.Argvdeps` | `sandbox/deps/argvdeps` |
 | `deps.Database` | `sandbox/deps/database` |
 | `deps.Embeddeps` | `sandbox/deps/embeddeps` |
+| `deps.Envdeps` | `sandbox/deps/envdeps` |
 | `deps.Hashdeps` | `sandbox/deps/hashdeps` |
 | `deps.Jwtdeps` | `sandbox/deps/jwtdeps` |
+| `deps.Passworddeps` | `sandbox/deps/passworddeps` |
 | `deps.Randdeps` | `sandbox/deps/randdeps` |
+| `deps.Ratelimitdeps` | `sandbox/deps/ratelimitdeps` |
 | `deps.Reflectdeps` | `sandbox/deps/reflectdeps` |
 | `deps.Serializables` | `sandbox/deps/serializables` |
 | `deps.Serverdeps` | `sandbox/deps/serverdeps` |
@@ -102,9 +105,12 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
 | `adapters/libs/database` | `database.Bind(&deps)` |
 | `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
+| `adapters/libs/envdeps` | `envdeps.Bind(&deps)` |
 | `adapters/libs/hashdeps` | `hashdeps.Bind(&deps)` |
 | `adapters/libs/jwtdeps` | `jwtdeps.Bind(&deps)` |
+| `adapters/libs/passworddeps` | `passworddeps.Bind(&deps)` |
 | `adapters/libs/randdeps` | `randdeps.Bind(&deps)` |
+| `adapters/libs/ratelimitdeps` | `ratelimitdeps.Bind(&deps)` |
 | `adapters/libs/reflectdeps` | `reflectdeps.Bind(&deps)` |
 | `adapters/libs/serializables` | `serializables.Bind(&deps)` |
 | `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |

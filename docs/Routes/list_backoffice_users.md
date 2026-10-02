@@ -13,7 +13,11 @@ curl localhost:3000/admin/list-backoffice-users
 With every value it reads:
 
 ```bash
-curl 'localhost:3000/admin/list-backoffice-users?search=my-search&role=my-role&page=1&limit=20&notice=my-notice'
+curl 'localhost:3000/admin/list-backoffice-users?search=my-search&role=my-role&page=1&limit=20&notice=my-notice' \
+  -H 'origin: my-origin' \
+  -H 'host: my-host' \
+  -H 'x-client-ip: my-x-client-ip' \
+  -H 'x-forwarded-for: my-x-forwarded-for'
 ```
 
 ## Query string, headers and cookies
@@ -25,6 +29,10 @@ curl 'localhost:3000/admin/list-backoffice-users?search=my-search&role=my-role&p
 | `page` | query string | whole number | no — `1` when left out | `1` | the page to show, counted from 1 |
 | `limit` | query string | whole number | no — `20` when left out | `20` | how many users a page shows, from 1 to 100 |
 | `notice` | query string | text | no | `my-notice` | the outcome code of the last add, edit or remove |
+| `origin` | header | text | no | `my-origin` | the origin of the page that sent the request, sent by the browser — read by [`same-origin`](same_origin.md), which runs first |
+| `host` | header | text | no | `my-host` | the host the request was sent to — read by [`same-origin`](same_origin.md), which runs first |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`client-ip`](client_ip.md), which runs first |
+| `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`client-ip`](client_ip.md), which runs first |
 
 ## What comes back
 
@@ -43,6 +51,9 @@ or `403`, for example — or let it through to this route.
 | Route | When |
 | --- | --- |
 | [`autentication`](autentication.md) | depends on the address — `explain-route` gives the exact answer |
+| [`same-origin`](same_origin.md) | always |
+| [`client-ip`](client_ip.md) | always |
+| [`security-headers`](security_headers.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 

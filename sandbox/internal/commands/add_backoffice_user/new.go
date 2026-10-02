@@ -24,9 +24,9 @@ func NewCommand(sandbox *api.Sandbox) *api.Command {
 	self.Strict = true
 	self.Pattern = "add-backoffice-user"
 	self.Category = "Backoffice"
-	self.Help = "Creates an initial backoffice user in the database"
-	self.LongDescription = ""
-	self.Examples = []string{}
+	self.Help = "Creates a backoffice user with a generated password, printed once"
+	self.LongDescription = "Adds a backoffice user under the same rules as the add form: the username and the email unique across both, regardless of case, and a valid email. The password is generated and printed once, so it never travels on the command line; change it on the edit page. --role defaults to viewer: give the first user --role root."
+	self.Examples = []string{"add-backoffice-user --username admin --email admin@example.com --role root"}
 	self.Hidden = false
 
 	self.Args = []api.CommandArg{
@@ -67,26 +67,16 @@ func NewCommand(sandbox *api.Sandbox) *api.Command {
 			Description: "the email for the backoffice user",
 		},
 		{
-			Id:          "Password",
-			Keys:        []string{"--password"},
+			Id:          "Role",
+			Keys:        []string{"--role"},
 			Type:        api.StringFlag,
-			Required:    true,
-			Default:     "",
-			HasDefault:  false,
+			Required:    false,
+			Default:     "viewer",
+			HasDefault:  true,
+			Enum:        []string{"root", "viewer"},
 			Pattern:     "",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "the plain-text password (hashed with secret before storing)",
-		},
-		{
-			Id:          "Secret",
-			Keys:        []string{"--secret"},
-			Type:        api.StringFlag,
-			Required:    true,
-			Default:     "",
-			HasDefault:  false,
-			Pattern:     "",
-			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "the secret prepended to the password before SHA-256 hashing",
+			Description: "the role of the backoffice user: root manages every user, viewer only reads",
 		},
 	}
 

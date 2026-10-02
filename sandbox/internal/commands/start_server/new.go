@@ -25,8 +25,8 @@ func NewCommand(sandbox *api.Sandbox) *api.Command {
 	self.Pattern = "start-server"
 	self.Category = "Server"
 	self.Help = "Starts the http server"
-	self.LongDescription = "Opens the port and serves every route declared under\nsandbox/internal/routeslist, until the process is stopped. An interrupt\n(Ctrl+C) or a termination request stops it gracefully: no new request is\ntaken, and the ones in flight get --shutdown-timeout-ms to finish.\n"
-	self.Examples = []string{"start-server", "start-server --addr 4000:5000"}
+	self.LongDescription = "Opens the port and serves every route declared under sandbox/internal/routeslist, until the process is stopped. An interrupt (Ctrl+C) or a termination request stops it gracefully: no new request is taken, and the ones in flight get --shutdown-timeout-ms to finish.\n\nThe secret that signs the backoffice sessions is read from the TESTE_SECRET environment variable, at least 32 characters (openssl rand -hex 32); without it the server does not start. It is never a flag, which every user of the machine reads, nor a file, which can end up committed with the code.\n\nThe session cookie is Secure and Strict-Transport-Security is sent, so the backoffice is served over https, by a reverse proxy that terminates TLS; --insecure-http turns both off, for local development over plain http.\n\nBehind one reverse proxy, bind the server to an address only the proxy reaches (--addr 127.0.0.1:3000) and pass --allow-x-forwarded-for: the client ip is then the last entry of X-Forwarded-For, the one the proxy appended. In nginx: proxy_set_header Host $host; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for. With more layers in front (a load balancer, a CDN), have nginx resolve the client ip with its real_ip module and send proxy_set_header X-Forwarded-For $remote_addr."
+	self.Examples = []string{"start-server", "start-server --addr 4000:5000", "start-server --addr 127.0.0.1:3000 --allow-x-forwarded-for"}
 	self.Hidden = false
 
 	self.Args = []api.CommandArg{
@@ -89,15 +89,26 @@ func NewCommand(sandbox *api.Sandbox) *api.Command {
 			Description: "how long the requests in flight have to finish once the server is asked to stop, in milliseconds (0 waits for them)",
 		},
 		{
-			Id:          "Secret",
-			Keys:        []string{"--secret"},
-			Type:        api.StringFlag,
-			Required:    true,
+			Id:          "AllowXForwardedFor",
+			Keys:        []string{"--allow-x-forwarded-for"},
+			Type:        api.BooleanFlag,
+			Required:    false,
 			Default:     "",
 			HasDefault:  false,
 			Pattern:     "",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-			Description: "the secret used to hash passwords for backoffice authentication",
+			Description: "trust the last entry of X-Forwarded-For as the client ip: turn it on only behind one reverse proxy that appends it (nginx), with the server bound to an address only that proxy reaches (--addr 127.0.0.1:3000)",
+		},
+		{
+			Id:          "InsecureHttp",
+			Keys:        []string{"--insecure-http"},
+			Type:        api.BooleanFlag,
+			Required:    false,
+			Default:     "",
+			HasDefault:  false,
+			Pattern:     "",
+			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
+			Description: "serve the backoffice over plain http, for local development only: the session cookie drops Secure and no Strict-Transport-Security is sent",
 		},
 	}
 

@@ -12,8 +12,8 @@ A Go project (binary name `teste`, module `github.com/MateusMoutinhoOrg/AgnosTes
 agnos build                 # verify + regenerate all generated files + go mod tidy + compile. Run after every hand edit.
 agnos verify                # schema/layer check only, writes nothing
 go build -o release/teste ./cmd/main
-go run ./cmd/main start-server --secret <s> [--addr 3000:4000]
-go run ./cmd/main add-backoffice-user --username u --email e --password p --secret <s>
+TESTE_SECRET=$(openssl rand -hex 32) go run ./cmd/main start-server [--addr 3000:4000] [--allow-x-forwarded-for] [--insecure-http]
+go run ./cmd/main add-backoffice-user --username u --email e [--role root|viewer]   # prints a generated password once
 ```
 
 - Compile with `./cmd/... ./sandbox/... ./adapters/...`, never `./...`.
@@ -41,8 +41,22 @@ adapters/  -->  sandbox/  <--  cmd/main
 
 ## Backoffice auth (in progress on `backoffice-auth`)
 
-- `start-server --secret` copies the secret into `sandbox.Config.Secret` (`UserConfig`) for route handlers.
-- `add-backoffice-user` stores `SHA-256(secret + password)` in the `backofficeuser` table. `role` is an int that maps to `backofficeauth.Role` (`RoleRoot`=0, `RoleViewer`=1).
+- `start-server` reads the JWT secret from the `TESTE_SECRET` env var (`backofficeauth.ReadSecret`, at least 32 characters, never a flag or a file) into `sandbox.Config.Secret`, and refuses to start without it. The secret only signs session tokens.
+- `start-server` flags, copied into `UserConfig`:
+  - `--allow-x-forwarded-for` trusts the last `X-Forwarded-For` entry, for one reverse proxy in front. The server should be bound to an address only that proxy reaches, and it warns when it listens on every interface.
+  - `--insecure-http` drops `Secure` from the cookie and stops HSTS, for local plain http.
+- Passwords are stored in `passwordhash` as PBKDF2-HMAC-SHA256 (600k iterations, a salt per user) through `Deps.Passworddeps`, via `backofficeauth.HashPassword`.
+  - `Authenticate` scans users once and hashes even for an unknown login, so timing doesn't tell the two apart.
+- `add-backoffice-user` goes through `backofficeusers.Add`, with the same validation as the web. It generates the password and prints it once, so no password travels in argv. `--role` defaults to `viewer`.
+- `role` is an int that maps to `backofficeauth.Role` (`RoleRoot`=0, `RoleViewer`=1).
+- Middlewares in front of everything, before `autentication` and `api-autentication` (rung 10):
+  - `client-ip` (rung 7, every path) puts the client ip on `props.ClientIp`, worked out by `httpguard.ClientIp`. Routes read that, never `X-Client-Ip`. The `serverdeps` adapter answers only the connection ip and joins every `X-Forwarded-For` line.
+  - `security-headers` (rung 8, `/admin` and `/api/admin`) sets `httpguard.SecurityHeaders`: CSP, XFO, nosniff, Referrer-Policy, no-store and HSTS. The CSP runs no inline script, so page JS lives in `assets/frontend/admin/backoffice.js`. Use `data-confirm` on a form, never an `on*` attribute.
+  - `same-origin` (rung 9, `/admin`) answers 403 to an `Origin` that isn't the request `Host`. It is `ANY` on purpose, because a method-specific middleware would turn 405s into 404s. A proxy must forward `Host`.
+- Rate limiting is in `sandbox/internal/backofficethrottle/`, in memory through `Deps.Ratelimitdeps`, over a 15-minute window:
+  - login allows 20 failures per ip and 10 per login, then answers 429 without checking the password;
+  - `api-autentication` allows 20 invalid tokens per ip, then answers 429;
+  - both 429s carry `Retry-After`.
 - Routes under `routeslist/admin/`:
   - `autentication` (spelled that way): an `ANY /admin/...` middleware at priority 10.
   - `login`: `POST /admin/login`, form body.
@@ -55,7 +69,8 @@ adapters/  -->  sandbox/  <--  cmd/main
   - `edit-backoffice-user-page`/`edit-backoffice-user`: `GET`/`POST /admin/root/edit-backoffice-user/{id}`. A blank password keeps the current one.
   - `remove-backoffice-user`: `POST /admin/root/remove-backoffice-user/{id}`.
   - A handler never sees the method, so a form page and its action are two routes on one path.
-- Session: a JWT cookie (HttpOnly, SameSite=Strict, 30 min) whose `jti` names a `sessions` record nested under the user. Logout or removing the user deletes that record. Removing a user also deletes their API tokens.
+- Session: a JWT cookie (HttpOnly, SameSite=Strict, Secure unless `--insecure-http`, 30 min) whose `jti` names a `sessions` record nested under the user. Logout or removing the user deletes that record. Removing a user also deletes their API tokens.
+- A new password, through `backofficeusers.Update(sandbox, actor, session, id, fields)`, ends every session of the user (`backofficeauth.CloseSessions`) and revokes their API tokens. Only the session of a root editing their own account is spared. The list then shows the `password-changed` notice.
 - User-management logic lives in `sandbox/internal/backofficeusers/`:
   - it lists, filters, paginates and validates users;
   - username and email are unique across both columns, ignoring case, and passwords need at least 8 characters;
@@ -85,7 +100,12 @@ The only credential `/api/admin` accepts. Tokens are created and revoked on the 
   - `render.BackofficeApiTokens` → `backoffice_api_tokens.html`;
   - `render.CreateBackofficeApiTokenForm` → `backoffice_api_token_form.html`;
   - dates are formatted with `Deps.Timedeps.FormatUnix`.
-- `randdeps` (`crypto/rand`) and `timedeps` (`time`, UTC) are local deps (`origin: local`), the same shape as `jwtdeps`.
+- These are local deps (`origin: local`), the same shape as `jwtdeps`:
+  - `randdeps` (`crypto/rand`);
+  - `timedeps` (`time`, UTC);
+  - `envdeps` (`os.Getenv`);
+  - `passworddeps` (`crypto/pbkdf2`);
+  - `ratelimitdeps` (fixed-window counters behind a `sync.Mutex`).
 
 ## Backoffice JSON API (`/api/admin/`)
 
@@ -93,9 +113,10 @@ The JSON twin of the HTML routes above. It sits outside `/admin`, so the cookie 
 
 - Every parameter arrives in a JSON body (`Content-Type: application/json`). Every action is a `POST`, except `GET /api/admin/me`, which takes no parameters.
 - Auth is `Authorization: Bearer <token>`, where the token is an API token from the section above. `api-autentication` puts the owner on `props.User` and the token on `props.ApiToken`. The API never reads the cookie and has no login or logout.
-- `role` travels as its name (`"root"`/`"viewer"`), held by a schema `enum` and converted with `backofficeapi.Role`. A user is answered as `{id, username, email, role}`, never with `passwordsha`.
+- `role` travels as its name (`"root"`/`"viewer"`), held by a schema `enum` and converted with `backofficeapi.Role`. A user is answered as `{id, username, email, role}`, never with `passwordhash`.
 - Failures go through `routeio.Fail`, so they come back as the default `{"error","field"}` of the `handle_*.go`:
   - 401: a missing, unknown, revoked, expired or ip-disallowed token (with `WWW-Authenticate: Bearer`);
+  - 429: too many invalid tokens from the ip (with `Retry-After`);
   - 403: not root, or a root removing their own account;
   - 404: unknown `id`;
   - 400: a schema violation or a `backofficeusers` message.

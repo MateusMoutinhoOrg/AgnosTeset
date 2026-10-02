@@ -13,6 +13,10 @@ import (
 // Written once by `agnos build` and the project's from then on:
 // declare here whatever the routes of this project hand each other.
 type RouteProps struct {
+	// ClientIp is the ip the request came from, as the client-ip middleware
+	// worked it out: the connection's own, or the one the reverse proxy in
+	// front appended to X-Forwarded-For when start-server trusts it.
+	ClientIp string
 	// User is the backoffice user the admin/autentication middleware
 	// authenticated from the session cookie, or the one the
 	// api/admin/api-autentication middleware authenticated from an API

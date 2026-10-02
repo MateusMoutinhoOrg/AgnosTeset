@@ -9,5 +9,4 @@ package create_backoffice_api_token_page
 type Entries struct {
 	FullRoute                     string `id:"FullRoute"`
 	AdminCreateBackofficeApiToken string `id:"AdminCreateBackofficeApiToken"`
-	XClientIp                     string `id:"XClientIp"`
 }

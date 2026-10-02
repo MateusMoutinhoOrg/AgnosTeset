@@ -71,7 +71,8 @@ type Request struct {
 	// GetHeader returns the first value of the named header, matched
 	// without regard to case, or "" when it is absent. "Host" answers what
 	// GetHost does, and "X-Client-Ip" what GetClientIp does — never what the
-	// client sent under that name.
+	// client sent under that name. "X-Forwarded-For" answers every value it
+	// was sent with, joined by ", ".
 	GetHeader func(key string) string
 	// GetHeaders returns every header of the request, each name in its
 	// canonical spelling ("Content-Type") with every value it was sent with.
@@ -79,10 +80,9 @@ type Request struct {
 	// GetHost returns the host the request was sent to, port included when
 	// the request named one ("example.com", "localhost:8080").
 	GetHost func() string
-	// GetClientIp returns the ip the request came from, port dropped
-	// ("203.0.113.7", "::1"). Behind a reverse proxy on a loopback or
-	// private address it is the client the proxy forwarded for, read off
-	// X-Forwarded-For; otherwise it is the connection's own.
+	// GetClientIp returns the ip of the connection the request came on,
+	// port dropped ("203.0.113.7", "::1"). X-Forwarded-For is never read
+	// for it: whether a proxy in front is trusted is the sandbox's to say.
 	GetClientIp func() string
 	// GetCookie returns the value of the named cookie, or "" when the
 	// request carries none by that name.

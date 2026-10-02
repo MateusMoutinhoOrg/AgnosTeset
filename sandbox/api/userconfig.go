@@ -11,5 +11,17 @@ package api
 // This is the only API contract you need to worry about. The implementation
 // lives under sandbox/internal/, and can be refactored or replaced wholesale.
 type UserConfig struct {
+	// Secret signs the backoffice session tokens. start-server reads it from
+	// the TESTE_SECRET environment variable, never from the command line.
 	Secret string
+
+	// AllowXForwardedFor trusts the last entry of X-Forwarded-For as the
+	// client ip, the one a reverse proxy in front of the server appended. Off,
+	// the client ip is the connection's own.
+	AllowXForwardedFor bool
+
+	// InsecureHttp serves the backoffice over plain http, for local
+	// development: the session cookie drops Secure and no
+	// Strict-Transport-Security is sent.
+	InsecureHttp bool
 }

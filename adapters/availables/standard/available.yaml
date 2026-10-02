@@ -2,9 +2,12 @@ adapters:
     - argvdeps
     - database
     - embeddeps
+    - envdeps
     - hashdeps
     - jwtdeps
+    - passworddeps
     - randdeps
+    - ratelimitdeps
     - reflectdeps
     - serializables
     - serverdeps

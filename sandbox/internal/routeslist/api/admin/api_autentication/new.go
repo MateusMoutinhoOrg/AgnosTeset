@@ -26,7 +26,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Pattern = "/api/admin/*"
 	self.Category = "Middleware"
 	self.Help = "Requires a valid API token on every /api/admin route"
-	self.LongDescription = "Every /api/admin route needs an API token, sent as Authorization: Bearer <token>. Tokens are created and revoked on the backoffice page /admin/list-backoffice-api-tokens; the api never issues one. A token may expire on a date or never, and may be limited to a list of client ips. A missing, unknown, revoked or expired token, or one used from an ip it does not allow, is answered 401 in JSON."
+	self.LongDescription = "Every /api/admin route needs an API token, sent as Authorization: Bearer <token>. Tokens are created and revoked on the backoffice page /admin/list-backoffice-api-tokens; the api never issues one. A token may expire on a date or never, and may be limited to a list of client ips. A missing, unknown, revoked or expired token, or one used from an ip it does not allow, is answered 401 in JSON. After 20 invalid tokens from one client ip in 15 minutes, every token it sends is answered 429 with Retry-After, unchecked, until the 15 minutes pass."
 	self.Examples = []string{}
 	self.Hidden = false
 
@@ -51,17 +51,6 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Default:     "",
 			HasDefault:  false,
 			Description: "an API token created on /admin/list-backoffice-api-tokens, as Bearer <token>",
-			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
-		},
-		{
-			Id:          "XClientIp",
-			Key:         "x-client-ip",
-			Fonts:       []api.ParameterFont{api.HeaderParam},
-			Required:    false,
-			Type:        api.StringType,
-			Default:     "",
-			HasDefault:  false,
-			Description: "the ip the request came from, set by the server and never by the client",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
 	}

@@ -14,7 +14,7 @@ lists the flags of the middlewares in front of it too.
 
 | Command | Does |
 | --- | --- |
-| [`add-backoffice-user`](add-backoffice-user.md) | Creates an initial backoffice user in the database |
+| [`add-backoffice-user`](add-backoffice-user.md) | Creates a backoffice user with a generated password, printed once |
 
 ## Info
 

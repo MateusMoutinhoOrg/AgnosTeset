@@ -15,7 +15,6 @@ import (
 type Entries struct {
 	FullRoute  string `id:"FullRoute"`
 	AdminLogin string `id:"AdminLogin"`
-	XClientIp  string `id:"XClientIp"`
 	Body       Body   `id:"Body"`
 }
 

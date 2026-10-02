@@ -12,33 +12,33 @@ import (
 // BackofficeuserItem is one stored backofficeuser record: its permanent id and every
 // plain field the declaration gives it.
 type BackofficeuserItem struct {
-	Id          int64
-	Username    string
-	Email       string
-	Passwordsha string
-	Role        int64
+	Id           int64
+	Username     string
+	Email        string
+	Passwordhash string
+	Role         int64
 }
 
 // BackofficeuserNew is one insert into backofficeuser: the fields a new record carries.
 type BackofficeuserNew struct {
-	Username    string
-	Email       string
-	Passwordsha string
-	Role        int64
+	Username     string
+	Email        string
+	Passwordhash string
+	Role         int64
 }
 
 // BackofficeuserFiltrage narrows a ListBackofficeuser. Every plain field is here, because
 // only a `key` field is indexed and this is the one way to reach the rest. A
 // zero value turns its own filter off.
 type BackofficeuserFiltrage struct {
-	UsernameStartsWith    string
-	UsernameEquals        string
-	EmailStartsWith       string
-	EmailEquals           string
-	PasswordshaStartsWith string
-	PasswordshaEquals     string
-	RoleMin               int64
-	RoleMax               int64
+	UsernameStartsWith     string
+	UsernameEquals         string
+	EmailStartsWith        string
+	EmailEquals            string
+	PasswordhashStartsWith string
+	PasswordhashEquals     string
+	RoleMin                int64
+	RoleMax                int64
 }
 
 // SessionsItem is one stored sessions record: its permanent id and every
@@ -127,8 +127,8 @@ type Maindatabase struct {
 	UpdateBackofficeuserUsername func(id int64, value string) error
 	// UpdateBackofficeuserEmail writes a new email on one backofficeuser record.
 	UpdateBackofficeuserEmail func(id int64, value string) error
-	// UpdateBackofficeuserPasswordsha writes a new passwordsha on one backofficeuser record.
-	UpdateBackofficeuserPasswordsha func(id int64, value string) error
+	// UpdateBackofficeuserPasswordhash writes a new passwordhash on one backofficeuser record.
+	UpdateBackofficeuserPasswordhash func(id int64, value string) error
 	// UpdateBackofficeuserRole writes a new role on one backofficeuser record.
 	UpdateBackofficeuserRole func(id int64, value int64) error
 	// RemoveBackofficeuser deletes one backofficeuser record and everything nested under it.

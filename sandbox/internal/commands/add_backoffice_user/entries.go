@@ -11,6 +11,5 @@ type Entries struct {
 	Command     string   `id:"Command"`
 	Username    string   `id:"Username"`
 	Email       string   `id:"Email"`
-	Password    string   `id:"Password"`
-	Secret      string   `id:"Secret"`
+	Role        string   `id:"Role"`
 }
