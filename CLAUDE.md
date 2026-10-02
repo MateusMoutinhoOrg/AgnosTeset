@@ -31,6 +31,7 @@ adapters/  -->  sandbox/  <--  cmd/main
 - **`sandbox/` is closed.** Nothing in it imports anything outside `sandbox/`, **including the Go stdlib**. Every outside capability (hashing, strings, sorting, reflection, serialization, embedded files, HTTP, the database) is a contract struct of function fields in `sandbox/deps/<x>/`, reached as `sandbox.Deps.<X>` (e.g. `sandbox.Deps.Hashdeps.Sha256Hex`). Implementations live in `adapters/libs/<x>/` (`Bind(deps *deps.Deps)`), selected in `adapters/availables/standard/available.yaml`. To get a new capability, use `agnos add-dep` or write a contract and adapter pair. Don't import a stdlib package inside `sandbox/`.
 - **`sandbox/api/`** holds the contracts that form the public API. `api.Sandbox` embeds `UserSandbox` (`usersandbox.go`) and `api.Config` embeds `UserConfig` (`userconfig.go`). Both files are hand-owned. Every exported symbol in `sandbox/api/` and `sandbox/deps/` needs a doc comment because `docs/PublicApi` is generated from them.
 - **Every function in `sandbox/internal/`** takes `sandbox *api.Sandbox` as its first parameter.
+- **Hand-written packages are grouped under `sandbox/internal/server/`**: `backoffice/backoffice{auth,users,tokens,throttle,api}/`, `httpguard/` and `render/`. The other top-level dirs of `sandbox/internal/` (`cli`, `commandprops`, `commands`, `databases`, `generated`, `routeprops`, `routeslist`) and `server/errors/` sit where `agnos` expects them, so don't move them. Package names keep the `backoffice*` prefix, so only the import path says where a package lives.
 - **Commands** are in `sandbox/internal/commands/<name>/`. **Routes** are in `sandbox/internal/routeslist/[<folder>/]<name>/`. Each has a `command.yaml`/`route.yaml` declaration plus generated `new.go`/`entries.go`. Only `InternalPureHandler.go` is hand-written. Change the YAML with `agnos add-flag`/`set-route`/`add-body-field`/etc., never by hand. Handler inputs arrive typed and validated on `entries`.
 - **Route dispatch:** all matching routes run in `priority` order, lowest first (middleware on rung 10, routes on 100, `frontend` on 1000). A handler that neither sets a status nor writes has *declined*, and the next route runs. That's how middleware works. Refuse a request with `routeio.Fail(...)`. Unanswered and failed requests go to `sandbox/internal/server/errors/handle_*.go` (hand-owned).
 - **Per-request state goes on `props *routeprops.RouteProps`** (fields declared in `sandbox/internal/routeprops/routeprops.go`), which is fresh for each request and shared along its chain. It lives under `sandbox/internal`, so a field may name a project type: `props.User` is the `*maindatabase.BackofficeuserItem` the auth middleware found (nil when none). `*api.Sandbox` is shared across all requests, so don't store per-request data such as the authenticated user on it. The cli mirror is `commandprops.CommandProps`.
@@ -53,7 +54,7 @@ adapters/  -->  sandbox/  <--  cmd/main
   - `client-ip` (rung 7, every path) puts the client ip on `props.ClientIp`, worked out by `httpguard.ClientIp`. Routes read that, never `X-Client-Ip`. The `serverdeps` adapter answers only the connection ip and joins every `X-Forwarded-For` line.
   - `security-headers` (rung 8, `/admin` and `/api/admin`) sets `httpguard.SecurityHeaders`: CSP, XFO, nosniff, Referrer-Policy, no-store and HSTS. The CSP runs no inline script, so page JS lives in `assets/frontend/admin/backoffice.js`. Use `data-confirm` on a form, never an `on*` attribute.
   - `same-origin` (rung 9, `/admin`) answers 403 to an `Origin` that isn't the request `Host`. It is `ANY` on purpose, because a method-specific middleware would turn 405s into 404s. A proxy must forward `Host`.
-- Rate limiting is in `sandbox/internal/backofficethrottle/`, in memory through `Deps.Ratelimitdeps`, over a 15-minute window:
+- Rate limiting is in `sandbox/internal/server/backoffice/backofficethrottle/`, in memory through `Deps.Ratelimitdeps`, over a 15-minute window:
   - login allows 20 failures per ip and 10 per login, then answers 429 without checking the password;
   - `api-autentication` allows 20 invalid tokens per ip, then answers 429;
   - both 429s carry `Retry-After`.
@@ -71,12 +72,12 @@ adapters/  -->  sandbox/  <--  cmd/main
   - A handler never sees the method, so a form page and its action are two routes on one path.
 - Session: a JWT cookie (HttpOnly, SameSite=Strict, Secure unless `--insecure-http`, 30 min) whose `jti` names a `sessions` record nested under the user. Logout or removing the user deletes that record. Removing a user also deletes their API tokens.
 - A new password, through `backofficeusers.Update(sandbox, actor, session, id, fields)`, ends every session of the user (`backofficeauth.CloseSessions`) and revokes their API tokens. Only the session of a root editing their own account is spared. The list then shows the `password-changed` notice.
-- User-management logic lives in `sandbox/internal/backofficeusers/`:
+- User-management logic lives in `sandbox/internal/server/backoffice/backofficeusers/`:
   - it lists, filters, paginates and validates users;
   - username and email are unique across both columns, ignoring case, and passwords need at least 8 characters;
   - a root can't remove their own account, and the last root can't be demoted.
 
-  Pages are rendered by `sandbox/internal/render/` from `assets/templates/` (`render.BackofficeUsers` → `backoffice_users.html`, `render.Add/EditBackofficeUserForm` → `backoffice_user_form.html`). An action answers `303` to `/admin/list-backoffice-users?notice=<code>`, and `render.noticeOf` words each code.
+  Pages are rendered by `sandbox/internal/server/render/` from `assets/templates/` (`render.BackofficeUsers` → `backoffice_users.html`, `render.Add/EditBackofficeUserForm` → `backoffice_user_form.html`). An action answers `303` to `/admin/list-backoffice-users?notice=<code>`, and `render.noticeOf` words each code.
 - Everything here is named `backoffice*` because application users will come later. Don't give these routes, render helpers or templates generic `user` names.
 
 ## Backoffice API tokens
@@ -88,7 +89,7 @@ The only credential `/api/admin` accepts. Tokens are created and revoked on the 
   - It also stores `prefix` (the first 11 chars, for display), `ownerid`, `createdat`, `expiresat` (0 = never), `ips` (comma-joined, "" = any ip), and `lastusedat`/`lastusedip`.
 - A token acts as its owner, with the role read fresh on every request.
 - Each user manages their own tokens. A root lists and revokes everyone's, and a revoke the actor may not make reads as `not-found`.
-- Logic lives in `sandbox/internal/backofficetokens/`:
+- Logic lives in `sandbox/internal/server/backoffice/backofficetokens/`:
   - `Create` validates: the name is required, at most 100 characters and unique per owner ignoring case. The expiration is `7/30/60/90/365` days, `custom` (an `<input type="date">`, valid through that UTC day) or `never`. Each ip must be IPv4 or IPv6.
   - `List`, `Revoke`, `RemoveOfOwner` (the cascade from `backofficeusers.Remove`).
   - `Resolve` is what the API middleware calls. It refuses an unknown, expired or ip-disallowed token, and marks the token as last used.
@@ -130,4 +131,4 @@ The JSON twin of the HTML routes above. It sits outside `/admin`, so the cookie 
   - `api-add-backoffice-user` (`201`);
   - `api-edit-backoffice-user` (`{id, username, email, role, password?}`);
   - `api-remove-backoffice-user` (`{id}`).
-- The JSON documents are built in `sandbox/internal/backofficeapi/`, the JSON counterpart of `render`.
+- The JSON documents are built in `sandbox/internal/server/backoffice/backofficeapi/`, the JSON counterpart of `render`.

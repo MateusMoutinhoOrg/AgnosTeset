@@ -3,10 +3,10 @@ package api_list_backoffice_users
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeapi"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeusers"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeapi"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeusers"
 )
 
 // InternalPureHandler answers POST /api/admin/list-backoffice-users, open to

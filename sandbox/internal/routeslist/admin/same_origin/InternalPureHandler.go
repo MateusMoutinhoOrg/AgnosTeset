@@ -4,8 +4,8 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/httpguard"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/httpguard"
 )
 
 // InternalPureHandler runs in front of every ANY /admin/{*Rest}, login

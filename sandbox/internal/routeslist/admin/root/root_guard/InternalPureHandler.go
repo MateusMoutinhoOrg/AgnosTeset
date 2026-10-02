@@ -3,10 +3,10 @@ package root_guard
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/render"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/render"
 )
 
 // InternalPureHandler runs in front of every ANY /admin/root/{*Rest}, after the

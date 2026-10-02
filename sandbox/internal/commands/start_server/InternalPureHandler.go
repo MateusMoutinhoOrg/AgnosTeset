@@ -2,11 +2,11 @@ package start_server
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commandprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/cliio"
 	server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/server/server"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/httpguard"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/httpguard"
 )
 
 // InternalPureHandler backs `start-server`: it serves until the process is

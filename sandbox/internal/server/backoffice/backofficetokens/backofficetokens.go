@@ -2,9 +2,9 @@ package backofficetokens
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/httpguard"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/httpguard"
 )
 
 // An API token is what the /api/admin routes authenticate with, sent as

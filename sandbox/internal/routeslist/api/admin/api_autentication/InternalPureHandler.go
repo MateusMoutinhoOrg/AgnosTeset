@@ -3,11 +3,11 @@ package api_autentication
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficethrottle"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficetokens"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficethrottle"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficetokens"
 )
 
 // InternalPureHandler runs in front of every ANY /api/admin/{*Rest}, on a

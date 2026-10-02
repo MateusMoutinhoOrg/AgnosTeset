@@ -3,9 +3,9 @@ package logout
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
 )
 
 // InternalPureHandler answers POST /admin/logout for the session the

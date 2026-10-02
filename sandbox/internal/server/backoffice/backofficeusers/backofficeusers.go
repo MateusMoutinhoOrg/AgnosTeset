@@ -2,9 +2,9 @@ package backofficeusers
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficetokens"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficetokens"
 )
 
 // ListPath is the page every add, edit and remove sends the browser back to.

@@ -3,10 +3,10 @@ package backofficeapi
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeusers"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeusers"
 )
 
 // The documents below are what the /api/admin routes answer, each the JSON

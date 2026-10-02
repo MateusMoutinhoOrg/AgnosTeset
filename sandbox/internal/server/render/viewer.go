@@ -2,8 +2,8 @@ package render
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
 )
 
 // Viewer is the signed-in user, as the top bar of every admin page shows it.

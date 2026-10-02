@@ -3,11 +3,11 @@ package add_backoffice_user_page
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeusers"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/render"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeusers"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/render"
 )
 
 // InternalPureHandler answers GET /admin/root/add-backoffice-user with the

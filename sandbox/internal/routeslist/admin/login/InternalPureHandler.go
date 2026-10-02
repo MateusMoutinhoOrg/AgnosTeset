@@ -3,10 +3,10 @@ package login
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficethrottle"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/render"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficethrottle"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/render"
 )
 
 // InternalPureHandler answers POST /admin/login. The username field takes a

@@ -2,10 +2,10 @@ package add_backoffice_user
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeusers"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commandprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/cliio"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeusers"
 )
 
 // InternalPureHandler answers `add-backoffice-user`. It generates the user's
