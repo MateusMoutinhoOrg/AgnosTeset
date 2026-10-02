@@ -1,5 +1,0 @@
-dep: signaldeps
-help: Process signals over os/signal
-module: ""
-name: signaldeps
-origin: catalog

@@ -28,18 +28,10 @@ def remove_all_files():
 
 def main():
     remove_all_files()
-    return 
     ## runs a terminal command 
     os.system("agnos start --project-name teste --module github.com/MateusMoutinhoOrg/AgnosTeset")
-    os.system("agnos front-init")
-    os.system('agnos add-route adminmiddlware --pattern "/admin/{*rest}" --middleware  ')
-    ## front route
-    os.system('agnos add-route users --pattern "/admin/users" ')
-    os.system('agnos add-route userconfig --pattern "/admin/user/{user:integer}" ')
-
-    ## Api 
-    os.system('agnos add-route apiadduser  --pattern "/api/add-user" ')
-    
+    os.system("agnos backoffice-init")
+   
 
 
 
