@@ -29,7 +29,7 @@ def remove_all_files():
 def main():
     remove_all_files()
     ## runs a terminal command 
-    os.system("agnos start --project-name teste --module github.com/MateusMoutinhoOrg/AgnosTeset")
+    os.system("agnos start --project-name testebackoffice --module github.com/MateusMoutinhoOrg/AgnosTeset")
     os.system("agnos backoffice-init")
    
 
