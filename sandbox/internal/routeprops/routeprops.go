@@ -14,9 +14,14 @@ import (
 // declare here whatever the routes of this project hand each other.
 type RouteProps struct {
 	// User is the backoffice user the admin/autentication middleware
-	// authenticated from the session cookie, nil when none.
+	// authenticated from the session cookie, or the one the
+	// api/admin/api-autentication middleware authenticated from an API
+	// token; nil when none.
 	User *maindatabase.BackofficeuserItem
 	// Session is the session of User the session cookie names, nil when
-	// none.
+	// none — and always nil on /api/admin, which reads no cookie.
 	Session *maindatabase.SessionsItem
+	// ApiToken is the API token of User the Authorization header carried
+	// on /api/admin, nil when none — and always nil on /admin.
+	ApiToken *maindatabase.ApitokenItem
 }

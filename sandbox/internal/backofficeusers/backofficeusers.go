@@ -3,6 +3,7 @@ package backofficeusers
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/backofficetokens"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/maindatabase"
 )
 
@@ -197,10 +198,10 @@ func Update(sandbox *api.Sandbox, id int64, fields Fields) (string, error) {
 	return "", nil
 }
 
-// Remove deletes the user with id id, and every session of it with it, on
-// behalf of actor. It answers the notice the list page shows next: a root may
-// not remove its own account, and since actor is a root, another root always
-// remains.
+// Remove deletes the user with id id, and every session and API token of it
+// with it, on behalf of actor. It answers the notice the list page shows next:
+// a root may not remove its own account, and since actor is a root, another
+// root always remains.
 func Remove(sandbox *api.Sandbox, actor maindatabase.BackofficeuserItem, id int64) (string, error) {
 	if id == actor.Id {
 		return NoticeSelf, nil
@@ -209,7 +210,11 @@ func Remove(sandbox *api.Sandbox, actor maindatabase.BackofficeuserItem, id int6
 	if !ok {
 		return NoticeNotFound, nil
 	}
-	err := maindatabase.New(sandbox).RemoveBackofficeuser(id)
+	err := backofficetokens.RemoveOfOwner(sandbox, id)
+	if err != nil {
+		return "", err
+	}
+	err = maindatabase.New(sandbox).RemoveBackofficeuser(id)
 	if err != nil {
 		return "", err
 	}

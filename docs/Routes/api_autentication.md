@@ -1,8 +1,8 @@
-# `ANY /api/admin/* !(/api/admin/login)`
+# `ANY /api/admin/*`
 
-Requires a valid Bearer token on /api/admin, except /api/admin/login
+Requires a valid API token on every /api/admin route
 
-Every /api/admin route but POST /api/admin/login needs the token that login answers, sent as Authorization: Bearer <token>. The token is bound to the client ip it was issued to and lasts 30 minutes; a missing, invalid or expired one is answered 401 in JSON.
+Every /api/admin route needs an API token, sent as Authorization: Bearer <token>. Tokens are created and revoked on the backoffice page /admin/list-backoffice-api-tokens; the api never issues one. A token may expire on a date or never, and may be limited to a list of client ips. A missing, unknown, revoked or expired token, or one used from an ip it does not allow, is answered 401 in JSON.
 
 ## Try it
 
@@ -20,17 +20,11 @@ curl localhost:3000/api/admin \
   -H 'x-client-ip: my-x-client-ip'
 ```
 
-## In the address
-
-| Part | What goes there | Example | Description |
-| --- | --- | --- | --- |
-| the whole address | text that must not be exactly `/api/admin/login` | — | the login route is reachable without a token |
-
 ## Query string, headers and cookies
 
 | Name | Sent in | What goes there | Required | Example | Description |
 | --- | --- | --- | --- | --- | --- |
-| `authorization` | header | text | no | `my-authorization` | the session JWT answered by POST /api/admin/login, as Bearer <token> |
+| `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> |
 | `x-client-ip` | header | text | no | `my-x-client-ip` | the ip the request came from, set by the server and never by the client |
 
 ## What comes back

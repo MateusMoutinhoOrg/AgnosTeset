@@ -140,10 +140,10 @@ func ClearedCookie(sandbox *api.Sandbox) string {
 	return sandbox.Deps.Std.Sprintf("%s=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict", CookieName)
 }
 
-// BearerToken is the session token an Authorization header carries in the
-// Bearer scheme, the scheme matched regardless of case, or "" when it carries
-// none. The api-autentication middleware reads the token from there, where
-// the autentication one reads it from the session cookie.
+// BearerToken is the token an Authorization header carries in the Bearer
+// scheme, the scheme matched regardless of case, or "" when it carries none.
+// The api-autentication middleware reads the API token from there, where the
+// autentication one reads the session token from the session cookie.
 func BearerToken(sandbox *api.Sandbox, authorization string) string {
 	fields := sandbox.Deps.Stringsdeps.Fields(authorization)
 	if len(fields) != 2 || sandbox.Deps.Stringsdeps.ToLower(fields[0]) != "bearer" {

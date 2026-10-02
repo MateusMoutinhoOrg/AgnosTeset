@@ -48,13 +48,14 @@ adapters/  -->  sandbox/  <--  cmd/main
   - `login`: `POST /admin/login`, form body.
   - `home`: `GET /admin/home`.
   - `list-backoffice-users`: `GET /admin/list-backoffice-users?search=&role=&page=&limit=&notice=`, open to any backoffice user.
+  - the API token pages, open to any backoffice user (see below).
 - Routes under `routeslist/admin/root/` (root only):
   - `root-guard`: an `ANY /admin/root/...` middleware at priority 11, right after `autentication`. It answers `templates/forbidden.html` (403) to non-roots.
   - `add-backoffice-user-page`/`add-backoffice-user`: `GET`/`POST /admin/root/add-backoffice-user`.
   - `edit-backoffice-user-page`/`edit-backoffice-user`: `GET`/`POST /admin/root/edit-backoffice-user/{id}`. A blank password keeps the current one.
   - `remove-backoffice-user`: `POST /admin/root/remove-backoffice-user/{id}`.
   - A handler never sees the method, so a form page and its action are two routes on one path.
-- Session: a JWT cookie (HttpOnly, SameSite=Strict, 30 min) whose `jti` names a `sessions` record nested under the user. Logout or removing the user deletes that record.
+- Session: a JWT cookie (HttpOnly, SameSite=Strict, 30 min) whose `jti` names a `sessions` record nested under the user. Logout or removing the user deletes that record. Removing a user also deletes their API tokens.
 - User-management logic lives in `sandbox/internal/backofficeusers/`:
   - it lists, filters, paginates and validates users;
   - username and email are unique across both columns, ignoring case, and passwords need at least 8 characters;
@@ -63,22 +64,43 @@ adapters/  -->  sandbox/  <--  cmd/main
   Pages are rendered by `sandbox/internal/render/` from `assets/templates/` (`render.BackofficeUsers` → `backoffice_users.html`, `render.Add/EditBackofficeUserForm` → `backoffice_user_form.html`). An action answers `303` to `/admin/list-backoffice-users?notice=<code>`, and `render.noticeOf` words each code.
 - Everything here is named `backoffice*` because application users will come later. Don't give these routes, render helpers or templates generic `user` names.
 
+## Backoffice API tokens
+
+The only credential `/api/admin` accepts. Tokens are created and revoked on the HTML pages, and the API never issues or ends one.
+
+- Token: `bo_` + 64 hex chars (`Deps.Randdeps.Hex(32)`), shown once.
+  - The top-level `apitoken` table stores only `tokensha` = `SHA-256(token)`, a `key` field, so `FindApitokenByTokensha` is the lookup.
+  - It also stores `prefix` (the first 11 chars, for display), `ownerid`, `createdat`, `expiresat` (0 = never), `ips` (comma-joined, "" = any ip), and `lastusedat`/`lastusedip`.
+- A token acts as its owner, with the role read fresh on every request.
+- Each user manages their own tokens. A root lists and revokes everyone's, and a revoke the actor may not make reads as `not-found`.
+- Logic lives in `sandbox/internal/backofficetokens/`:
+  - `Create` validates: the name is required, at most 100 characters and unique per owner ignoring case. The expiration is `7/30/60/90/365` days, `custom` (an `<input type="date">`, valid through that UTC day) or `never`. Each ip must be IPv4 or IPv6.
+  - `List`, `Revoke`, `RemoveOfOwner` (the cascade from `backofficeusers.Remove`).
+  - `Resolve` is what the API middleware calls. It refuses an unknown, expired or ip-disallowed token, and marks the token as last used.
+- Routes under `routeslist/admin/`, all for any signed-in user:
+  - `list-backoffice-api-tokens`: `GET /admin/list-backoffice-api-tokens?notice=`.
+  - `create-backoffice-api-token-page`/`create-backoffice-api-token`: `GET`/`POST /admin/create-backoffice-api-token`. On success the POST answers the list page (`201`) with the token in full, instead of redirecting, so the token never travels in a url.
+  - `revoke-backoffice-api-token`: `POST /admin/revoke-backoffice-api-token/{id}`. It answers `303` to the list with a notice.
+- Rendering:
+  - `render.BackofficeApiTokens` → `backoffice_api_tokens.html`;
+  - `render.CreateBackofficeApiTokenForm` → `backoffice_api_token_form.html`;
+  - dates are formatted with `Deps.Timedeps.FormatUnix`.
+- `randdeps` (`crypto/rand`) and `timedeps` (`time`, UTC) are local deps (`origin: local`), the same shape as `jwtdeps`.
+
 ## Backoffice JSON API (`/api/admin/`)
 
 The JSON twin of the HTML routes above. It sits outside `/admin`, so the cookie `autentication` middleware never runs on it. Route names carry an `api-` prefix because a route name is unique across folders.
 
 - Every parameter arrives in a JSON body (`Content-Type: application/json`). Every action is a `POST`, except `GET /api/admin/me`, which takes no parameters.
-- Auth is `Authorization: Bearer <token>`. The token is the same session JWT that `backofficeauth.IssueToken` issues: it is bound to the client ip, and its `jti` names a `sessions` record. The API never reads the cookie.
+- Auth is `Authorization: Bearer <token>`, where the token is an API token from the section above. `api-autentication` puts the owner on `props.User` and the token on `props.ApiToken`. The API never reads the cookie and has no login or logout.
 - `role` travels as its name (`"root"`/`"viewer"`), held by a schema `enum` and converted with `backofficeapi.Role`. A user is answered as `{id, username, email, role}`, never with `passwordsha`.
 - Failures go through `routeio.Fail`, so they come back as the default `{"error","field"}` of the `handle_*.go`:
-  - 401: missing or invalid token (with `WWW-Authenticate: Bearer`), or a bad login;
+  - 401: a missing, unknown, revoked, expired or ip-disallowed token (with `WWW-Authenticate: Bearer`);
   - 403: not root, or a root removing their own account;
   - 404: unknown `id`;
   - 400: a schema violation or a `backofficeusers` message.
 - `routeslist/api/admin/`:
-  - `api-autentication` (`ANY /api/admin/...` except `/api/admin/login`, priority 10);
-  - `api-login` (`{username, password}` → `{token, token_type, expires_in, user}`);
-  - `api-logout`;
+  - `api-autentication` (`ANY /api/admin/...`, priority 10);
   - `api-me`;
   - `api-list-backoffice-users` (`{search?, role?, page?, limit?}`; an empty body lists everything);
   - `api-get-backoffice-user` (`{id}`).

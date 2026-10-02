@@ -26,6 +26,20 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 						{Name: "expiresat", Type: database.Int, Required: true}}},
 				},
 			},
+			{
+				Name: "apitoken",
+				Itens: []database.Item{
+					{Name: "tokensha", Type: database.Key, Required: true},
+					{Name: "name", Type: database.String, Required: true},
+					{Name: "prefix", Type: database.String, Required: true},
+					{Name: "ownerid", Type: database.Int},
+					{Name: "createdat", Type: database.Int},
+					{Name: "expiresat", Type: database.Int},
+					{Name: "ips", Type: database.String},
+					{Name: "lastusedat", Type: database.Int},
+					{Name: "lastusedip", Type: database.String},
+				},
+			},
 		},
 	}
 
@@ -67,6 +81,54 @@ func New(sandbox *api.Sandbox) *Maindatabase {
 	}
 	self.ListBackofficeuserSessions = func(parent_id int64) ([]SessionsItem, error) {
 		return ListBackofficeuserSessions(self.sandbox, &self, parent_id)
+	}
+	self.AddApitoken = func(props ApitokenNew) (ApitokenItem, error) {
+		return AddApitoken(self.sandbox, &self, props)
+	}
+	self.FindApitokenById = func(id int64) (ApitokenItem, bool) {
+		return FindApitokenById(self.sandbox, &self, id)
+	}
+	self.FindApitokenByTokensha = func(value string) (ApitokenItem, bool) {
+		return FindApitokenByTokensha(self.sandbox, &self, value)
+	}
+	self.ListApitoken = func(filtrage ApitokenFiltrage) ([]ApitokenItem, error) {
+		return ListApitoken(self.sandbox, &self, filtrage)
+	}
+	self.PageApitoken = func(position int, chunk int) ([]ApitokenItem, error) {
+		return PageApitoken(self.sandbox, &self, position, chunk)
+	}
+	self.CountApitoken = func() (int, error) {
+		return CountApitoken(self.sandbox, &self)
+	}
+	self.UpdateApitokenTokensha = func(id int64, value string) error {
+		return UpdateApitokenTokensha(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenName = func(id int64, value string) error {
+		return UpdateApitokenName(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenPrefix = func(id int64, value string) error {
+		return UpdateApitokenPrefix(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenOwnerid = func(id int64, value int64) error {
+		return UpdateApitokenOwnerid(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenCreatedat = func(id int64, value int64) error {
+		return UpdateApitokenCreatedat(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenExpiresat = func(id int64, value int64) error {
+		return UpdateApitokenExpiresat(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenIps = func(id int64, value string) error {
+		return UpdateApitokenIps(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenLastusedat = func(id int64, value int64) error {
+		return UpdateApitokenLastusedat(self.sandbox, &self, id, value)
+	}
+	self.UpdateApitokenLastusedip = func(id int64, value string) error {
+		return UpdateApitokenLastusedip(self.sandbox, &self, id, value)
+	}
+	self.RemoveApitoken = func(id int64) error {
+		return RemoveApitoken(self.sandbox, &self, id)
 	}
 
 	return &self

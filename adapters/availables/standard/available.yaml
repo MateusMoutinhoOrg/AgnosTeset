@@ -4,6 +4,7 @@ adapters:
     - embeddeps
     - hashdeps
     - jwtdeps
+    - randdeps
     - reflectdeps
     - serializables
     - serverdeps
@@ -11,3 +12,4 @@ adapters:
     - sortdeps
     - std
     - stringsdeps
+    - timedeps

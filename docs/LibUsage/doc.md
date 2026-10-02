@@ -84,6 +84,7 @@ The contracts available to patch:
 | `deps.Embeddeps` | `sandbox/deps/embeddeps` |
 | `deps.Hashdeps` | `sandbox/deps/hashdeps` |
 | `deps.Jwtdeps` | `sandbox/deps/jwtdeps` |
+| `deps.Randdeps` | `sandbox/deps/randdeps` |
 | `deps.Reflectdeps` | `sandbox/deps/reflectdeps` |
 | `deps.Serializables` | `sandbox/deps/serializables` |
 | `deps.Serverdeps` | `sandbox/deps/serverdeps` |
@@ -91,6 +92,7 @@ The contracts available to patch:
 | `deps.Sortdeps` | `sandbox/deps/sortdeps` |
 | `deps.Std` | `sandbox/deps/std` |
 | `deps.Stringsdeps` | `sandbox/deps/stringsdeps` |
+| `deps.Timedeps` | `sandbox/deps/timedeps` |
 
 Each one is filled by a matching implementation under `adapters/libs/`, every package
 exposing the same `Bind(deps *deps.Deps)` entry point:
@@ -102,6 +104,7 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
 | `adapters/libs/hashdeps` | `hashdeps.Bind(&deps)` |
 | `adapters/libs/jwtdeps` | `jwtdeps.Bind(&deps)` |
+| `adapters/libs/randdeps` | `randdeps.Bind(&deps)` |
 | `adapters/libs/reflectdeps` | `reflectdeps.Bind(&deps)` |
 | `adapters/libs/serializables` | `serializables.Bind(&deps)` |
 | `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |
@@ -109,6 +112,7 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/libs/sortdeps` | `sortdeps.Bind(&deps)` |
 | `adapters/libs/std` | `std.Bind(&deps)` |
 | `adapters/libs/stringsdeps` | `stringsdeps.Bind(&deps)` |
+| `adapters/libs/timedeps` | `timedeps.Bind(&deps)` |
 
 Starting from `standard.New()` is the safe default: an unfilled field is a nil func that
 panics on first call. For a permanent mix, write your own

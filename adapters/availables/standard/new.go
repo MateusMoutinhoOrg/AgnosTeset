@@ -6,6 +6,7 @@ import (
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/embeddeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/hashdeps"
 	jwtdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/jwtdeps"
+	randdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/randdeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serverdeps"
@@ -13,6 +14,7 @@ import (
 	sortdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/sortdeps"
 	std "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/std"
 	stringsdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/stringsdeps"
+	timedeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/timedeps"
 	deps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps"
 )
 
@@ -23,6 +25,7 @@ func New() deps.Deps {
 	embeddeps.Bind(&deps)
 	hashdeps.Bind(&deps)
 	jwtdeps.Bind(&deps)
+	randdeps.Bind(&deps)
 	reflectdeps.Bind(&deps)
 	serializables.Bind(&deps)
 	serverdeps.Bind(&deps)
@@ -30,5 +33,6 @@ func New() deps.Deps {
 	sortdeps.Bind(&deps)
 	std.Bind(&deps)
 	stringsdeps.Bind(&deps)
+	timedeps.Bind(&deps)
 	return deps
 }

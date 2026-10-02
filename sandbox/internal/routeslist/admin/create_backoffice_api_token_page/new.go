@@ -1,4 +1,4 @@
-package api_login
+package create_backoffice_api_token_page
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -18,26 +18,26 @@ import (
 func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
-	self.Name = "api_login"
-	self.AcceptMethods = []string{"POST"}
+	self.Name = "create_backoffice_api_token_page"
+	self.AcceptMethods = []string{"GET"}
 	self.Priority = 100
-	self.ResponseType = "application/json"
-	self.Segments = 3
-	self.Pattern = "/api/admin/login"
-	self.Category = "Backoffice API"
-	self.Help = "Signs a backoffice user in and answers a Bearer token"
+	self.ResponseType = "text/html"
+	self.Segments = 2
+	self.Pattern = "/admin/create-backoffice-api-token"
+	self.Category = "Backoffice API Tokens"
+	self.Help = "Shows the form that creates an API token"
 	self.LongDescription = ""
-	self.Examples = []string{"curl -X POST localhost:3000/api/admin/login -H 'Content-Type: application/json' -d '{\"username\":\"root\",\"password\":\"secret123\"}'"}
+	self.Examples = []string{}
 	self.Hidden = false
 
 	self.Paths = []api.Path{
 		{
-			Id:          "ApiAdminLogin",
+			Id:          "AdminCreateBackofficeApiToken",
 			Start:       0,
-			End:         2,
+			End:         1,
 			Type:        api.StringPath,
 			Description: "",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/api/admin/login", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/admin/create-backoffice-api-token", Negate: false, IgnoreCase: false},
 		},
 	}
 
@@ -56,15 +56,11 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	}
 
 	self.Body = api.RouteBody{
-		Type:        "json",
-		Required:    true,
+		Type:        "none",
+		Required:    false,
 		MaxBytes:    1048576,
-		ContentType: "application/json",
-		Schema:      BodySchema,
-	}
-
-	self.ReadBody = func(bound *api.Route) (any, error) {
-		return ReadBody(sandbox, bound)
+		ContentType: "",
+		Schema:      "",
 	}
 
 	self.InternalPureHandler = func(props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {

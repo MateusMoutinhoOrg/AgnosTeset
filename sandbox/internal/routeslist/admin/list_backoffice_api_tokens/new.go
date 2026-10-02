@@ -1,4 +1,4 @@
-package api_logout
+package list_backoffice_api_tokens
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -18,30 +18,42 @@ import (
 func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self := route.NewRoute(sandbox)
 
-	self.Name = "api_logout"
-	self.AcceptMethods = []string{"POST"}
+	self.Name = "list_backoffice_api_tokens"
+	self.AcceptMethods = []string{"GET"}
 	self.Priority = 100
-	self.ResponseType = "application/json"
-	self.Segments = 3
-	self.Pattern = "/api/admin/logout"
-	self.Category = "Backoffice API"
-	self.Help = "Ends the session of the Bearer token"
+	self.ResponseType = "text/html"
+	self.Segments = 2
+	self.Pattern = "/admin/list-backoffice-api-tokens"
+	self.Category = "Backoffice API Tokens"
+	self.Help = "Lists your API tokens, or every user's for a root"
 	self.LongDescription = ""
-	self.Examples = []string{"curl -X POST localhost:3000/api/admin/logout -H \"Authorization: Bearer $TOKEN\""}
+	self.Examples = []string{}
 	self.Hidden = false
 
 	self.Paths = []api.Path{
 		{
-			Id:          "ApiAdminLogout",
+			Id:          "AdminListBackofficeApiTokens",
 			Start:       0,
-			End:         2,
+			End:         1,
 			Type:        api.StringPath,
 			Description: "",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/api/admin/logout", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/admin/list-backoffice-api-tokens", Negate: false, IgnoreCase: false},
 		},
 	}
 
-	self.Parameters = []api.Parameter{}
+	self.Parameters = []api.Parameter{
+		{
+			Id:          "Notice",
+			Key:         "notice",
+			Fonts:       []api.ParameterFont{api.QueryParam},
+			Required:    false,
+			Type:        api.StringType,
+			Default:     "",
+			HasDefault:  false,
+			Description: "the outcome code of the last revoke",
+			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
+		},
+	}
 
 	self.Body = api.RouteBody{
 		Type:        "none",

@@ -30,7 +30,9 @@ or `403`, for example — or let it through to this route.
 | Route | When |
 | --- | --- |
 | [`autentication`](autentication.md) | depends on the address — `explain-route` gives the exact answer |
+| [`create-backoffice-api-token-page`](create_backoffice_api_token_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`home`](home.md) | depends on the address — `explain-route` gives the exact answer |
+| [`list-backoffice-api-tokens`](list_backoffice_api_tokens.md) | depends on the address — `explain-route` gives the exact answer |
 | [`list-backoffice-users`](list_backoffice_users.md) | depends on the address — `explain-route` gives the exact answer |
 | [`add-backoffice-user-page`](add_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`edit-backoffice-user-page`](edit_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |

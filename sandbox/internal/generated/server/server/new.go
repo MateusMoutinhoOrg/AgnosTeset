@@ -4,10 +4,14 @@ import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	routeio "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	routeslist_autentication "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/autentication"
+	routeslist_create_backoffice_api_token "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/create_backoffice_api_token"
+	routeslist_create_backoffice_api_token_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/create_backoffice_api_token_page"
 	routeslist_home "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/home"
+	routeslist_list_backoffice_api_tokens "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/list_backoffice_api_tokens"
 	routeslist_list_backoffice_users "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/list_backoffice_users"
 	routeslist_login "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/login"
 	routeslist_logout "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/logout"
+	routeslist_revoke_backoffice_api_token "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/revoke_backoffice_api_token"
 	routeslist_add_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/add_backoffice_user"
 	routeslist_add_backoffice_user_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/add_backoffice_user_page"
 	routeslist_edit_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/admin/root/edit_backoffice_user"
@@ -17,8 +21,6 @@ import (
 	routeslist_api_autentication "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_autentication"
 	routeslist_api_get_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_get_backoffice_user"
 	routeslist_api_list_backoffice_users "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_list_backoffice_users"
-	routeslist_api_login "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_login"
-	routeslist_api_logout "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_logout"
 	routeslist_api_me "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/api_me"
 	routeslist_api_add_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_add_backoffice_user"
 	routeslist_api_edit_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeslist/api/admin/root/api_edit_backoffice_user"
@@ -50,18 +52,20 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routeslist_api_edit_backoffice_user.NewRoute(sandbox),
 		routeslist_api_get_backoffice_user.NewRoute(sandbox),
 		routeslist_api_list_backoffice_users.NewRoute(sandbox),
-		routeslist_api_login.NewRoute(sandbox),
-		routeslist_api_logout.NewRoute(sandbox),
 		routeslist_api_me.NewRoute(sandbox),
 		routeslist_api_remove_backoffice_user.NewRoute(sandbox),
+		routeslist_create_backoffice_api_token.NewRoute(sandbox),
+		routeslist_create_backoffice_api_token_page.NewRoute(sandbox),
 		routeslist_edit_backoffice_user.NewRoute(sandbox),
 		routeslist_edit_backoffice_user_page.NewRoute(sandbox),
 		routeslist_health.NewRoute(sandbox),
 		routeslist_home.NewRoute(sandbox),
+		routeslist_list_backoffice_api_tokens.NewRoute(sandbox),
 		routeslist_list_backoffice_users.NewRoute(sandbox),
 		routeslist_login.NewRoute(sandbox),
 		routeslist_logout.NewRoute(sandbox),
 		routeslist_remove_backoffice_user.NewRoute(sandbox),
+		routeslist_revoke_backoffice_api_token.NewRoute(sandbox),
 		routeslist_frontend.NewRoute(sandbox),
 	}
 

@@ -53,6 +53,58 @@ type SessionsNew struct {
 	Expiresat int64
 }
 
+// ApitokenItem is one stored apitoken record: its permanent id and every
+// plain field the declaration gives it.
+type ApitokenItem struct {
+	Id         int64
+	Tokensha   string
+	Name       string
+	Prefix     string
+	Ownerid    int64
+	Createdat  int64
+	Expiresat  int64
+	Ips        string
+	Lastusedat int64
+	Lastusedip string
+}
+
+// ApitokenNew is one insert into apitoken: the fields a new record carries.
+type ApitokenNew struct {
+	Tokensha   string
+	Name       string
+	Prefix     string
+	Ownerid    int64
+	Createdat  int64
+	Expiresat  int64
+	Ips        string
+	Lastusedat int64
+	Lastusedip string
+}
+
+// ApitokenFiltrage narrows a ListApitoken. Every plain field is here, because
+// only a `key` field is indexed and this is the one way to reach the rest. A
+// zero value turns its own filter off.
+type ApitokenFiltrage struct {
+	TokenshaStartsWith   string
+	TokenshaEquals       string
+	NameStartsWith       string
+	NameEquals           string
+	PrefixStartsWith     string
+	PrefixEquals         string
+	OwneridMin           int64
+	OwneridMax           int64
+	CreatedatMin         int64
+	CreatedatMax         int64
+	ExpiresatMin         int64
+	ExpiresatMax         int64
+	IpsStartsWith        string
+	IpsEquals            string
+	LastusedatMin        int64
+	LastusedatMax        int64
+	LastusedipStartsWith string
+	LastusedipEquals     string
+}
+
 // Maindatabase is the maindatabase database: the handle it was built over and one
 // function field per generated method. Building one is free — it touches no
 // key and creates nothing until the first record is written — so whoever needs
@@ -85,4 +137,36 @@ type Maindatabase struct {
 	AddBackofficeuserSessions func(parent_id int64, props SessionsNew) (SessionsItem, error)
 	// ListBackofficeuserSessions reads every sessions record of one backofficeuser record.
 	ListBackofficeuserSessions func(parent_id int64) ([]SessionsItem, error)
+	// AddApitoken inserts one apitoken record.
+	AddApitoken func(props ApitokenNew) (ApitokenItem, error)
+	// FindApitokenById reads one apitoken record by its permanent id.
+	FindApitokenById func(id int64) (ApitokenItem, bool)
+	// FindApitokenByTokensha reads one apitoken record by its indexed tokensha.
+	FindApitokenByTokensha func(value string) (ApitokenItem, bool)
+	// ListApitoken reads every apitoken record the filtrage keeps.
+	ListApitoken func(filtrage ApitokenFiltrage) ([]ApitokenItem, error)
+	// PageApitoken reads one page of apitoken records, counted from 1.
+	PageApitoken func(position int, chunk int) ([]ApitokenItem, error)
+	// CountApitoken is how many apitoken records are live.
+	CountApitoken func() (int, error)
+	// UpdateApitokenTokensha writes a new tokensha on one apitoken record.
+	UpdateApitokenTokensha func(id int64, value string) error
+	// UpdateApitokenName writes a new name on one apitoken record.
+	UpdateApitokenName func(id int64, value string) error
+	// UpdateApitokenPrefix writes a new prefix on one apitoken record.
+	UpdateApitokenPrefix func(id int64, value string) error
+	// UpdateApitokenOwnerid writes a new ownerid on one apitoken record.
+	UpdateApitokenOwnerid func(id int64, value int64) error
+	// UpdateApitokenCreatedat writes a new createdat on one apitoken record.
+	UpdateApitokenCreatedat func(id int64, value int64) error
+	// UpdateApitokenExpiresat writes a new expiresat on one apitoken record.
+	UpdateApitokenExpiresat func(id int64, value int64) error
+	// UpdateApitokenIps writes a new ips on one apitoken record.
+	UpdateApitokenIps func(id int64, value string) error
+	// UpdateApitokenLastusedat writes a new lastusedat on one apitoken record.
+	UpdateApitokenLastusedat func(id int64, value int64) error
+	// UpdateApitokenLastusedip writes a new lastusedip on one apitoken record.
+	UpdateApitokenLastusedip func(id int64, value string) error
+	// RemoveApitoken deletes one apitoken record and everything nested under it.
+	RemoveApitoken func(id int64) error
 }

@@ -9,7 +9,6 @@ package api_autentication
 type Entries struct {
 	FullRoute     string `id:"FullRoute"`
 	Route         string `id:"Route"`
-	NotLogin      string `id:"NotLogin"`
 	Authorization string `id:"Authorization"`
 	XClientIp     string `id:"XClientIp"`
 }

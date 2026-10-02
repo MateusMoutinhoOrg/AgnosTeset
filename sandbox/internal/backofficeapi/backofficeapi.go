@@ -51,18 +51,6 @@ func Listing(sandbox *api.Sandbox, listing backofficeusers.Listing) *serializabl
 	return document
 }
 
-// Session is what a login answers: the token to send as
-// `Authorization: Bearer <token>`, how many seconds it stays valid, and the
-// user it was issued for.
-func Session(sandbox *api.Sandbox, token string, user maindatabase.BackofficeuserItem) *serializables.SerializibleObject {
-	document := sandbox.Deps.Serializables.CreateObject()
-	document.AddItemToObject("token", token)
-	document.AddItemToObject("token_type", "Bearer")
-	document.AddItemToObject("expires_in", backofficeauth.SessionSeconds)
-	document.AddItemToObject("user", User(sandbox, user))
-	return document
-}
-
 // Ok is {"status": "ok"}, what an action with nothing else to say answers.
 func Ok(sandbox *api.Sandbox) *serializables.SerializibleObject {
 	document := sandbox.Deps.Serializables.CreateObject()

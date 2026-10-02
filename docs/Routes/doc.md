@@ -24,8 +24,17 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`ANY /admin/* !(/admin/login)`](autentication.md) | Requires a valid backoffice session on /admin, except /admin/login |
 | [`ANY /admin/root/*`](root_guard.md) | Lets only root users reach /admin/root |
-| [`ANY /api/admin/* !(/api/admin/login)`](api_autentication.md) | Requires a valid Bearer token on /api/admin, except /api/admin/login |
+| [`ANY /api/admin/*`](api_autentication.md) | Requires a valid API token on every /api/admin route |
 | [`ANY /api/admin/root/*`](api_root_guard.md) | Lets only root users reach /api/admin/root |
+
+## Backoffice API Tokens
+
+| Route | What it does |
+| --- | --- |
+| [`POST /admin/create-backoffice-api-token`](create_backoffice_api_token.md) | Creates an API token and shows it once |
+| [`GET /admin/create-backoffice-api-token`](create_backoffice_api_token_page.md) | Shows the form that creates an API token |
+| [`GET /admin/list-backoffice-api-tokens`](list_backoffice_api_tokens.md) | Lists your API tokens, or every user's for a root |
+| [`POST /admin/revoke-backoffice-api-token/{Id:integer}`](revoke_backoffice_api_token.md) | Revokes an API token: your own, or anyone's for a root |
 
 ## Backoffice
 
@@ -60,8 +69,6 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`POST /api/admin/login`](api_login.md) | Signs a backoffice user in and answers a Bearer token |
-| [`POST /api/admin/logout`](api_logout.md) | Ends the session of the Bearer token |
 | [`GET /api/admin/me`](api_me.md) | Answers the backoffice user of the Bearer token |
 
 ## Assets

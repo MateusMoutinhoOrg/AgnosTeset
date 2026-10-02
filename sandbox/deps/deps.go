@@ -6,6 +6,7 @@ import (
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/hashdeps"
 	jwtdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/jwtdeps"
+	randdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/randdeps"
 	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
@@ -13,6 +14,7 @@ import (
 	sortdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/sortdeps"
 	std "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/std"
 	stringsdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/stringsdeps"
+	timedeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/timedeps"
 )
 
 // Deps is every capability the sandbox needs from the outside world, one field
@@ -24,6 +26,7 @@ type Deps struct {
 	Embeddeps     embeddeps.Sandbox
 	Hashdeps      hashdeps.Sandbox
 	Jwtdeps       jwtdeps.Sandbox
+	Randdeps      randdeps.Sandbox
 	Reflectdeps   reflectdeps.Sandbox
 	Serializables serializables.Sandbox
 	Serverdeps    serverdeps.Sandbox
@@ -31,4 +34,5 @@ type Deps struct {
 	Sortdeps      sortdeps.Sandbox
 	Std           std.Sandbox
 	Stringsdeps   stringsdeps.Sandbox
+	Timedeps      timedeps.Sandbox
 }

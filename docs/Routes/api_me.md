@@ -4,8 +4,18 @@ Answers the backoffice user of the Bearer token
 
 ## Try it
 
+Only what is required:
+
 ```bash
 curl localhost:3000/api/admin/me
+```
+
+With every value it reads:
+
+```bash
+curl localhost:3000/api/admin/me \
+  -H 'authorization: my-authorization' \
+  -H 'x-client-ip: my-x-client-ip'
 ```
 
 More examples:
@@ -13,6 +23,13 @@ More examples:
 ```bash
 curl localhost:3000/api/admin/me -H "Authorization: Bearer $TOKEN"
 ```
+
+## Query string, headers and cookies
+
+| Name | Sent in | What goes there | Required | Example | Description |
+| --- | --- | --- | --- | --- | --- |
+| `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> — read by [`api-autentication`](api_autentication.md), which runs first |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip the request came from, set by the server and never by the client — read by [`api-autentication`](api_autentication.md), which runs first |
 
 ## What comes back
 
@@ -29,7 +46,7 @@ or `403`, for example — or let it through to this route.
 
 | Route | When |
 | --- | --- |
-| [`api-autentication`](api_autentication.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-autentication`](api_autentication.md) | always |
 
 ---
 

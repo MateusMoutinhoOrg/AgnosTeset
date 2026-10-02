@@ -6,9 +6,26 @@ Runs after api-autentication. A root user goes through; any other backoffice use
 
 ## Try it
 
+Only what is required:
+
 ```bash
 curl localhost:3000/api/admin/root
 ```
+
+With every value it reads:
+
+```bash
+curl localhost:3000/api/admin/root \
+  -H 'authorization: my-authorization' \
+  -H 'x-client-ip: my-x-client-ip'
+```
+
+## Query string, headers and cookies
+
+| Name | Sent in | What goes there | Required | Example | Description |
+| --- | --- | --- | --- | --- | --- |
+| `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> — read by [`api-autentication`](api_autentication.md), which runs first |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip the request came from, set by the server and never by the client — read by [`api-autentication`](api_autentication.md), which runs first |
 
 ## What comes back
 
@@ -25,7 +42,7 @@ or `403`, for example — or let it through to this route.
 
 | Route | When |
 | --- | --- |
-| [`api-autentication`](api_autentication.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-autentication`](api_autentication.md) | always |
 
 ---
 

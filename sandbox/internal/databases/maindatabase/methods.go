@@ -207,6 +207,245 @@ func ListBackofficeuserSessions(sandbox *api.Sandbox, self *Maindatabase, parent
 	return nested, nil
 }
 
+// AddApitoken inserts one apitoken record.
+func AddApitoken(sandbox *api.Sandbox, self *Maindatabase, props ApitokenNew) (ApitokenItem, error) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return ApitokenItem{}, err
+	}
+	item, failure := schema.NewItem(newApitokenFields(props))
+	if failure != nil {
+		return ApitokenItem{}, databaseio.Fail(sandbox, failure)
+	}
+	return buildApitokenItem(sandbox, item)
+}
+
+// FindApitokenById reads one apitoken record by its permanent id.
+func FindApitokenById(sandbox *api.Sandbox, self *Maindatabase, id int64) (ApitokenItem, bool) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		sandbox.Deps.Std.Log("FindApitokenById: %s \n", err.Error())
+		return ApitokenItem{}, false
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return ApitokenItem{}, false
+	}
+	built, err := buildApitokenItem(sandbox, item)
+	if err != nil {
+		sandbox.Deps.Std.Log("FindApitokenById: %s \n", err.Error())
+		return ApitokenItem{}, false
+	}
+	return built, true
+}
+
+// FindApitokenByTokensha reads one apitoken record by its indexed tokensha.
+func FindApitokenByTokensha(sandbox *api.Sandbox, self *Maindatabase, value string) (ApitokenItem, bool) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		sandbox.Deps.Std.Log("FindApitokenByTokensha: %s \n", err.Error())
+		return ApitokenItem{}, false
+	}
+	item, ok := schema.FindByKey("tokensha", value)
+	if !ok {
+		return ApitokenItem{}, false
+	}
+	built, err := buildApitokenItem(sandbox, item)
+	if err != nil {
+		sandbox.Deps.Std.Log("FindApitokenByTokensha: %s \n", err.Error())
+		return ApitokenItem{}, false
+	}
+	return built, true
+}
+
+// ListApitoken reads every apitoken record the filtrage keeps.
+func ListApitoken(sandbox *api.Sandbox, self *Maindatabase, filtrage ApitokenFiltrage) ([]ApitokenItem, error) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return nil, err
+	}
+	items, failure := schema.ListAll()
+	if failure != nil {
+		return nil, databaseio.Fail(sandbox, failure)
+	}
+	kept := []ApitokenItem{}
+	for _, item := range items {
+		built, err := buildApitokenItem(sandbox, item)
+		if err != nil {
+			return nil, err
+		}
+		if !matchApitoken(sandbox, built, filtrage) {
+			continue
+		}
+		kept = append(kept, built)
+	}
+	return kept, nil
+}
+
+// PageApitoken reads one page of apitoken records, counted from 1.
+func PageApitoken(sandbox *api.Sandbox, self *Maindatabase, position int, chunk int) ([]ApitokenItem, error) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return nil, err
+	}
+	items, failure := schema.List(position, chunk)
+	if failure != nil {
+		return nil, databaseio.Fail(sandbox, failure)
+	}
+	page := []ApitokenItem{}
+	for _, item := range items {
+		built, err := buildApitokenItem(sandbox, item)
+		if err != nil {
+			return nil, err
+		}
+		page = append(page, built)
+	}
+	return page, nil
+}
+
+// CountApitoken is how many apitoken records are live.
+func CountApitoken(sandbox *api.Sandbox, self *Maindatabase) (int, error) {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return 0, err
+	}
+	items, failure := schema.ListAll()
+	if failure != nil {
+		return 0, databaseio.Fail(sandbox, failure)
+	}
+	return len(items), nil
+}
+
+// UpdateApitokenTokensha writes a new tokensha on one apitoken record.
+func UpdateApitokenTokensha(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("tokensha", value))
+}
+
+// UpdateApitokenName writes a new name on one apitoken record.
+func UpdateApitokenName(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("name", value))
+}
+
+// UpdateApitokenPrefix writes a new prefix on one apitoken record.
+func UpdateApitokenPrefix(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("prefix", value))
+}
+
+// UpdateApitokenOwnerid writes a new ownerid on one apitoken record.
+func UpdateApitokenOwnerid(sandbox *api.Sandbox, self *Maindatabase, id int64, value int64) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("ownerid", value))
+}
+
+// UpdateApitokenCreatedat writes a new createdat on one apitoken record.
+func UpdateApitokenCreatedat(sandbox *api.Sandbox, self *Maindatabase, id int64, value int64) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("createdat", value))
+}
+
+// UpdateApitokenExpiresat writes a new expiresat on one apitoken record.
+func UpdateApitokenExpiresat(sandbox *api.Sandbox, self *Maindatabase, id int64, value int64) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("expiresat", value))
+}
+
+// UpdateApitokenIps writes a new ips on one apitoken record.
+func UpdateApitokenIps(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("ips", value))
+}
+
+// UpdateApitokenLastusedat writes a new lastusedat on one apitoken record.
+func UpdateApitokenLastusedat(sandbox *api.Sandbox, self *Maindatabase, id int64, value int64) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("lastusedat", value))
+}
+
+// UpdateApitokenLastusedip writes a new lastusedip on one apitoken record.
+func UpdateApitokenLastusedip(sandbox *api.Sandbox, self *Maindatabase, id int64, value string) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Update("lastusedip", value))
+}
+
+// RemoveApitoken deletes one apitoken record and everything nested under it.
+func RemoveApitoken(sandbox *api.Sandbox, self *Maindatabase, id int64) error {
+	schema, err := databaseio.Schema(sandbox, self.handle, "apitoken")
+	if err != nil {
+		return err
+	}
+	item, ok := schema.FindById(id)
+	if !ok {
+		return sandbox.Deps.Std.Errorf("apitoken %d not found", id)
+	}
+	return databaseio.Fail(sandbox, item.Remove())
+}
+
 // newBackofficeuserFields is one insert into backofficeuser as the stored field map.
 func newBackofficeuserFields(props BackofficeuserNew) map[string]any {
 	return map[string]any{
@@ -288,4 +527,115 @@ func buildSessionsItem(sandbox *api.Sandbox, item database.SchemaItem) (Sessions
 	built.Expiresat = expiresat_value
 
 	return built, nil
+}
+
+// newApitokenFields is one insert into apitoken as the stored field map.
+func newApitokenFields(props ApitokenNew) map[string]any {
+	return map[string]any{
+		"tokensha":   props.Tokensha,
+		"name":       props.Name,
+		"prefix":     props.Prefix,
+		"ownerid":    props.Ownerid,
+		"createdat":  props.Createdat,
+		"expiresat":  props.Expiresat,
+		"ips":        props.Ips,
+		"lastusedat": props.Lastusedat,
+		"lastusedip": props.Lastusedip,
+	}
+}
+
+// buildApitokenItem reads one stored apitoken record back into its Go form.
+// Every conversion is checked, so a value of the wrong type is an error rather
+// than a panic.
+func buildApitokenItem(sandbox *api.Sandbox, item database.SchemaItem) (ApitokenItem, error) {
+	built := ApitokenItem{Id: item.Id}
+
+	tokensha_value, err := databaseio.ReadString(sandbox, item, "tokensha")
+	if err != nil {
+		return built, err
+	}
+	built.Tokensha = tokensha_value
+
+	name_value, err := databaseio.ReadString(sandbox, item, "name")
+	if err != nil {
+		return built, err
+	}
+	built.Name = name_value
+
+	prefix_value, err := databaseio.ReadString(sandbox, item, "prefix")
+	if err != nil {
+		return built, err
+	}
+	built.Prefix = prefix_value
+
+	ownerid_value, err := databaseio.ReadInt(sandbox, item, "ownerid")
+	if err != nil {
+		return built, err
+	}
+	built.Ownerid = ownerid_value
+
+	createdat_value, err := databaseio.ReadInt(sandbox, item, "createdat")
+	if err != nil {
+		return built, err
+	}
+	built.Createdat = createdat_value
+
+	expiresat_value, err := databaseio.ReadInt(sandbox, item, "expiresat")
+	if err != nil {
+		return built, err
+	}
+	built.Expiresat = expiresat_value
+
+	ips_value, err := databaseio.ReadString(sandbox, item, "ips")
+	if err != nil {
+		return built, err
+	}
+	built.Ips = ips_value
+
+	lastusedat_value, err := databaseio.ReadInt(sandbox, item, "lastusedat")
+	if err != nil {
+		return built, err
+	}
+	built.Lastusedat = lastusedat_value
+
+	lastusedip_value, err := databaseio.ReadString(sandbox, item, "lastusedip")
+	if err != nil {
+		return built, err
+	}
+	built.Lastusedip = lastusedip_value
+
+	return built, nil
+}
+
+// matchApitoken is one ApitokenFiltrage applied to one record. A zero value
+// never filters, so an empty filtrage keeps everything.
+func matchApitoken(sandbox *api.Sandbox, item ApitokenItem, filtrage ApitokenFiltrage) bool {
+	if !databaseio.TextMatches(sandbox, item.Tokensha, filtrage.TokenshaStartsWith, filtrage.TokenshaEquals) {
+		return false
+	}
+	if !databaseio.TextMatches(sandbox, item.Name, filtrage.NameStartsWith, filtrage.NameEquals) {
+		return false
+	}
+	if !databaseio.TextMatches(sandbox, item.Prefix, filtrage.PrefixStartsWith, filtrage.PrefixEquals) {
+		return false
+	}
+	if !databaseio.IntInRange(item.Ownerid, filtrage.OwneridMin, filtrage.OwneridMax) {
+		return false
+	}
+	if !databaseio.IntInRange(item.Createdat, filtrage.CreatedatMin, filtrage.CreatedatMax) {
+		return false
+	}
+	if !databaseio.IntInRange(item.Expiresat, filtrage.ExpiresatMin, filtrage.ExpiresatMax) {
+		return false
+	}
+	if !databaseio.TextMatches(sandbox, item.Ips, filtrage.IpsStartsWith, filtrage.IpsEquals) {
+		return false
+	}
+	if !databaseio.IntInRange(item.Lastusedat, filtrage.LastusedatMin, filtrage.LastusedatMax) {
+		return false
+	}
+	if !databaseio.TextMatches(sandbox, item.Lastusedip, filtrage.LastusedipStartsWith, filtrage.LastusedipEquals) {
+		return false
+	}
+	return true
 }

@@ -23,10 +23,10 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Priority = 10
 	self.ResponseType = "application/json"
 	self.Segments = 0
-	self.Pattern = "/api/admin/* !(/api/admin/login)"
+	self.Pattern = "/api/admin/*"
 	self.Category = "Middleware"
-	self.Help = "Requires a valid Bearer token on /api/admin, except /api/admin/login"
-	self.LongDescription = "Every /api/admin route but POST /api/admin/login needs the token that login answers, sent as Authorization: Bearer <token>. The token is bound to the client ip it was issued to and lasts 30 minutes; a missing, invalid or expired one is answered 401 in JSON."
+	self.Help = "Requires a valid API token on every /api/admin route"
+	self.LongDescription = "Every /api/admin route needs an API token, sent as Authorization: Bearer <token>. Tokens are created and revoked on the backoffice page /admin/list-backoffice-api-tokens; the api never issues one. A token may expire on a date or never, and may be limited to a list of client ips. A missing, unknown, revoked or expired token, or one used from an ip it does not allow, is answered 401 in JSON."
 	self.Examples = []string{}
 	self.Hidden = false
 
@@ -39,14 +39,6 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Description: "",
 			Trigger:     api.Trigger{Exist: true, Type: api.PrefixTrigger, Value: "/api/admin", Negate: false, IgnoreCase: false},
 		},
-		{
-			Id:          "NotLogin",
-			Start:       0,
-			End:         -1,
-			Type:        api.StringPath,
-			Description: "the login route is reachable without a token",
-			Trigger:     api.Trigger{Exist: true, Type: api.EqualTrigger, Value: "/api/admin/login", Negate: true, IgnoreCase: false},
-		},
 	}
 
 	self.Parameters = []api.Parameter{
@@ -58,7 +50,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Type:        api.StringType,
 			Default:     "",
 			HasDefault:  false,
-			Description: "the session JWT answered by POST /api/admin/login, as Bearer <token>",
+			Description: "an API token created on /admin/list-backoffice-api-tokens, as Bearer <token>",
 			Trigger:     api.Trigger{Exist: false, Type: api.EqualTrigger, Value: "", Negate: false, IgnoreCase: false},
 		},
 		{
