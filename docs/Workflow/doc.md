@@ -183,7 +183,7 @@ and rewritten by no build. [Databases](../Databases/doc.md) is the whole recipe.
 ## Run the backoffice
 
 ```bash
-export TESTEBACKOFFICE_SECRET=$(openssl rand -hex 32)
+export TESTEBACKOFFICE_SECRET=$(openssl rand -hex 32)   # optional: unset, one is generated per run
 testebackoffice add-backoffice-user --username admin --email admin@example.com --role root
 testebackoffice start-server --insecure-http   # then /admin/login
 ```

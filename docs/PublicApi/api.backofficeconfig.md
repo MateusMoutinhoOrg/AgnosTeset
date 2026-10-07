@@ -6,7 +6,7 @@ BackofficeConfig is the part of the Config the backoffice reads, embedded in api
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `Secret` | `string` | Secret signs the backoffice session tokens. It is read from the <NAME>_SECRET environment variable, never from the command line. |
+| `Secret` | `string` | Secret signs the backoffice session tokens. It is read from the <NAME>_SECRET environment variable, never from the command line, or generated for the run when that variable is unset. |
 | `AllowXForwardedFor` | `bool` | AllowXForwardedFor trusts the last entry of X-Forwarded-For as the client ip, the one a reverse proxy in front of the server appended. Off, the client ip is the connection's own. |
 | `InsecureHttp` | `bool` | InsecureHttp serves the backoffice over plain http, for local development: the session cookie drops Secure and no Strict-Transport-Security is sent. |
 
