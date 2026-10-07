@@ -3,7 +3,6 @@ package create_backoffice_api_token
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficerender"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficetokens"
@@ -17,7 +16,7 @@ import (
 // what was sent, under a 400 with the reason above it.
 func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	if props.User == nil {
-		return routeio.Fail(sandbox, api.StatusUnauthorized, "", "no authenticated user")
+		return sandbox.Deps.OpinatedAgnosServer.Fail(api.StatusUnauthorized, "", "no authenticated user")
 	}
 
 	fields := backofficetokens.Fields{

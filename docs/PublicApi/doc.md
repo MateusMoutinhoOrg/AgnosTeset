@@ -27,9 +27,9 @@ struct of function fields, filled by a binder.
 | [`sandbox/api/backofficeconfig.go`](api.backofficeconfig.md) | `BackofficeConfig` |
 | [`sandbox/api/cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
 | [`sandbox/api/clisandbox.go`](api.clisandbox.md) | `CliSandbox` |
-| [`sandbox/api/command.go`](api.command.md) | `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Error`, `NewCommand`, `BindCommand` |
+| [`sandbox/api/command.go`](api.command.md) | `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command` |
 | [`sandbox/api/config.go`](api.config.md) | `Config` |
-| [`sandbox/api/route.go`](api.route.md) | `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Error`, `NewRoute`, `BindRoute` |
+| [`sandbox/api/route.go`](api.route.md) | `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route` |
 | [`sandbox/api/server.go`](api.server.md) | `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `Server`, `ServeProps` |
 | [`sandbox/api/serversandbox.go`](api.serversandbox.md) | `ServerSandbox` |
 | [`sandbox/api/trigger.go`](api.trigger.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `TriggerType`, `Trigger` |
@@ -43,6 +43,10 @@ field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&
 
 | Page | Declares |
 | --- | --- |
+| [`deps.OpinatedAgnosCli`](deps.OpinatedAgnosCli.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ExitOk`, `ExitFailure`, `ExitUsage`, `TriggerType`, `Trigger`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Cli`, `MainProps`, `Sandbox`, `Error` |
+| [`deps.OpinatedAgnosDatabase`](deps.OpinatedAgnosDatabase.md) | `Sandbox` |
+| [`deps.OpinatedAgnosFront`](deps.OpinatedAgnosFront.md) | `Root`, `Index`, `NotFound`, `RevalidateCache`, `Sandbox` |
+| [`deps.OpinatedAgnosServer`](deps.OpinatedAgnosServer.md) | `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Server`, `ServeProps`, `MainProps`, `Sandbox`, `Error` |
 | [`deps.Argvdeps`](deps.argvdeps.md) | `Sandbox`, `Parser` |
 | [`deps.Database`](deps.database.md) | `Key`, `Int`, `Database`, `Float`, `String`, `Link`, `KeyConflict`, `NotFound`, `MissingField`, `InvalidField`, `Internal`, `Item`, `Schema`, `Props`, `Error`, `SchemaItem`, `SchemaInstance`, `DatabaseHandle`, `Databases`, `Info`, `Sandbox` |
 | [`deps.Embeddeps`](deps.embeddeps.md) | `Sandbox` |
@@ -52,7 +56,6 @@ field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&
 | [`deps.Passworddeps`](deps.passworddeps.md) | `Sandbox` |
 | [`deps.Randdeps`](deps.randdeps.md) | `Sandbox` |
 | [`deps.Ratelimitdeps`](deps.ratelimitdeps.md) | `Sandbox` |
-| [`deps.Reflectdeps`](deps.reflectdeps.md) | `Sandbox` |
 | [`deps.Serializables`](deps.serializables.md) | `SerializibleObject`, `Sandbox` |
 | [`deps.Serverdeps`](deps.serverdeps.md) | `Sandbox`, `ServerProps`, `Server`, `Request`, `Response` |
 | [`deps.Signaldeps`](deps.signaldeps.md) | `Sandbox` |

@@ -3,7 +3,6 @@ package revoke_backoffice_api_token
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficetokens"
 )
@@ -14,12 +13,12 @@ import (
 // their own tokens, a root anyone's.
 func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	if props.User == nil {
-		return routeio.Fail(sandbox, api.StatusUnauthorized, "", "no authenticated user")
+		return sandbox.Deps.OpinatedAgnosServer.Fail(api.StatusUnauthorized, "", "no authenticated user")
 	}
 
 	notice, err := backofficetokens.Revoke(sandbox, *props.User, int64(entries.Id))
 	if err != nil {
 		return err
 	}
-	return routeio.Redirect(*response, api.StatusSeeOther, backofficetokens.ListLocation(sandbox, notice))
+	return sandbox.Deps.OpinatedAgnosServer.Redirect(*response, api.StatusSeeOther, backofficetokens.ListLocation(sandbox, notice))
 }

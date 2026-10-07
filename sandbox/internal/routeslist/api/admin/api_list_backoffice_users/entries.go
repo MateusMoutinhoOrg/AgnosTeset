@@ -3,7 +3,6 @@ package api_list_backoffice_users
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 )
 
 // Entries is every value this route reads off a request, one field per entry
@@ -32,7 +31,7 @@ type Body struct {
 const MaxBodyBytes = 1048576
 
 // BodySchema is this route's declared json-schema in canonical form — the text
-// routeio.ValidateSchema checks a request body against.
+// Deps.OpinatedAgnosServer.ValidateSchema checks a request body against.
 const BodySchema = "{\"properties\":{\"limit\":{\"type\":\"integer\"},\"page\":{\"type\":\"integer\"},\"role\":{\"enum\":[\"root\",\"viewer\"],\"type\":\"string\"},\"search\":{\"type\":\"string\"}},\"type\":\"object\"}"
 
 // ReadBody reads, validates and converts the request body of one bound route.
@@ -41,15 +40,16 @@ const BodySchema = "{\"properties\":{\"limit\":{\"type\":\"integer\"},\"page\":{
 // Entries.Body; a middleware in front of this route may still refuse a request
 // before a byte of it is read.
 //
-// It returns nil when the body passed. Any other failure has already been
-// answered — by this project's own HandleBadRequest or HandleTooLarge, which
-// routeio.Raise hands it to — and the handler never runs.
+// It returns nil when the body passed. Any other failure comes back built by
+// Deps.OpinatedAgnosServer.Fail, which the lib's dispatch raises — reaching
+// this project's own HandleBadRequest or HandleTooLarge — and the handler never
+// runs.
 func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 	var body Body
 
-	raw, err := routeio.RequestOf(route).ReadBody(MaxBodyBytes)
+	raw, err := route.Request.ReadBody(MaxBodyBytes)
 	if err != nil {
-		return body, routeio.RaiseWithCause(sandbox, route, api.StatusPayloadTooLarge, "",
+		return body, sandbox.Deps.OpinatedAgnosServer.FailWithCause(api.StatusPayloadTooLarge, "",
 			"the request body is larger than 1048576 bytes", err.Error())
 	}
 
@@ -59,12 +59,12 @@ func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 		raw = []byte("{}")
 	}
 
-	parsed, field, message, ok := routeio.ValidateSchema(sandbox, BodySchema, raw)
+	parsed, field, message, ok := sandbox.Deps.OpinatedAgnosServer.ValidateSchema(sandbox.Deps.Serializables, BodySchema, raw)
 	if !ok {
-		return body, routeio.Raise(sandbox, route, api.StatusBadRequest, field, message)
+		return body, sandbox.Deps.OpinatedAgnosServer.Fail(api.StatusBadRequest, field, message)
 	}
 
-	body = bindBody(parsed)
+	body = bindBody(sandbox, parsed)
 
 	return body, nil
 }
@@ -72,11 +72,11 @@ func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 // bindBody converts one already-validated document into Body. The
 // schema has been enforced by then, so a property that will not read was
 // optional and comes back as its zero value.
-func bindBody(document *serializables.SerializibleObject) Body {
+func bindBody(sandbox *api.Sandbox, document *serializables.SerializibleObject) Body {
 	value := Body{}
-	value.Limit = routeio.ReadInt(document, "limit")
-	value.Page = routeio.ReadInt(document, "page")
-	value.Role = routeio.ReadString(document, "role")
-	value.Search = routeio.ReadString(document, "search")
+	value.Limit = sandbox.Deps.OpinatedAgnosServer.ReadInt(document, "limit")
+	value.Page = sandbox.Deps.OpinatedAgnosServer.ReadInt(document, "page")
+	value.Role = sandbox.Deps.OpinatedAgnosServer.ReadString(document, "role")
+	value.Search = sandbox.Deps.OpinatedAgnosServer.ReadString(document, "search")
 	return value
 }

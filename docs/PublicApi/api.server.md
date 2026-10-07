@@ -2,47 +2,38 @@
 
 | Constant | Value | Description |
 | --- | --- | --- |
-| `StatusOk` | `200` | StatusOk reports that the route did what it was asked to do. |
-| `StatusCreated` | `201` | StatusCreated reports that the route created what it was asked for. |
-| `StatusNoContent` | `204` | StatusNoContent reports success with nothing to send back. |
-| `StatusMovedPermanently` | `301` | StatusMovedPermanently sends the caller to Location for good. |
-| `StatusFound` | `302` | StatusFound sends the caller to Location this once. |
-| `StatusSeeOther` | `303` | StatusSeeOther sends the caller to Location with a GET, after a form was handled. |
-| `StatusNotModified` | `304` | StatusNotModified reports that the caller's cached copy is current. |
-| `StatusTemporaryRedirect` | `307` | StatusTemporaryRedirect sends the caller to Location this once, keeping its method. |
-| `StatusPermanentRedirect` | `308` | StatusPermanentRedirect sends the caller to Location for good, keeping its method. |
-| `StatusBadRequest` | `400` | StatusBadRequest reports a request the dispatch could not bind: a missing required field, an unparsable value, one out of range, or a body the declared schema rejects. |
-| `StatusUnauthorized` | `401` | StatusUnauthorized reports a request that carries no valid credentials. |
-| `StatusForbidden` | `403` | StatusForbidden reports credentials that are valid and not enough. |
-| `StatusNotFound` | `404` | StatusNotFound reports that no declared route matches the path. |
-| `StatusMethodNotAllowed` | `405` | StatusMethodNotAllowed reports a path a route matches under another method. |
-| `StatusConflict` | `409` | StatusConflict reports a well-formed request the current state refuses. |
-| `StatusPayloadTooLarge` | `413` | StatusPayloadTooLarge reports a body longer than the route's max-bytes. |
-| `StatusUnsupportedMedia` | `415` | StatusUnsupportedMedia reports a content type the route does not declare. |
-| `StatusUnprocessable` | `422` | StatusUnprocessable reports a well-formed request whose content breaks a rule of the domain. |
-| `StatusTooManyRequests` | `429` | StatusTooManyRequests reports a caller over its rate. |
-| `StatusFailure` | `500` | StatusFailure reports a well-formed request the route could not carry out. |
-| `StatusUnavailable` | `503` | StatusUnavailable reports a server that cannot answer right now. |
+| `StatusOk` | `opinatedagnosserver.StatusOk` | StatusOk reports that the route did what it was asked to do. |
+| `StatusCreated` | `opinatedagnosserver.StatusCreated` | StatusCreated reports that the route created what it was asked for. |
+| `StatusNoContent` | `opinatedagnosserver.StatusNoContent` | StatusNoContent reports success with nothing to send back. |
+| `StatusMovedPermanently` | `opinatedagnosserver.StatusMovedPermanently` | StatusMovedPermanently sends the caller to Location for good. |
+| `StatusFound` | `opinatedagnosserver.StatusFound` | StatusFound sends the caller to Location this once. |
+| `StatusSeeOther` | `opinatedagnosserver.StatusSeeOther` | StatusSeeOther sends the caller to Location with a GET, after a form was handled. |
+| `StatusNotModified` | `opinatedagnosserver.StatusNotModified` | StatusNotModified reports that the caller's cached copy is current. |
+| `StatusTemporaryRedirect` | `opinatedagnosserver.StatusTemporaryRedirect` | StatusTemporaryRedirect sends the caller to Location this once, keeping its method. |
+| `StatusPermanentRedirect` | `opinatedagnosserver.StatusPermanentRedirect` | StatusPermanentRedirect sends the caller to Location for good, keeping its method. |
+| `StatusBadRequest` | `opinatedagnosserver.StatusBadRequest` | StatusBadRequest reports a request the dispatch could not bind: a missing required field, an unparsable value, one out of range, or a body the declared schema rejects. |
+| `StatusUnauthorized` | `opinatedagnosserver.StatusUnauthorized` | StatusUnauthorized reports a request that carries no valid credentials. |
+| `StatusForbidden` | `opinatedagnosserver.StatusForbidden` | StatusForbidden reports credentials that are valid and not enough. |
+| `StatusNotFound` | `opinatedagnosserver.StatusNotFound` | StatusNotFound reports that no declared route matches the path. |
+| `StatusMethodNotAllowed` | `opinatedagnosserver.StatusMethodNotAllowed` | StatusMethodNotAllowed reports a path a route matches under another method. |
+| `StatusConflict` | `opinatedagnosserver.StatusConflict` | StatusConflict reports a well-formed request the current state refuses. |
+| `StatusPayloadTooLarge` | `opinatedagnosserver.StatusPayloadTooLarge` | StatusPayloadTooLarge reports a body longer than the route's max-bytes. |
+| `StatusUnsupportedMedia` | `opinatedagnosserver.StatusUnsupportedMedia` | StatusUnsupportedMedia reports a content type the route does not declare. |
+| `StatusUnprocessable` | `opinatedagnosserver.StatusUnprocessable` | StatusUnprocessable reports a well-formed request whose content breaks a rule of the domain. |
+| `StatusTooManyRequests` | `opinatedagnosserver.StatusTooManyRequests` | StatusTooManyRequests reports a caller over its rate. |
+| `StatusFailure` | `opinatedagnosserver.StatusFailure` | StatusFailure reports a well-formed request the route could not carry out. |
+| `StatusUnavailable` | `opinatedagnosserver.StatusUnavailable` | StatusUnavailable reports a server that cannot answer right now. |
 
 ## `Server`
 
-Server is the http surface of the sandbox: every route the project declares, and the dispatch that reads a request against them. It is built by sandbox/internal/generated/server/server/new.go, generated by `<no value> build`.
+Server is the http surface of the sandbox: every route the project declares, and the dispatch that reads a request against them. It is the OpinatedAgnosServer contract's Server, built by sandbox/internal/generated/server/server/new.go, generated by `<no value> build`.
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `Serve` | `func(props ServeProps) error` | Serve is the generated route-and-dispatch entry point (see sandbox/internal/generated/server/server/servermain.go). It blocks until the server stops. |
-| `Routes` | `[]*Route` | Routes is every http route the project declares, in run order — lowest `priority` first, then by name — each built by the generated NewRoute of its own package. The dispatch reads a request against these declarations; a caller holding the sandbox reads the same surface without one. |
-| `Fail` | `func(route *Route) error` | Fail answers one failure with the project's own handler for it: it reads route.Failure and calls the matching Handle* of sandbox/internal/server/errors/. It is a field rather than a call because a route package may not import sandbox/internal/generated/server/server — that package imports every route — so this is how a generated ReadBody, or the dispatch, reaches a file the project owns. Raise a failure through routeio.Raise — or, from a handler, return one built by routeio.Fail — rather than calling this directly. |
+`type Server = opinatedagnosserver.Server`
 
 ## `ServeProps`
 
-ServeProps describes one run of the http server: the address to listen on — host:port (":8080"), a bare port ("8080"), or a range of ports tried in turn, with or without a host ("3000:4000", "127.0.0.1:3000:4000") — the two timeouts, in milliseconds, a request and a response are held to, and how long the requests in flight get to finish once the process is asked to stop (0 waits for them).
+ServeProps describes one run of the http server: the address to listen on — host:port, a bare port, or a range of ports tried in turn — and its timeouts.
 
-| Field | Type |
-| --- | --- |
-| `Addr` | `string` |
-| `ReadTimeoutMs` | `int` |
-| `WriteTimeoutMs` | `int` |
-| `ShutdownTimeoutMs` | `int` |
+`type ServeProps = opinatedagnosserver.ServeProps`
 
 [every contract](doc.md)

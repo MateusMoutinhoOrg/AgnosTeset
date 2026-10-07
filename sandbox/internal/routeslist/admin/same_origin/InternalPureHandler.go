@@ -3,7 +3,6 @@ package same_origin
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeguard"
 )
@@ -22,5 +21,5 @@ func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, ent
 	if backofficeguard.SameOrigin(sandbox, entries.Origin, entries.Host) {
 		return nil
 	}
-	return routeio.Fail(sandbox, api.StatusForbidden, "origin", "a request sent by another site's page is refused")
+	return sandbox.Deps.OpinatedAgnosServer.Fail(api.StatusForbidden, "origin", "a request sent by another site's page is refused")
 }

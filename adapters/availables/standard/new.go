@@ -1,6 +1,10 @@
 package standard
 
 import (
+	OpinatedAgnosCli "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/OpinatedAgnosCli"
+	OpinatedAgnosDatabase "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/OpinatedAgnosDatabase"
+	OpinatedAgnosFront "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/OpinatedAgnosFront"
+	OpinatedAgnosServer "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/OpinatedAgnosServer"
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/argvdeps"
 	database "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/database"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/embeddeps"
@@ -10,7 +14,6 @@ import (
 	passworddeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/passworddeps"
 	randdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/randdeps"
 	ratelimitdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/ratelimitdeps"
-	reflectdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/reflectdeps"
 	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serializables"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/serverdeps"
 	signaldeps "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/libs/signaldeps"
@@ -23,6 +26,10 @@ import (
 
 func New() deps.Deps {
 	deps := deps.Deps{}
+	OpinatedAgnosCli.Bind(&deps)
+	OpinatedAgnosDatabase.Bind(&deps)
+	OpinatedAgnosFront.Bind(&deps)
+	OpinatedAgnosServer.Bind(&deps)
 	argvdeps.Bind(&deps)
 	database.Bind(&deps)
 	embeddeps.Bind(&deps)
@@ -32,7 +39,6 @@ func New() deps.Deps {
 	passworddeps.Bind(&deps)
 	randdeps.Bind(&deps)
 	ratelimitdeps.Bind(&deps)
-	reflectdeps.Bind(&deps)
 	serializables.Bind(&deps)
 	serverdeps.Bind(&deps)
 	signaldeps.Bind(&deps)

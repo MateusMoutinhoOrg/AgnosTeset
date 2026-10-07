@@ -3,7 +3,6 @@ package api_list_backoffice_users
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
-	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/routeio"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeapi"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeusers"
@@ -16,7 +15,7 @@ import (
 // backofficeusers.DefaultLimit or MaxLimit.
 func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, entries *Entries, response *serverdeps.Response) error {
 	if props.User == nil {
-		return routeio.Fail(sandbox, api.StatusUnauthorized, "", "no authenticated user")
+		return sandbox.Deps.OpinatedAgnosServer.Fail(api.StatusUnauthorized, "", "no authenticated user")
 	}
 
 	listing, err := backofficeusers.List(sandbox, backofficeusers.Query{
@@ -28,5 +27,5 @@ func InternalPureHandler(sandbox *api.Sandbox, props *routeprops.RouteProps, ent
 	if err != nil {
 		return err
 	}
-	return routeio.WriteJSON(sandbox, *response, api.StatusOk, backofficeapi.Listing(sandbox, listing))
+	return sandbox.Deps.OpinatedAgnosServer.WriteJSON(sandbox.Deps.Serializables, *response, api.StatusOk, backofficeapi.Listing(sandbox, listing))
 }

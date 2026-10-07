@@ -79,6 +79,10 @@ The contracts available to patch:
 
 | Field | Contract package |
 | --- | --- |
+| `deps.OpinatedAgnosCli` | `sandbox/deps/OpinatedAgnosCli` |
+| `deps.OpinatedAgnosDatabase` | `sandbox/deps/OpinatedAgnosDatabase` |
+| `deps.OpinatedAgnosFront` | `sandbox/deps/OpinatedAgnosFront` |
+| `deps.OpinatedAgnosServer` | `sandbox/deps/OpinatedAgnosServer` |
 | `deps.Argvdeps` | `sandbox/deps/argvdeps` |
 | `deps.Database` | `sandbox/deps/database` |
 | `deps.Embeddeps` | `sandbox/deps/embeddeps` |
@@ -88,7 +92,6 @@ The contracts available to patch:
 | `deps.Passworddeps` | `sandbox/deps/passworddeps` |
 | `deps.Randdeps` | `sandbox/deps/randdeps` |
 | `deps.Ratelimitdeps` | `sandbox/deps/ratelimitdeps` |
-| `deps.Reflectdeps` | `sandbox/deps/reflectdeps` |
 | `deps.Serializables` | `sandbox/deps/serializables` |
 | `deps.Serverdeps` | `sandbox/deps/serverdeps` |
 | `deps.Signaldeps` | `sandbox/deps/signaldeps` |
@@ -102,6 +105,10 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 
 | Adapter lib | Binder |
 | --- | --- |
+| `adapters/libs/OpinatedAgnosCli` | `OpinatedAgnosCli.Bind(&deps)` |
+| `adapters/libs/OpinatedAgnosDatabase` | `OpinatedAgnosDatabase.Bind(&deps)` |
+| `adapters/libs/OpinatedAgnosFront` | `OpinatedAgnosFront.Bind(&deps)` |
+| `adapters/libs/OpinatedAgnosServer` | `OpinatedAgnosServer.Bind(&deps)` |
 | `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
 | `adapters/libs/database` | `database.Bind(&deps)` |
 | `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
@@ -111,7 +118,6 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/libs/passworddeps` | `passworddeps.Bind(&deps)` |
 | `adapters/libs/randdeps` | `randdeps.Bind(&deps)` |
 | `adapters/libs/ratelimitdeps` | `ratelimitdeps.Bind(&deps)` |
-| `adapters/libs/reflectdeps` | `reflectdeps.Bind(&deps)` |
 | `adapters/libs/serializables` | `serializables.Bind(&deps)` |
 | `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |
 | `adapters/libs/signaldeps` | `signaldeps.Bind(&deps)` |
