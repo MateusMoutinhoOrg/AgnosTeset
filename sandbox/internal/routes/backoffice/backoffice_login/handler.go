@@ -1,0 +1,46 @@
+package backoffice_login
+
+import (
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeauth"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficerender"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficethrottle"
+)
+
+// Handle answers POST /admin/login. The username field takes a
+// username or an email; a match sets a session cookie bound to the client ip
+// the request came from and redirects to /admin/home, anything else answers
+// the login page again under a 401. Once the client ip or the login reached
+// its limit of failed sign-ins, the login page is answered under a 429
+// without the password being checked, until the window of
+// backofficethrottle closes.
+func Handle(sandbox *api.Sandbox, props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {
+	username := input.Body.Username
+
+	if !backofficethrottle.LoginAllowed(sandbox, props.ClientIp, username) {
+		response.SetHeader("Retry-After", backofficethrottle.RetryAfter(sandbox))
+		return backofficerender.RenderLoginPage(sandbox, response, api.StatusTooManyRequests, "Too many failed sign-in attempts. Try again in 15 minutes.", username)
+	}
+
+	user, ok, err := backofficeauth.Authenticate(sandbox, username, input.Body.Password)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		backofficethrottle.LoginFailed(sandbox, props.ClientIp, username)
+		return backofficerender.RenderLoginPage(sandbox, response, api.StatusUnauthorized, "Invalid username or password.", username)
+	}
+	backofficethrottle.LoginSucceeded(sandbox, username)
+
+	token, err := backofficeauth.IssueSessionJWT(sandbox, user, props.ClientIp)
+	if err != nil {
+		return err
+	}
+
+	response.AddHeader("Set-Cookie", backofficeauth.SessionCookie(sandbox, token))
+	response.SetHeader("Location", "/admin/home")
+	response.SetStatus(api.StatusSeeOther)
+	return nil
+}

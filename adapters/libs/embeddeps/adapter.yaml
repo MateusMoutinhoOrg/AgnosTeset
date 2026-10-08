@@ -1,5 +1,0 @@
-dep: embeddeps
-help: Embedded assets over embed and text/template
-module: ""
-name: embeddeps
-origin: catalog

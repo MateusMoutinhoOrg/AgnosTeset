@@ -1,10 +1,10 @@
-# `deps.Timedeps`
+# `deps.TimeDeps`
 
 `sandbox/deps/timedeps`
 
-## `Sandbox`
+## `Contract`
 
-Sandbox is the calendar library injected whole as the Deps.Timedeps field.
+Contract is the calendar library injected whole as the Deps.TimeDeps field.
 
 | Field | Type | Description |
 | --- | --- | --- |

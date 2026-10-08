@@ -1,10 +1,10 @@
+backoffice: true
+cli: true
+database: true
+deps: true
 doc: true
+example: true
+front: true
 readme: true
 sandbox: true
-sandbox-backoffice: true
-sandbox-cli: true
-sandbox-database: true
-sandbox-deps: true
-sandbox-example: true
-sandbox-front: true
-sandbox-server: true
+server: true

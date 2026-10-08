@@ -1,10 +1,10 @@
-# `deps.Jwtdeps`
+# `deps.JwtDeps`
 
 `sandbox/deps/jwtdeps`
 
-## `Sandbox`
+## `Contract`
 
-Sandbox is the JSON Web Token library injected whole as the Deps.Jwtdeps field. Every token it signs and every token it accepts is HS256, keyed by the secret handed to the call.
+Contract is the JSON Web Token library injected whole as the Deps.JwtDeps field. Every token it signs and every token it accepts is HS256, keyed by the secret handed to the call.
 
 | Field | Type | Description |
 | --- | --- | --- |

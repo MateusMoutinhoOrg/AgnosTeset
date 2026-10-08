@@ -33,9 +33,9 @@ curl -X POST localhost:3000/api/admin/get-backoffice-user -H "Authorization: Bea
 
 | Name | Sent in | What goes there | Required | Example | Description |
 | --- | --- | --- | --- | --- | --- |
-| `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> — read by [`api-authentication`](api_authentication.md), which runs first |
-| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`client-ip`](client_ip.md), which runs first |
-| `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`client-ip`](client_ip.md), which runs first |
+| `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> — read by [`backoffice-api-token-auth`](backoffice_api_token_auth.md), which runs first |
+| `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
+| `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
 
 ## Body
 
@@ -71,10 +71,10 @@ or `403`, for example — or let it through to this route.
 
 | Route | When |
 | --- | --- |
-| [`api-authentication`](api_authentication.md) | always |
-| [`client-ip`](client_ip.md) | always |
-| [`security-headers`](security_headers.md) | depends on the address — `explain-route` gives the exact answer |
+| [`backoffice-api-token-auth`](backoffice_api_token_auth.md) | always |
+| [`backoffice-client-ip`](backoffice_client_ip.md) | always |
+| [`backoffice-security-headers`](backoffice_security_headers.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 
-For developers: `sandbox/internal/routeslist/api_get_backoffice_user/` · Backoffice Users API · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)
+For developers: `sandbox/internal/routes/api_get_backoffice_user/` · Backoffice Users API · [every route](doc.md) · [RouteYaml](../RouteYaml/doc.md)

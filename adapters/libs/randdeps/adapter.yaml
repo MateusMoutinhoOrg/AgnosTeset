@@ -1,5 +1,0 @@
-dep: randdeps
-help: Cryptographic random bytes over crypto/rand and encoding/hex
-module: ""
-name: randdeps
-origin: catalog

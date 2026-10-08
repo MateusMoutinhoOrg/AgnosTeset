@@ -1,10 +1,10 @@
-# `deps.Envdeps`
+# `deps.EnvDeps`
 
 `sandbox/deps/envdeps`
 
-## `Sandbox`
+## `Contract`
 
-Sandbox is the process environment injected whole as the Deps.Envdeps field.
+Contract is the process environment injected whole as the Deps.EnvDeps field.
 
 | Field | Type | Description |
 | --- | --- | --- |

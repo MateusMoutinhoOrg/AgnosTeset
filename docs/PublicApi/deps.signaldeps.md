@@ -1,10 +1,10 @@
-# `deps.Signaldeps`
+# `deps.SignalDeps`
 
 `sandbox/deps/signaldeps`
 
-## `Sandbox`
+## `Contract`
 
-Sandbox is the signal library injected whole as the Deps.Signaldeps field.
+Contract is the signal library injected whole as the Deps.SignalDeps field.
 
 | Field | Type | Description |
 | --- | --- | --- |

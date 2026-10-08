@@ -18,46 +18,6 @@ it prints the address it took. Change it to wherever your server runs.
 | `*` | anything else, or nothing | `/admin/*` -> `/admin`, `/admin/users` |
 | `(a\|b)` | one of these words | `/(en\|pt)` -> `/en` |
 
-## Middleware
-
-| Route | What it does |
-| --- | --- |
-| [`ANY /admin/* !(/admin/login)`](authentication.md) | Requires a valid backoffice session on /admin, except /admin/login |
-| [`ANY /admin/root/*`](root_guard.md) | Lets only root users reach /admin/root |
-| [`ANY /admin/*`](same_origin.md) | Refuses a request to /admin another site's page sent |
-| [`ANY /api/admin/*`](api_authentication.md) | Requires a valid API token on every /api/admin route |
-| [`ANY /api/admin/root/*`](api_root_guard.md) | Lets only root users reach /api/admin/root |
-| [`ANY /*`](client_ip.md) | Works out the client ip every route after it reads, from the connection or the reverse proxy in front |
-| [`ANY /~(^/(api/)?admin(/|$))`](security_headers.md) | Sends the security headers on every /admin and /api/admin response |
-
-## Backoffice API Tokens
-
-| Route | What it does |
-| --- | --- |
-| [`POST /admin/create-backoffice-api-token`](create_backoffice_api_token.md) | Creates an API token and shows it once |
-| [`GET /admin/create-backoffice-api-token`](create_backoffice_api_token_page.md) | Shows the form that creates an API token |
-| [`GET /admin/list-backoffice-api-tokens`](list_backoffice_api_tokens.md) | Lists your API tokens, or every user's for a root |
-| [`POST /admin/revoke-backoffice-api-token/{Id:integer}`](revoke_backoffice_api_token.md) | Revokes an API token: your own, or anyone's for a root |
-
-## Backoffice
-
-| Route | What it does |
-| --- | --- |
-| [`GET /admin/home`](home.md) | Shows the backoffice home page to the signed-in user |
-| [`POST /admin/login`](login.md) | Signs a backoffice user in and sets the session cookie |
-| [`POST /admin/logout`](logout.md) | Ends the current session |
-
-## Backoffice Users
-
-| Route | What it does |
-| --- | --- |
-| [`GET /admin/list-backoffice-users`](list_backoffice_users.md) | Lists backoffice users, filtered and paginated |
-| [`POST /admin/root/add-backoffice-user`](add_backoffice_user.md) | Adds a backoffice user |
-| [`GET /admin/root/add-backoffice-user`](add_backoffice_user_page.md) | Shows the form that adds a backoffice user |
-| [`POST /admin/root/edit-backoffice-user/{Id:integer}`](edit_backoffice_user.md) | Edits a backoffice user; a blank password keeps the current one |
-| [`GET /admin/root/edit-backoffice-user/{Id:integer}`](edit_backoffice_user_page.md) | Shows the form that edits a backoffice user |
-| [`POST /admin/root/remove-backoffice-user/{Id:integer}`](remove_backoffice_user.md) | Removes a backoffice user and every session of it |
-
 ## Backoffice Users API
 
 | Route | What it does |
@@ -65,20 +25,60 @@ it prints the address it took. Change it to wherever your server runs.
 | [`POST /api/admin/get-backoffice-user`](api_get_backoffice_user.md) | Answers one backoffice user by id |
 | [`POST /api/admin/list-backoffice-users`](api_list_backoffice_users.md) | Lists backoffice users, filtered and paginated |
 | [`POST /api/admin/root/add-backoffice-user`](api_add_backoffice_user.md) | Adds a backoffice user |
-| [`POST /api/admin/root/edit-backoffice-user`](api_edit_backoffice_user.md) | Edits a backoffice user; a missing or blank password keeps the current one |
 | [`POST /api/admin/root/remove-backoffice-user`](api_remove_backoffice_user.md) | Removes a backoffice user and every session of it |
+| [`POST /api/admin/root/set-backoffice-user`](api_set_backoffice_user.md) | Edits a backoffice user; a missing or blank password keeps the current one |
 
 ## Backoffice API
 
 | Route | What it does |
 | --- | --- |
-| [`GET /api/admin/me`](api_me.md) | Answers the backoffice user of the Bearer token |
+| [`GET /api/admin/me`](api_get_current_backoffice_user.md) | Answers the backoffice user of the Bearer token |
+
+## Middleware
+
+| Route | What it does |
+| --- | --- |
+| [`ANY /api/admin/root/*`](backoffice_api_root_guard.md) | Lets only root users reach /api/admin/root |
+| [`ANY /api/admin/*`](backoffice_api_token_auth.md) | Requires a valid API token on every /api/admin route |
+| [`ANY /*`](backoffice_client_ip.md) | Works out the client ip every route after it reads, from the connection or the reverse proxy in front |
+| [`ANY /admin/root/*`](backoffice_root_guard.md) | Lets only root users reach /admin/root |
+| [`ANY /admin/*`](backoffice_same_origin.md) | Refuses a request to /admin another site's page sent |
+| [`ANY /~(^/(api/)?admin(/|$))`](backoffice_security_headers.md) | Sends the security headers on every /admin and /api/admin response |
+| [`ANY /admin/* !(/admin/login)`](backoffice_session_auth.md) | Requires a valid backoffice session on /admin, except /admin/login |
+
+## Backoffice API Tokens
+
+| Route | What it does |
+| --- | --- |
+| [`POST /admin/add-backoffice-api-token`](add_backoffice_api_token_form.md) | Creates an API token and shows it once |
+| [`GET /admin/add-backoffice-api-token`](add_backoffice_api_token_page.md) | Shows the form that creates an API token |
+| [`GET /admin/list-backoffice-api-tokens`](list_backoffice_api_tokens_page.md) | Lists your API tokens, or every user's for a root |
+| [`POST /admin/revoke-backoffice-api-token/{Id:integer}`](revoke_backoffice_api_token_form.md) | Revokes an API token: your own, or anyone's for a root |
+
+## Backoffice
+
+| Route | What it does |
+| --- | --- |
+| [`GET /admin/home`](backoffice_home.md) | Shows the backoffice home page to the signed-in user |
+| [`POST /admin/login`](backoffice_login.md) | Signs a backoffice user in and sets the session cookie |
+| [`POST /admin/logout`](backoffice_logout.md) | Ends the current session |
+
+## Backoffice Users
+
+| Route | What it does |
+| --- | --- |
+| [`GET /admin/list-backoffice-users`](list_backoffice_users_page.md) | Lists backoffice users, filtered and paginated |
+| [`POST /admin/root/add-backoffice-user`](add_backoffice_user_form.md) | Adds a backoffice user |
+| [`GET /admin/root/add-backoffice-user`](add_backoffice_user_page.md) | Shows the form that adds a backoffice user |
+| [`POST /admin/root/remove-backoffice-user/{Id:integer}`](remove_backoffice_user_form.md) | Removes a backoffice user and every session of it |
+| [`POST /admin/root/set-backoffice-user/{Id:integer}`](set_backoffice_user_form.md) | Edits a backoffice user; a blank password keeps the current one |
+| [`GET /admin/root/set-backoffice-user/{Id:integer}`](set_backoffice_user_page.md) | Shows the form that edits a backoffice user |
 
 ## Assets
 
 | Route | What it does |
 | --- | --- |
-| [`GET /{*Rest}`](frontend.md) | Serves any file of the embedded assets/frontend tree |
+| [`GET /{*Rest}`](front.md) | Serves any file of the embedded assets/front tree |
 
 ## Server
 
@@ -107,7 +107,7 @@ it is one value, which one:
 ```
 
 For developers: each page is generated on every build from
-`sandbox/internal/routeslist/<name>/route.yaml` ([RouteYaml](../RouteYaml/doc.md)); hidden routes
+`sandbox/internal/routes/<name>/route.yaml` ([RouteYaml](../RouteYaml/doc.md)); hidden routes
 are left out. `agnos list-routes` prints the routes in the order they run, and
 `agnos explain-route <METHOD> <path>` which ones a request reaches. The error answers are
 the eight files of `sandbox/internal/server/errors/` ([RouteYaml](../RouteYaml/doc.md#failures)).

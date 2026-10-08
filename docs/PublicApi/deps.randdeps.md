@@ -1,10 +1,10 @@
-# `deps.Randdeps`
+# `deps.RandDeps`
 
 `sandbox/deps/randdeps`
 
-## `Sandbox`
+## `Contract`
 
-Sandbox is the random source injected whole as the Deps.Randdeps field. Every byte it hands out comes from the operating system's cryptographically secure generator, so what it answers may be used as a secret.
+Contract is the random source injected whole as the Deps.RandDeps field. Every byte it hands out comes from the operating system's cryptographically secure generator, so what it answers may be used as a secret.
 
 | Field | Type | Description |
 | --- | --- | --- |

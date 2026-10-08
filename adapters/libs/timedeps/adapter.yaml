@@ -1,5 +1,0 @@
-dep: timedeps
-help: UTC dates to and from Unix seconds over time
-module: ""
-name: timedeps
-origin: catalog

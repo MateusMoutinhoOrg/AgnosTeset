@@ -19,7 +19,7 @@ sandbox/      closed: imports nothing outside sandbox/, no OS packages
   new.go      (gen) New(deps) *api.Sandbox, one <x>.New<X> per api/ file
   api/        contracts only; imports nothing at all
   internal/   the logic; unreachable from outside the sandbox
-docs/         one dir per doc, holding doc.md + props.yaml. README.md indexes them all
+docs/         one dir per doc, holding doc.md + doc.yaml. README.md indexes them all
 go.mod        written by `start`; add-dep and remove-dep edit its require block
 README.md     (gen) `render AgnosConfig/docs/ReadmeHeader.md` + the documentation index
 ```

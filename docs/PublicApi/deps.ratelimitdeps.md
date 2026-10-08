@@ -1,10 +1,10 @@
-# `deps.Ratelimitdeps`
+# `deps.RatelimitDeps`
 
 `sandbox/deps/ratelimitdeps`
 
-## `Sandbox`
+## `Contract`
 
-Sandbox is the rate limiter injected whole as the Deps.Ratelimitdeps field. Every function is safe to call from requests served concurrently.
+Contract is the rate limiter injected whole as the Deps.RatelimitDeps field. Every function is safe to call from requests served concurrently.
 
 | Field | Type | Description |
 | --- | --- | --- |

@@ -10,7 +10,7 @@ go get github.com/MateusMoutinhoOrg/AgnosTeset@latest
 ## Wiring
 
 `sandbox/` performs no OS effects of its own — filesystem, clock, stdout, processes all
-arrive through a `deps.Deps` struct. `adapters/availables/standard` builds the ready-made
+arrive through a `deps.Deps` struct. `adapters/bindings/standard` builds the ready-made
 assembly, and `sandbox.New` turns it into the API object, which carries the deps on
 `Sandbox.Deps` — so everything inside reaches them through the api it was handed.
 
@@ -18,7 +18,7 @@ assembly, and `sandbox.New` turns it into the API object, which carries the deps
 package main
 
 import (
-	"github.com/MateusMoutinhoOrg/AgnosTeset/adapters/availables/standard"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/adapters/bindings/standard"
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox"
 )
 
@@ -49,10 +49,10 @@ drives a command without a command line — bind the values into the copy's `Ite
 
 `lib.Server.Routes` (`[]*api.Route`) is the http surface the same way:
 every route the project declares, in run order — lowest `Priority` first — each carrying its
-`paths`, its parameters, its body and the `IsActionable` / `RequestHandler` that match and
+`paths`, its parameters, its body and the `Matches` / `Run` that match and
 answer it. `api.BindRoute(route)` copies one into the route a single request runs on, so a
 caller drives a route without a socket — set the copy's `Request` and `Response` and call
-`copy.RequestHandler(copy)`, which returns the failure it did not answer itself and `nil`
+`copy.Run(copy)`, which returns the failure it did not answer itself and `nil`
 otherwise. What it answered with is the status it wrote on the response, never what it returned.
 
 [PublicApi](../PublicApi/doc.md) lists every one of them — signatures, props structs and
@@ -68,7 +68,7 @@ test double, an in-memory implementation or an instrumented wrapper. Patch field
 deps := standard.New()
 
 var out bytes.Buffer
-deps.Std.Printf = func(f string, a ...any) (int, error) {
+deps.StdDeps.Printf = func(f string, a ...any) (int, error) {
 	return fmt.Fprintf(&out, f, a...)
 }
 
@@ -79,57 +79,57 @@ The contracts available to patch:
 
 | Field | Contract package |
 | --- | --- |
-| `deps.OpinatedAgnosCli` | `sandbox/deps/OpinatedAgnosCli` |
-| `deps.OpinatedAgnosDatabase` | `sandbox/deps/OpinatedAgnosDatabase` |
-| `deps.OpinatedAgnosFront` | `sandbox/deps/OpinatedAgnosFront` |
-| `deps.OpinatedAgnosServer` | `sandbox/deps/OpinatedAgnosServer` |
-| `deps.Argvdeps` | `sandbox/deps/argvdeps` |
-| `deps.Database` | `sandbox/deps/database` |
-| `deps.Embeddeps` | `sandbox/deps/embeddeps` |
-| `deps.Envdeps` | `sandbox/deps/envdeps` |
-| `deps.Hashdeps` | `sandbox/deps/hashdeps` |
-| `deps.Jwtdeps` | `sandbox/deps/jwtdeps` |
-| `deps.Passworddeps` | `sandbox/deps/passworddeps` |
-| `deps.Randdeps` | `sandbox/deps/randdeps` |
-| `deps.Ratelimitdeps` | `sandbox/deps/ratelimitdeps` |
-| `deps.Serializables` | `sandbox/deps/serializables` |
-| `deps.Serverdeps` | `sandbox/deps/serverdeps` |
-| `deps.Signaldeps` | `sandbox/deps/signaldeps` |
-| `deps.Sortdeps` | `sandbox/deps/sortdeps` |
-| `deps.Std` | `sandbox/deps/std` |
-| `deps.Stringsdeps` | `sandbox/deps/stringsdeps` |
-| `deps.Timedeps` | `sandbox/deps/timedeps` |
+| `deps.OpinionatedAgnosCli` | `sandbox/deps/OpinionatedAgnosCli` |
+| `deps.OpinionatedAgnosDatabase` | `sandbox/deps/OpinionatedAgnosDatabase` |
+| `deps.OpinionatedAgnosFront` | `sandbox/deps/OpinionatedAgnosFront` |
+| `deps.OpinionatedAgnosServer` | `sandbox/deps/OpinionatedAgnosServer` |
+| `deps.ArgvDeps` | `sandbox/deps/argvdeps` |
+| `deps.DatabaseDeps` | `sandbox/deps/databasedeps` |
+| `deps.EmbedDeps` | `sandbox/deps/embeddeps` |
+| `deps.EnvDeps` | `sandbox/deps/envdeps` |
+| `deps.HashDeps` | `sandbox/deps/hashdeps` |
+| `deps.JwtDeps` | `sandbox/deps/jwtdeps` |
+| `deps.PasswordDeps` | `sandbox/deps/passworddeps` |
+| `deps.RandDeps` | `sandbox/deps/randdeps` |
+| `deps.RatelimitDeps` | `sandbox/deps/ratelimitdeps` |
+| `deps.SerializableDeps` | `sandbox/deps/serializabledeps` |
+| `deps.ServerDeps` | `sandbox/deps/serverdeps` |
+| `deps.SignalDeps` | `sandbox/deps/signaldeps` |
+| `deps.SortDeps` | `sandbox/deps/sortdeps` |
+| `deps.StdDeps` | `sandbox/deps/stddeps` |
+| `deps.StringsDeps` | `sandbox/deps/stringsdeps` |
+| `deps.TimeDeps` | `sandbox/deps/timedeps` |
 
-Each one is filled by a matching implementation under `adapters/libs/`, every package
+Each one is filled by a matching implementation under `adapters/impls/`, every package
 exposing the same `Bind(deps *deps.Deps)` entry point:
 
 | Adapter lib | Binder |
 | --- | --- |
-| `adapters/libs/OpinatedAgnosCli` | `OpinatedAgnosCli.Bind(&deps)` |
-| `adapters/libs/OpinatedAgnosDatabase` | `OpinatedAgnosDatabase.Bind(&deps)` |
-| `adapters/libs/OpinatedAgnosFront` | `OpinatedAgnosFront.Bind(&deps)` |
-| `adapters/libs/OpinatedAgnosServer` | `OpinatedAgnosServer.Bind(&deps)` |
-| `adapters/libs/argvdeps` | `argvdeps.Bind(&deps)` |
-| `adapters/libs/database` | `database.Bind(&deps)` |
-| `adapters/libs/embeddeps` | `embeddeps.Bind(&deps)` |
-| `adapters/libs/envdeps` | `envdeps.Bind(&deps)` |
-| `adapters/libs/hashdeps` | `hashdeps.Bind(&deps)` |
-| `adapters/libs/jwtdeps` | `jwtdeps.Bind(&deps)` |
-| `adapters/libs/passworddeps` | `passworddeps.Bind(&deps)` |
-| `adapters/libs/randdeps` | `randdeps.Bind(&deps)` |
-| `adapters/libs/ratelimitdeps` | `ratelimitdeps.Bind(&deps)` |
-| `adapters/libs/serializables` | `serializables.Bind(&deps)` |
-| `adapters/libs/serverdeps` | `serverdeps.Bind(&deps)` |
-| `adapters/libs/signaldeps` | `signaldeps.Bind(&deps)` |
-| `adapters/libs/sortdeps` | `sortdeps.Bind(&deps)` |
-| `adapters/libs/std` | `std.Bind(&deps)` |
-| `adapters/libs/stringsdeps` | `stringsdeps.Bind(&deps)` |
-| `adapters/libs/timedeps` | `timedeps.Bind(&deps)` |
+| `adapters/impls/OpinionatedAgnosCli` | `OpinionatedAgnosCli.Bind(&deps)` |
+| `adapters/impls/OpinionatedAgnosDatabase` | `OpinionatedAgnosDatabase.Bind(&deps)` |
+| `adapters/impls/OpinionatedAgnosFront` | `OpinionatedAgnosFront.Bind(&deps)` |
+| `adapters/impls/OpinionatedAgnosServer` | `OpinionatedAgnosServer.Bind(&deps)` |
+| `adapters/impls/cryptorand` | `cryptorand.Bind(&deps)` |
+| `adapters/impls/databasedeps` | `databasedeps.Bind(&deps)` |
+| `adapters/impls/goembed` | `goembed.Bind(&deps)` |
+| `adapters/impls/golangjwt` | `golangjwt.Bind(&deps)` |
+| `adapters/impls/memoryratelimit` | `memoryratelimit.Bind(&deps)` |
+| `adapters/impls/nethttpserver` | `nethttpserver.Bind(&deps)` |
+| `adapters/impls/osenv` | `osenv.Bind(&deps)` |
+| `adapters/impls/ossignal` | `ossignal.Bind(&deps)` |
+| `adapters/impls/osstd` | `osstd.Bind(&deps)` |
+| `adapters/impls/pbkdf2password` | `pbkdf2password.Bind(&deps)` |
+| `adapters/impls/sha256hash` | `sha256hash.Bind(&deps)` |
+| `adapters/impls/stdargv` | `stdargv.Bind(&deps)` |
+| `adapters/impls/stdserializable` | `stdserializable.Bind(&deps)` |
+| `adapters/impls/stdsort` | `stdsort.Bind(&deps)` |
+| `adapters/impls/stdstrings` | `stdstrings.Bind(&deps)` |
+| `adapters/impls/stdtime` | `stdtime.Bind(&deps)` |
 
 Starting from `standard.New()` is the safe default: an unfilled field is a nil func that
 panics on first call. For a permanent mix, write your own
-`adapters/availables/<name>/new.go` binding only the libs you want — `standard/new.go` is
-regenerated on every build, while other directories under `availables/` are left alone.
+`adapters/bindings/<name>/new.go` binding only the libs you want — `standard/new.go` is
+regenerated on every build, while other directories under `bindings/` are left alone.
 
 `sandbox/api` is pure contract and `sandbox/` never touches the OS, so both are safe to import
 anywhere; the rest of the rules a caller can count on are in [Rules](../Rules/doc.md#layers),

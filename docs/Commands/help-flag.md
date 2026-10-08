@@ -15,7 +15,7 @@ Runs in front of every command line. Without --help it hands the line on. With i
 | --- | --- |
 | [`add-backoffice-user`](add-backoffice-user.md) | always |
 | [`help`](help.md) | always |
-| [`start-server`](start-server.md) | always |
 | [`version`](version.md) | always |
+| [`start-server`](start-server.md) | always |
 
 Middlewares · [every command](doc.md) · [CommandYaml](../CommandYaml/doc.md)

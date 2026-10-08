@@ -1,10 +1,10 @@
-# `deps.Passworddeps`
+# `deps.PasswordDeps`
 
 `sandbox/deps/passworddeps`
 
-## `Sandbox`
+## `Contract`
 
-Sandbox is the password hashing library injected whole as the Deps.Passworddeps field.
+Contract is the password hashing library injected whole as the Deps.PasswordDeps field.
 
 | Field | Type | Description |
 | --- | --- | --- |

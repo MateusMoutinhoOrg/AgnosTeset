@@ -1,12 +1,12 @@
 package deps
 
 import (
-	OpinatedAgnosCli "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinatedAgnosCli"
-	OpinatedAgnosDatabase "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinatedAgnosDatabase"
-	OpinatedAgnosFront "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinatedAgnosFront"
-	OpinatedAgnosServer "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinatedAgnosServer"
+	OpinionatedAgnosCli "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosCli"
+	OpinionatedAgnosDatabase "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosDatabase"
+	OpinionatedAgnosFront "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosFront"
+	OpinionatedAgnosServer "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosServer"
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/argvdeps"
-	database "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/database"
+	databasedeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/databasedeps"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
 	envdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/envdeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/hashdeps"
@@ -14,11 +14,11 @@ import (
 	passworddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/passworddeps"
 	randdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/randdeps"
 	ratelimitdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/ratelimitdeps"
-	serializables "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializables"
+	serializabledeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serializabledeps"
 	serverdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
 	signaldeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/signaldeps"
 	sortdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/sortdeps"
-	std "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/std"
+	stddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/stddeps"
 	stringsdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/stringsdeps"
 	timedeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/timedeps"
 )
@@ -27,24 +27,24 @@ import (
 // per sub-contract directory of sandbox/deps/. An adapter fills the fields; the
 // sandbox only calls them, which is what keeps it free of OS packages.
 type Deps struct {
-	OpinatedAgnosCli      OpinatedAgnosCli.Sandbox
-	OpinatedAgnosDatabase OpinatedAgnosDatabase.Sandbox
-	OpinatedAgnosFront    OpinatedAgnosFront.Sandbox
-	OpinatedAgnosServer   OpinatedAgnosServer.Sandbox
-	Argvdeps              argvdeps.Sandbox
-	Database              database.Sandbox
-	Embeddeps             embeddeps.Sandbox
-	Envdeps               envdeps.Sandbox
-	Hashdeps              hashdeps.Sandbox
-	Jwtdeps               jwtdeps.Sandbox
-	Passworddeps          passworddeps.Sandbox
-	Randdeps              randdeps.Sandbox
-	Ratelimitdeps         ratelimitdeps.Sandbox
-	Serializables         serializables.Sandbox
-	Serverdeps            serverdeps.Sandbox
-	Signaldeps            signaldeps.Sandbox
-	Sortdeps              sortdeps.Sandbox
-	Std                   std.Sandbox
-	Stringsdeps           stringsdeps.Sandbox
-	Timedeps              timedeps.Sandbox
+	OpinionatedAgnosCli      OpinionatedAgnosCli.Contract
+	OpinionatedAgnosDatabase OpinionatedAgnosDatabase.Contract
+	OpinionatedAgnosFront    OpinionatedAgnosFront.Contract
+	OpinionatedAgnosServer   OpinionatedAgnosServer.Contract
+	ArgvDeps                 argvdeps.Contract
+	DatabaseDeps             databasedeps.Sandbox
+	EmbedDeps                embeddeps.Contract
+	EnvDeps                  envdeps.Contract
+	HashDeps                 hashdeps.Contract
+	JwtDeps                  jwtdeps.Contract
+	PasswordDeps             passworddeps.Contract
+	RandDeps                 randdeps.Contract
+	RatelimitDeps            ratelimitdeps.Contract
+	SerializableDeps         serializabledeps.Contract
+	ServerDeps               serverdeps.Contract
+	SignalDeps               signaldeps.Contract
+	SortDeps                 sortdeps.Contract
+	StdDeps                  stddeps.Contract
+	StringsDeps              stringsdeps.Contract
+	TimeDeps                 timedeps.Contract
 }

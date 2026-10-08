@@ -14,7 +14,7 @@ rather than reading the whole surface.
 | Symbol | Signature |
 | --- | --- |
 | `sandbox.New` | `func(deps *deps.Deps) *api.Sandbox` |
-| `standard.New` | `func() deps.Deps` (`adapters/availables/standard`) |
+| `standard.New` | `func() deps.Deps` (`adapters/bindings/standard`) |
 
 Implementations live under `sandbox/internal` and are unreachable: every contract is a
 struct of function fields, filled by a binder.
@@ -27,39 +27,39 @@ struct of function fields, filled by a binder.
 | [`sandbox/api/backofficeconfig.go`](api.backofficeconfig.md) | `BackofficeConfig` |
 | [`sandbox/api/cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
 | [`sandbox/api/clisandbox.go`](api.clisandbox.md) | `CliSandbox` |
-| [`sandbox/api/command.go`](api.command.md) | `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command` |
+| [`sandbox/api/command.go`](api.command.md) | `ArgString`, `ArgInteger`, `ArgNumber`, `ArgUuid`, `FlagString`, `FlagInteger`, `FlagNumber`, `FlagBoolean`, `FlagStringArray`, `FlagIntegerArray`, `FailureHandler`, `FailureNotFound`, `FailureBadUsage`, `FailureUnknownFlag`, `FailureUnexpectedArg`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command` |
 | [`sandbox/api/config.go`](api.config.md) | `Config` |
-| [`sandbox/api/route.go`](api.route.md) | `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route` |
-| [`sandbox/api/server.go`](api.server.md) | `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `Server`, `ServeProps` |
+| [`sandbox/api/projectconfig.go`](api.projectconfig.md) | `ProjectConfig` |
+| [`sandbox/api/projectsandbox.go`](api.projectsandbox.md) | `ProjectSandbox` |
+| [`sandbox/api/route.go`](api.route.md) | `PathString`, `PathInteger`, `PathNumber`, `PathUuid`, `SourceHeader`, `SourceQuery`, `SourceCookie`, `ParameterString`, `ParameterNumber`, `ParameterBoolean`, `ParameterDateTime`, `ParameterStringArray`, `ParameterInteger`, `ParameterIntegerArray`, `AnyMethod`, `PathType`, `Path`, `ParameterSource`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route` |
+| [`sandbox/api/server.go`](api.server.md) | `StatusOK`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMediaType`, `StatusUnprocessableEntity`, `StatusTooManyRequests`, `StatusInternalServerError`, `StatusServiceUnavailable`, `Server`, `ServeProps` |
 | [`sandbox/api/serversandbox.go`](api.serversandbox.md) | `ServerSandbox` |
-| [`sandbox/api/trigger.go`](api.trigger.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `TriggerType`, `Trigger` |
-| [`sandbox/api/userconfig.go`](api.userconfig.md) | `UserConfig` |
-| [`sandbox/api/usersandbox.go`](api.usersandbox.md) | `UserSandbox` |
+| [`sandbox/api/trigger.go`](api.trigger.md) | `TriggerEqual`, `TriggerPrefix`, `TriggerTextPrefix`, `TriggerSuffix`, `TriggerRegex`, `TriggerOneOf`, `TriggerType`, `Trigger` |
 
 ## Dependency contracts
 
 `deps.Deps` has one field per directory of `sandbox/deps/`, named by title-casing it. Each
-field is that package's `Sandbox` struct, filled by `adapters/libs/<name>.Bind(&deps)`.
+field is that package's `Sandbox` struct, filled by `adapters/impls/<name>.Bind(&deps)`.
 
 | Page | Declares |
 | --- | --- |
-| [`deps.OpinatedAgnosCli`](deps.OpinatedAgnosCli.md) | `EqualTrigger`, `PrefixTrigger`, `TextPrefixTrigger`, `SuffixTrigger`, `RegexTrigger`, `OneOfTrigger`, `StringArg`, `IntegerArg`, `NumberArg`, `UuidArg`, `StringFlag`, `IntegerFlag`, `NumberFlag`, `BooleanFlag`, `StringArrayFlag`, `IntegerArrayFlag`, `HandlerFailure`, `NotFoundFailure`, `BadUsageFailure`, `UnknownFlagFailure`, `UnexpectedArgFailure`, `ExitOk`, `ExitFailure`, `ExitUsage`, `TriggerType`, `Trigger`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Cli`, `MainProps`, `Sandbox`, `Error` |
-| [`deps.OpinatedAgnosDatabase`](deps.OpinatedAgnosDatabase.md) | `Sandbox` |
-| [`deps.OpinatedAgnosFront`](deps.OpinatedAgnosFront.md) | `Root`, `Index`, `NotFound`, `RevalidateCache`, `Sandbox` |
-| [`deps.OpinatedAgnosServer`](deps.OpinatedAgnosServer.md) | `StringPath`, `IntegerPath`, `NumberPath`, `UuidPath`, `HeaderParam`, `QueryParam`, `CookieParam`, `StringType`, `NumberType`, `BooleanType`, `DateTimeType`, `StringArrayType`, `IntegerType`, `IntegerArrayType`, `AnyMethod`, `StatusOk`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMedia`, `StatusUnprocessable`, `StatusTooManyRequests`, `StatusFailure`, `StatusUnavailable`, `PathType`, `Path`, `ParameterFont`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Server`, `ServeProps`, `MainProps`, `Sandbox`, `Error` |
-| [`deps.Argvdeps`](deps.argvdeps.md) | `Sandbox`, `Parser` |
-| [`deps.Database`](deps.database.md) | `Key`, `Int`, `Database`, `Float`, `String`, `Link`, `KeyConflict`, `NotFound`, `MissingField`, `InvalidField`, `Internal`, `Item`, `Schema`, `Props`, `Error`, `SchemaItem`, `SchemaInstance`, `DatabaseHandle`, `Databases`, `Info`, `Sandbox` |
-| [`deps.Embeddeps`](deps.embeddeps.md) | `Sandbox` |
-| [`deps.Envdeps`](deps.envdeps.md) | `Sandbox` |
-| [`deps.Hashdeps`](deps.hashdeps.md) | `Sandbox` |
-| [`deps.Jwtdeps`](deps.jwtdeps.md) | `Sandbox`, `Claims` |
-| [`deps.Passworddeps`](deps.passworddeps.md) | `Sandbox` |
-| [`deps.Randdeps`](deps.randdeps.md) | `Sandbox` |
-| [`deps.Ratelimitdeps`](deps.ratelimitdeps.md) | `Sandbox` |
-| [`deps.Serializables`](deps.serializables.md) | `SerializibleObject`, `Sandbox` |
-| [`deps.Serverdeps`](deps.serverdeps.md) | `Sandbox`, `ServerProps`, `Server`, `Request`, `Response` |
-| [`deps.Signaldeps`](deps.signaldeps.md) | `Sandbox` |
-| [`deps.Sortdeps`](deps.sortdeps.md) | `Sandbox` |
-| [`deps.Std`](deps.std.md) | `Sandbox` |
-| [`deps.Stringsdeps`](deps.stringsdeps.md) | `Sandbox` |
-| [`deps.Timedeps`](deps.timedeps.md) | `Sandbox` |
+| [`deps.OpinionatedAgnosCli`](deps.OpinionatedAgnosCli.md) | `TriggerEqual`, `TriggerPrefix`, `TriggerTextPrefix`, `TriggerSuffix`, `TriggerRegex`, `TriggerOneOf`, `ArgString`, `ArgInteger`, `ArgNumber`, `ArgUuid`, `FlagString`, `FlagInteger`, `FlagNumber`, `FlagBoolean`, `FlagStringArray`, `FlagIntegerArray`, `FailureHandler`, `FailureNotFound`, `FailureBadUsage`, `FailureUnknownFlag`, `FailureUnexpectedArg`, `ExitOk`, `ExitFailure`, `ExitUsage`, `TriggerType`, `Trigger`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Cli`, `MainProps`, `Contract`, `Error` |
+| [`deps.OpinionatedAgnosDatabase`](deps.OpinionatedAgnosDatabase.md) | `Contract` |
+| [`deps.OpinionatedAgnosFront`](deps.OpinionatedAgnosFront.md) | `Root`, `Index`, `NotFound`, `RevalidateCache`, `Contract` |
+| [`deps.OpinionatedAgnosServer`](deps.OpinionatedAgnosServer.md) | `PathString`, `PathInteger`, `PathNumber`, `PathUuid`, `SourceHeader`, `SourceQuery`, `SourceCookie`, `ParameterString`, `ParameterNumber`, `ParameterBoolean`, `ParameterDateTime`, `ParameterStringArray`, `ParameterInteger`, `ParameterIntegerArray`, `AnyMethod`, `StatusOK`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMediaType`, `StatusUnprocessableEntity`, `StatusTooManyRequests`, `StatusInternalServerError`, `StatusServiceUnavailable`, `PathType`, `Path`, `ParameterSource`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Server`, `ServeProps`, `MainProps`, `Contract`, `Error` |
+| [`deps.ArgvDeps`](deps.argvdeps.md) | `Contract`, `Parser` |
+| [`deps.DatabaseDeps`](deps.databasedeps.md) | `Key`, `Int`, `Database`, `Float`, `String`, `Link`, `KeyConflict`, `NotFound`, `MissingField`, `InvalidField`, `Internal`, `Item`, `Schema`, `Props`, `Error`, `SchemaItem`, `SchemaInstance`, `DatabaseHandle`, `Databases`, `Info`, `Sandbox` |
+| [`deps.EmbedDeps`](deps.embeddeps.md) | `Contract` |
+| [`deps.EnvDeps`](deps.envdeps.md) | `Contract` |
+| [`deps.HashDeps`](deps.hashdeps.md) | `Contract` |
+| [`deps.JwtDeps`](deps.jwtdeps.md) | `Contract`, `Claims` |
+| [`deps.PasswordDeps`](deps.passworddeps.md) | `Contract` |
+| [`deps.RandDeps`](deps.randdeps.md) | `Contract` |
+| [`deps.RatelimitDeps`](deps.ratelimitdeps.md) | `Contract` |
+| [`deps.SerializableDeps`](deps.serializabledeps.md) | `SerializableObject`, `Contract` |
+| [`deps.ServerDeps`](deps.serverdeps.md) | `Contract`, `ServerProps`, `Server`, `Request`, `Response` |
+| [`deps.SignalDeps`](deps.signaldeps.md) | `Contract` |
+| [`deps.SortDeps`](deps.sortdeps.md) | `Contract` |
+| [`deps.StdDeps`](deps.stddeps.md) | `Contract` |
+| [`deps.StringsDeps`](deps.stringsdeps.md) | `Contract` |
+| [`deps.TimeDeps`](deps.timedeps.md) | `Contract` |

@@ -1,6 +1,6 @@
 # `add-backoffice-user`
 
-Creates a backoffice user with a generated password, printed once
+Create a backoffice user with a generated password, printed once
 
 ```bash
 testebackoffice add-backoffice-user --username <username> --email <email> [--role <role>] [--help]

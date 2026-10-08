@@ -14,7 +14,7 @@ lists the flags of the middlewares in front of it too.
 
 | Command | Does |
 | --- | --- |
-| [`add-backoffice-user`](add-backoffice-user.md) | Creates a backoffice user with a generated password, printed once |
+| [`add-backoffice-user`](add-backoffice-user.md) | Create a backoffice user with a generated password, printed once |
 
 ## Info
 
@@ -27,7 +27,7 @@ lists the flags of the middlewares in front of it too.
 
 | Command | Does |
 | --- | --- |
-| [`start-server`](start-server.md) | Starts the http server |
+| [`start-server`](start-server.md) | Start the http server |
 
 ## Middlewares
 
@@ -35,7 +35,7 @@ Run in front of the commands they match, lowest `priority` first; typed by nobod
 
 | Middleware | Runs before | Priority | Flags it adds |
 | --- | --- | --- | --- |
-| [`backoffice-server`](backoffice-server.md) | `start-server` | 50 | `--addr`, `--allow-x-forwarded-for`, `--insecure-http` |
+| [`backoffice-start-server`](backoffice-start-server.md) | `start-server` | 50 | `--addr`, `--allow-x-forwarded-for`, `--insecure-http` |
 | [`help-flag`](help-flag.md) | `*` | 5 | `--help`, `-h` |
 
 Output channels and exit codes are in [Rules](../Rules/doc.md#output-channels).

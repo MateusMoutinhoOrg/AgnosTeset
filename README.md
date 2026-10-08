@@ -26,7 +26,7 @@ Serving http - bring the server up, declare routes, read a body
 | Doc | Description |
 | --- | --- |
 | [ServerUsage](docs/ServerUsage/doc.md) | Serve http from testebackoffice: bring the layer up, declare routes, read a body |
-| [FrontUsage](docs/FrontUsage/doc.md) | Serve a website from testebackoffice: bring the front layer up, drop files in assets/frontend, add pages |
+| [FrontUsage](docs/FrontUsage/doc.md) | Serve a website from testebackoffice: bring the front layer up, drop files in assets/front, add pages |
 | [Routes](docs/Routes/doc.md) | Every address testebackoffice answers: what to send, a request to run and what comes back |
 | [Backoffice](docs/Backoffice/doc.md) | The admin backoffice of testebackoffice: secret, users, roles, sessions, API tokens and the /api/admin JSON api |
 
@@ -47,7 +47,7 @@ How the project is put together - layers, boundaries, data flow
 | Doc | Description |
 | --- | --- |
 | [Databases](docs/Databases/doc.md) | Every database of testebackoffice, generated from the table declarations |
-| [Adapters](docs/Adapters/doc.md) | Contract, adapter and available: three units, one field of Deps, and who fills it |
+| [Adapters](docs/Adapters/doc.md) | Contract, adapter and binding: three units, one field of Deps, and who fills it |
 
 ### Development
 
