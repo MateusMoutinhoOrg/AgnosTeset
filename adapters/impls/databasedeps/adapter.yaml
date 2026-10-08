@@ -1,5 +1,5 @@
 dep: databasedeps
 help: Generated shim over github.com/MateusMoutinhoOrg/Keep
-module: github.com/MateusMoutinhoOrg/Keep@v0.0.7
+module: github.com/MateusMoutinhoOrg/Keep@v0.0.8
 name: databasedeps
 origin: generated

@@ -1,7 +1,7 @@
 package databasedeps
 
 import (
-	remotebinding "github.com/MateusMoutinhoOrg/Keep/adapters/availables/standard"
+	remotebinding "github.com/MateusMoutinhoOrg/Keep/adapters/bindings/standard"
 	remotelib "github.com/MateusMoutinhoOrg/Keep/sandbox"
 	remoteapi "github.com/MateusMoutinhoOrg/Keep/sandbox/api"
 
@@ -28,6 +28,14 @@ func Bind(deps *deps.Deps) {
 // convSandbox carries one value between the two copies of the contract.
 func convSandbox(v remoteapi.Sandbox) databasedeps.Sandbox {
 	return databasedeps.Sandbox{
+		ProjectSandbox: convProjectSandbox(v.ProjectSandbox),
+		Config:         convConfig(v.Config),
+	}
+}
+
+// convProjectSandbox carries one value between the two copies of the contract.
+func convProjectSandbox(v remoteapi.ProjectSandbox) databasedeps.ProjectSandbox {
+	return databasedeps.ProjectSandbox{
 		Databases: convDatabases(v.Databases),
 		Info:      convInfo(v.Info),
 	}
@@ -257,4 +265,18 @@ func convInfo(v remoteapi.Info) databasedeps.Info {
 		Name:    v.Name,
 		Version: v.Version,
 	}
+}
+
+// convConfig carries one value between the two copies of the contract.
+func convConfig(v remoteapi.Config) databasedeps.Config {
+	return databasedeps.Config{
+		ProjectConfig: convProjectConfig(v.ProjectConfig),
+		ProjectName:   v.ProjectName,
+		Version:       v.Version,
+	}
+}
+
+// convProjectConfig carries one value between the two copies of the contract.
+func convProjectConfig(v remoteapi.ProjectConfig) databasedeps.ProjectConfig {
+	return databasedeps.ProjectConfig{}
 }
