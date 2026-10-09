@@ -1,0 +1,29 @@
+package upload_backup_snapshot
+
+import (
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficeapi"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/snapshots"
+)
+
+// Handle answers POST /admin/root/upload-backup-snapshot, which the
+// upload form of the list page sends from backoffice.js with the file as the
+// whole body: the archive is stored as a new ready snapshot, answered 201 as
+// {"snapshot": ...}. An archive that is not one a download built is answered
+// 400 with why, which the page shows.
+func Handle(sandbox *api.Sandbox, props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {
+	if props.User == nil {
+		return sandbox.Deps.OpinionatedAgnosServer.Fail(api.StatusUnauthorized, "", "no authenticated user")
+	}
+
+	snapshot, refused, err := snapshots.Import(sandbox, input.Body)
+	if err != nil {
+		return err
+	}
+	if refused != "" {
+		return sandbox.Deps.OpinionatedAgnosServer.Fail(api.StatusBadRequest, "body", refused)
+	}
+	return sandbox.Deps.OpinionatedAgnosServer.WriteJSON(sandbox.Deps.SerializableDeps, *response, api.StatusCreated, backofficeapi.SnapshotResponseJSON(sandbox, snapshot))
+}

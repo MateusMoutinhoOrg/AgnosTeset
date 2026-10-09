@@ -46,6 +46,16 @@ it prints the address it took. Change it to wherever your server runs.
 | [`ANY /~(^/(api/)?admin(/|$))`](backoffice_security_headers.md) | Sends the security headers on every /admin and /api/admin response |
 | [`ANY /admin/* !(/admin/login)`](backoffice_session_auth.md) | Requires a valid backoffice session on /admin, except /admin/login |
 
+## Backoffice Backups API
+
+| Route | What it does |
+| --- | --- |
+| [`POST /api/admin/root/create-backup-snapshot`](api_create_backup_snapshot.md) | Starts a snapshot of every database and answers 202 at once: it is taken in the background |
+| [`GET /api/admin/root/download-backup-snapshot/{Id:integer}`](api_download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
+| [`GET /api/admin/root/list-backup-snapshots`](api_list_backup_snapshots.md) | Lists every snapshot, newest first, and whether a snapshot or a restore is running |
+| [`POST /api/admin/root/restore-backup-snapshot`](api_restore_backup_snapshot.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers 202 at once |
+| [`POST /api/admin/root/upload-backup-snapshot`](api_upload_backup_snapshot.md) | Stores a zip archive a download built as a new snapshot |
+
 ## Backoffice API Tokens
 
 | Route | What it does |
@@ -73,6 +83,16 @@ it prints the address it took. Change it to wherever your server runs.
 | [`POST /admin/root/remove-backoffice-user/{Id:integer}`](remove_backoffice_user_form.md) | Removes a backoffice user and every session of it |
 | [`POST /admin/root/set-backoffice-user/{Id:integer}`](set_backoffice_user_form.md) | Edits a backoffice user; a blank password keeps the current one |
 | [`GET /admin/root/set-backoffice-user/{Id:integer}`](set_backoffice_user_page.md) | Shows the form that edits a backoffice user |
+
+## Backoffice Backups
+
+| Route | What it does |
+| --- | --- |
+| [`POST /admin/root/create-backup-snapshot`](create_backup_snapshot_form.md) | Starts a snapshot of every database and answers at once: it is taken in the background |
+| [`GET /admin/root/download-backup-snapshot/{Id:integer}`](download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
+| [`GET /admin/root/list-backup-snapshots`](list_backup_snapshots_page.md) | Lists every snapshot of the databases, with the controls that take, download, upload and restore one |
+| [`POST /admin/root/restore-backup-snapshot/{Id:integer}`](restore_backup_snapshot_form.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers at once |
+| [`POST /admin/root/upload-backup-snapshot`](upload_backup_snapshot.md) | Stores a zip archive a download built as a new snapshot |
 
 ## Assets
 

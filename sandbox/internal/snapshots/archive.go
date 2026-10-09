@@ -1,0 +1,170 @@
+package snapshots
+
+import (
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	archivedeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/archivedeps"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/backup"
+)
+
+// A snapshot travels as a zip archive: ManifestPath, naming it, and every one
+// of its files under ArchiveDataDir at the path it holds below DataDir — so
+// the archive unzipped at the root of the project puts the databases back by
+// hand.
+
+// ManifestPath is the archive entry naming the snapshot: a JSON object with
+// its name, the Unix instant it was taken at as data, and how many files it
+// holds.
+const ManifestPath = "snapshot.json"
+
+// ArchiveDataDir is the folder of the archive every file of the snapshot
+// sits under.
+const ArchiveDataDir = DataDir + "/"
+
+// namePattern is a snapshot name an upload may keep from its manifest: one
+// that is safe in a file name and a header.
+const namePattern = `^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$`
+
+// Export packs the snapshot of id into its archive. The outcome is OutcomeOk,
+// OutcomeNotFound or OutcomeNotReady; the archive is nil unless OutcomeOk.
+func Export(sandbox *api.Sandbox, id int64) (backup.SnapshotRecord, []byte, string, error) {
+	db := backup.New(sandbox)
+	snapshot, ok := db.FindSnapshotById(id)
+	if !ok {
+		return snapshot, nil, OutcomeNotFound, nil
+	}
+	if snapshot.Status != StatusReady {
+		return snapshot, nil, OutcomeNotReady, nil
+	}
+	contents, err := db.ListSnapshotContents(id)
+	if err != nil {
+		return snapshot, nil, "", err
+	}
+
+	files := []archivedeps.File{{Path: ManifestPath, Content: manifest(sandbox, snapshot, len(contents))}}
+	for _, content := range contents {
+		blob, ok := db.FindBlobBySha(content.Sha)
+		if !ok {
+			return snapshot, nil, "", sandbox.Deps.StdDeps.Errorf("snapshot %s: the content of %s is missing", snapshot.Name, content.Path)
+		}
+		files = append(files, archivedeps.File{Path: ArchiveDataDir + content.Path, Content: blob.Value})
+	}
+	archive, err := sandbox.Deps.ArchiveDeps.Zip(files)
+	if err != nil {
+		return snapshot, nil, "", err
+	}
+	return snapshot, archive, OutcomeOk, nil
+}
+
+// manifest is the ManifestPath entry of the archive of snapshot, which holds
+// files files.
+func manifest(sandbox *api.Sandbox, snapshot backup.SnapshotRecord, files int) []byte {
+	document := sandbox.Deps.SerializableDeps.CreateObject()
+	document.AddItemToObject("name", snapshot.Name)
+	document.AddItemToObject("data", snapshot.Data)
+	document.AddItemToObject("files", files)
+	return []byte(sandbox.Deps.SerializableDeps.SerializeToJson(document))
+}
+
+// Import stores the snapshot an archive Export built — or one written by
+// hand the same way — as a new StatusReady snapshot, and answers it. It
+// touches nothing under DataDir, so it runs beside a job. The name and the
+// instant come from ManifestPath when it carries usable ones, and the name
+// is made unique; without them the snapshot is named upload followed by the
+// current instant. refused is why the archive was refused, "" when it was
+// not: one that is not a zip, unpacks past MaxUnpackedBytes, holds an entry
+// outside ArchiveDataDir, a path SafePath refuses or the same path twice, or
+// no file at all.
+func Import(sandbox *api.Sandbox, archive []byte) (snapshot backup.SnapshotRecord, refused string, err error) {
+	strings := sandbox.Deps.StringsDeps
+	unpacked, err := sandbox.Deps.ArchiveDeps.Unzip(archive, MaxUnpackedBytes)
+	if err != nil {
+		return snapshot, "not a zip archive a snapshot can be read from: " + err.Error(), nil
+	}
+
+	name := ""
+	data := nowSeconds(sandbox)
+	files := []archivedeps.File{}
+	seen := map[string]bool{}
+	for _, file := range unpacked {
+		if file.Path == ManifestPath {
+			named, taken, ok := readManifest(sandbox, file.Content)
+			if !ok {
+				return snapshot, ManifestPath + " is not a JSON object", nil
+			}
+			name = named
+			if taken > 0 {
+				data = taken
+			}
+			continue
+		}
+		path := strings.TrimPrefix(file.Path, ArchiveDataDir)
+		if !strings.HasPrefix(file.Path, ArchiveDataDir) || !SafePath(sandbox, path) {
+			return snapshot, "the entry " + strings.Quote(file.Path) + " is not a file a snapshot may hold: every file sits in a database folder under " + ArchiveDataDir + ", never " + ArchiveDataDir + BackupDir, nil
+		}
+		if seen[path] {
+			return snapshot, "the entry " + strings.Quote(file.Path) + " is in the archive twice", nil
+		}
+		seen[path] = true
+		files = append(files, archivedeps.File{Path: path, Content: file.Content})
+	}
+	if len(files) == 0 {
+		return snapshot, "the archive holds no file under " + ArchiveDataDir, nil
+	}
+
+	valid, err := strings.MatchPattern(namePattern, name)
+	if err != nil {
+		return snapshot, "", err
+	}
+	if !valid {
+		name = "upload-" + sandbox.Deps.TimeDeps.FormatUnix(nowSeconds(sandbox), NameLayout)
+	}
+
+	db := backup.New(sandbox)
+	snapshot, err = db.AddSnapshot(backup.SnapshotInput{Name: uniqueName(sandbox, db, name), Data: data, Status: StatusCreating})
+	if err != nil {
+		return snapshot, "", err
+	}
+	if err := store(sandbox, db, snapshot.Id, files); err != nil {
+		if removeErr := db.RemoveSnapshot(snapshot.Id); removeErr != nil {
+			sandbox.Deps.StdDeps.Eprintf("snapshot %s: removing it after a failed upload failed: %s\n", snapshot.Name, removeErr.Error())
+		}
+		return backup.SnapshotRecord{}, "", err
+	}
+	if err := db.SetSnapshotStatus(snapshot.Id, StatusReady); err != nil {
+		return snapshot, "", err
+	}
+	snapshot.Status = StatusReady
+	sandbox.Deps.StdDeps.Logf("snapshot %s uploaded: %d files\n", snapshot.Name, len(files))
+	return snapshot, "", nil
+}
+
+// store stores every one of files under the snapshot of id.
+func store(sandbox *api.Sandbox, db *backup.Backup, id int64, files []archivedeps.File) error {
+	for _, file := range files {
+		sha, err := storeBlob(sandbox, db, file.Content)
+		if err != nil {
+			return err
+		}
+		if _, err := db.AddSnapshotContent(id, backup.SnapshotContentInput{Path: file.Path, Sha: sha}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// readManifest reads the name and the instant out of a ManifestPath entry:
+// "" and 0 for either one it does not carry as a string and an integer. ok
+// is false when content is not a JSON object.
+func readManifest(sandbox *api.Sandbox, content []byte) (name string, data int64, ok bool) {
+	document, err := sandbox.Deps.SerializableDeps.ParseJson(string(content))
+	if err != nil || !document.IsObject() {
+		return "", 0, false
+	}
+	if item, err := document.GetObjectItem("name"); err == nil && item != nil && item.IsString() {
+		name, _ = item.GetString()
+	}
+	if item, err := document.GetObjectItem("data"); err == nil && item != nil && item.IsInt() {
+		data, _ = item.GetInt()
+	}
+	return name, data, true
+}

@@ -12,6 +12,7 @@ import (
 	memoryratelimit "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/memoryratelimit"
 	nethttpserver "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/nethttpserver"
 	osenv "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/osenv"
+	osio "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/osio"
 	ossignal "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/ossignal"
 	osstd "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/osstd"
 	pbkdf2password "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/pbkdf2password"
@@ -21,6 +22,7 @@ import (
 	stdsort "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/stdsort"
 	stdstrings "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/stdstrings"
 	stdtime "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/stdtime"
+	ziparchive "github.com/MateusMoutinhoOrg/AgnosTeset/adapters/impls/ziparchive"
 	deps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps"
 )
 
@@ -37,6 +39,7 @@ func New() deps.Deps {
 	memoryratelimit.Bind(&deps)
 	nethttpserver.Bind(&deps)
 	osenv.Bind(&deps)
+	osio.Bind(&deps)
 	ossignal.Bind(&deps)
 	osstd.Bind(&deps)
 	pbkdf2password.Bind(&deps)
@@ -46,5 +49,6 @@ func New() deps.Deps {
 	stdsort.Bind(&deps)
 	stdstrings.Bind(&deps)
 	stdtime.Bind(&deps)
+	ziparchive.Bind(&deps)
 	return deps
 }

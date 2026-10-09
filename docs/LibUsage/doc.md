@@ -83,11 +83,13 @@ The contracts available to patch:
 | `deps.OpinionatedAgnosDatabase` | `sandbox/deps/OpinionatedAgnosDatabase` |
 | `deps.OpinionatedAgnosFront` | `sandbox/deps/OpinionatedAgnosFront` |
 | `deps.OpinionatedAgnosServer` | `sandbox/deps/OpinionatedAgnosServer` |
+| `deps.ArchiveDeps` | `sandbox/deps/archivedeps` |
 | `deps.ArgvDeps` | `sandbox/deps/argvdeps` |
 | `deps.DatabaseDeps` | `sandbox/deps/databasedeps` |
 | `deps.EmbedDeps` | `sandbox/deps/embeddeps` |
 | `deps.EnvDeps` | `sandbox/deps/envdeps` |
 | `deps.HashDeps` | `sandbox/deps/hashdeps` |
+| `deps.IoDeps` | `sandbox/deps/iodeps` |
 | `deps.JwtDeps` | `sandbox/deps/jwtdeps` |
 | `deps.PasswordDeps` | `sandbox/deps/passworddeps` |
 | `deps.RandDeps` | `sandbox/deps/randdeps` |
@@ -116,6 +118,7 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/impls/memoryratelimit` | `memoryratelimit.Bind(&deps)` |
 | `adapters/impls/nethttpserver` | `nethttpserver.Bind(&deps)` |
 | `adapters/impls/osenv` | `osenv.Bind(&deps)` |
+| `adapters/impls/osio` | `osio.Bind(&deps)` |
 | `adapters/impls/ossignal` | `ossignal.Bind(&deps)` |
 | `adapters/impls/osstd` | `osstd.Bind(&deps)` |
 | `adapters/impls/pbkdf2password` | `pbkdf2password.Bind(&deps)` |
@@ -125,6 +128,7 @@ exposing the same `Bind(deps *deps.Deps)` entry point:
 | `adapters/impls/stdsort` | `stdsort.Bind(&deps)` |
 | `adapters/impls/stdstrings` | `stdstrings.Bind(&deps)` |
 | `adapters/impls/stdtime` | `stdtime.Bind(&deps)` |
+| `adapters/impls/ziparchive` | `ziparchive.Bind(&deps)` |
 
 Starting from `standard.New()` is the safe default: an unfilled field is a nil func that
 panics on first call. For a permanent mix, write your own

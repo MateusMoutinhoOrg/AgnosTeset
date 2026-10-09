@@ -10,8 +10,13 @@ import (
 	routes_backoffice_api_root_guard "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/middleware/backoffice_api_root_guard"
 	routes_backoffice_api_token_auth "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/middleware/backoffice_api_token_auth"
 	routes_api_add_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_add_backoffice_user"
+	routes_api_create_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_create_backup_snapshot"
+	routes_api_download_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_download_backup_snapshot"
+	routes_api_list_backup_snapshots "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_list_backup_snapshots"
 	routes_api_remove_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_remove_backoffice_user"
+	routes_api_restore_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_restore_backup_snapshot"
 	routes_api_set_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_set_backoffice_user"
+	routes_api_upload_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_upload_backup_snapshot"
 	routes_add_backoffice_api_token_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/add_backoffice_api_token_form"
 	routes_add_backoffice_api_token_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/add_backoffice_api_token_page"
 	routes_backoffice_home "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/backoffice_home"
@@ -27,9 +32,14 @@ import (
 	routes_revoke_backoffice_api_token_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/revoke_backoffice_api_token_form"
 	routes_add_backoffice_user_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/add_backoffice_user_form"
 	routes_add_backoffice_user_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/add_backoffice_user_page"
+	routes_create_backup_snapshot_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/create_backup_snapshot_form"
+	routes_download_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/download_backup_snapshot"
+	routes_list_backup_snapshots_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/list_backup_snapshots_page"
 	routes_remove_backoffice_user_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/remove_backoffice_user_form"
+	routes_restore_backup_snapshot_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/restore_backup_snapshot_form"
 	routes_set_backoffice_user_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/set_backoffice_user_form"
 	routes_set_backoffice_user_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/set_backoffice_user_page"
+	routes_upload_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/upload_backup_snapshot"
 	routes_front "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/front"
 	routes_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/health"
 	routes_openapi "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/openapi"
@@ -60,22 +70,32 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routes_add_backoffice_user_form.NewRoute(sandbox),
 		routes_add_backoffice_user_page.NewRoute(sandbox),
 		routes_api_add_backoffice_user.NewRoute(sandbox),
+		routes_api_create_backup_snapshot.NewRoute(sandbox),
+		routes_api_download_backup_snapshot.NewRoute(sandbox),
 		routes_api_get_backoffice_user.NewRoute(sandbox),
 		routes_api_get_current_backoffice_user.NewRoute(sandbox),
 		routes_api_list_backoffice_users.NewRoute(sandbox),
+		routes_api_list_backup_snapshots.NewRoute(sandbox),
 		routes_api_remove_backoffice_user.NewRoute(sandbox),
+		routes_api_restore_backup_snapshot.NewRoute(sandbox),
 		routes_api_set_backoffice_user.NewRoute(sandbox),
+		routes_api_upload_backup_snapshot.NewRoute(sandbox),
 		routes_backoffice_home.NewRoute(sandbox),
 		routes_backoffice_login.NewRoute(sandbox),
 		routes_backoffice_logout.NewRoute(sandbox),
+		routes_create_backup_snapshot_form.NewRoute(sandbox),
+		routes_download_backup_snapshot.NewRoute(sandbox),
 		routes_health.NewRoute(sandbox),
 		routes_list_backoffice_api_tokens_page.NewRoute(sandbox),
 		routes_list_backoffice_users_page.NewRoute(sandbox),
+		routes_list_backup_snapshots_page.NewRoute(sandbox),
 		routes_openapi.NewRoute(sandbox),
 		routes_remove_backoffice_user_form.NewRoute(sandbox),
+		routes_restore_backup_snapshot_form.NewRoute(sandbox),
 		routes_revoke_backoffice_api_token_form.NewRoute(sandbox),
 		routes_set_backoffice_user_form.NewRoute(sandbox),
 		routes_set_backoffice_user_page.NewRoute(sandbox),
+		routes_upload_backup_snapshot.NewRoute(sandbox),
 		routes_front.NewRoute(sandbox),
 	}
 

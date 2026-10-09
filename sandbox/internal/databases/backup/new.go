@@ -32,6 +32,7 @@ func New(sandbox *api.Sandbox) *Backup {
 					{Name: "content", Type: databasedeps.Nested, Fields: []databasedeps.Field{
 						{Name: "path", Type: databasedeps.String, Required: true},
 						{Name: "sha", Type: databasedeps.String, Required: true}}},
+					{Name: "status", Type: databasedeps.String, Required: true},
 				},
 			},
 		},
@@ -94,6 +95,9 @@ func New(sandbox *api.Sandbox) *Backup {
 	}
 	self.SetSnapshotData = func(id int64, value int64) error {
 		return SetSnapshotData(self.sandbox, &self, id, value)
+	}
+	self.SetSnapshotStatus = func(id int64, value string) error {
+		return SetSnapshotStatus(self.sandbox, &self, id, value)
 	}
 	self.RemoveSnapshot = func(id int64) error {
 		return RemoveSnapshot(self.sandbox, &self, id)

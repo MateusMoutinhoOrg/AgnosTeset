@@ -1,0 +1,27 @@
+package download_backup_snapshot
+
+import (
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/serverdeps"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routeprops"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/backoffice/backofficesnapshots"
+	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/snapshots"
+)
+
+// Handle answers GET /admin/root/download-backup-snapshot/{id} with
+// the zip archive of the snapshot, saved under its name. A snapshot that does
+// not exist or is not ready sends the browser back to the list with a notice.
+func Handle(sandbox *api.Sandbox, props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {
+	if props.User == nil {
+		return sandbox.Deps.OpinionatedAgnosServer.Fail(api.StatusUnauthorized, "", "no authenticated user")
+	}
+
+	snapshot, archive, outcome, err := snapshots.Export(sandbox, int64(input.Id))
+	if err != nil {
+		return err
+	}
+	if outcome != snapshots.OutcomeOk {
+		return sandbox.Deps.OpinionatedAgnosServer.Redirect(*response, api.StatusSeeOther, backofficesnapshots.ListLocation(sandbox, outcome))
+	}
+	return backofficesnapshots.WriteArchive(sandbox, response, snapshot, archive)
+}

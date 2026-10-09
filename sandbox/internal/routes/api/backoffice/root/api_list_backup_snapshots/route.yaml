@@ -1,0 +1,16 @@
+category: Backoffice Backups API
+examples:
+    - 'curl localhost:3000/api/admin/root/list-backup-snapshots -H "Authorization: Bearer $TOKEN"'
+methods:
+    - GET
+paths:
+    - end: 3
+      id: ApiAdminRootListBackupSnapshots
+      start: 0
+      trigger:
+        type: equal
+        value: /api/admin/root/list-backup-snapshots
+priority: 100
+response-type: application/json
+segments: 4
+summary: Lists every snapshot, newest first, and whether a snapshot or a restore is running

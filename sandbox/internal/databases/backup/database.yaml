@@ -25,4 +25,7 @@ tables:
               type: string
           name: content
           type: object
+        - name: status
+          required: true
+          type: string
       name: snapshot

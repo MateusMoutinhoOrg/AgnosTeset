@@ -36,25 +36,29 @@ type BlobFilter struct {
 // SnapshotRecord is one stored snapshot record: its permanent id and every
 // plain field the declaration gives it.
 type SnapshotRecord struct {
-	Id   int64
-	Name string
-	Data int64
+	Id     int64
+	Name   string
+	Data   int64
+	Status string
 }
 
 // SnapshotInput is one insert into snapshot: the fields a new record carries.
 type SnapshotInput struct {
-	Name string
-	Data int64
+	Name   string
+	Data   int64
+	Status string
 }
 
 // SnapshotFilter narrows a ListSnapshot. Every plain field is here, because
 // only a `key` field is indexed and this is the one way to reach the rest. A
 // zero value turns its own filter off.
 type SnapshotFilter struct {
-	NameStartsWith string
-	NameEquals     string
-	DataMin        int64
-	DataMax        int64
+	NameStartsWith   string
+	NameEquals       string
+	DataMin          int64
+	DataMax          int64
+	StatusStartsWith string
+	StatusEquals     string
 }
 
 // SnapshotContentRecord is one stored content record: its permanent id and every
@@ -113,6 +117,8 @@ type Backup struct {
 	SetSnapshotName func(id int64, value string) error
 	// SetSnapshotData writes a new data on one snapshot record.
 	SetSnapshotData func(id int64, value int64) error
+	// SetSnapshotStatus writes a new status on one snapshot record.
+	SetSnapshotStatus func(id int64, value string) error
 	// RemoveSnapshot deletes one snapshot record and everything nested under it.
 	RemoveSnapshot func(id int64) error
 	// AddSnapshotContent inserts one content record under one snapshot record.

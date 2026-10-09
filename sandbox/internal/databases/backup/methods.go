@@ -327,6 +327,22 @@ func SetSnapshotData(sandbox *api.Sandbox, self *Backup, id int64, value int64) 
 	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("data", value))
 }
 
+// SetSnapshotStatus writes a new status on one snapshot record.
+func SetSnapshotStatus(sandbox *api.Sandbox, self *Backup, id int64, value string) error {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return err
+	}
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return sandbox.Deps.StdDeps.Errorf("snapshot %d not found", id)
+	}
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("status", value))
+}
+
 // RemoveSnapshot deletes one snapshot record and everything nested under it.
 func RemoveSnapshot(sandbox *api.Sandbox, self *Backup, id int64) error {
 	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
@@ -435,8 +451,9 @@ func matchBlob(sandbox *api.Sandbox, item BlobRecord, filter BlobFilter) bool {
 // newSnapshotFields is one insert into snapshot as the stored field map.
 func newSnapshotFields(props SnapshotInput) map[string]any {
 	return map[string]any{
-		"name": props.Name,
-		"data": props.Data,
+		"name":   props.Name,
+		"data":   props.Data,
+		"status": props.Status,
 	}
 }
 
@@ -458,6 +475,12 @@ func buildSnapshotRecord(sandbox *api.Sandbox, record databasedeps.Record) (Snap
 	}
 	built.Data = valueData
 
+	valueStatus, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "status")
+	if err != nil {
+		return built, err
+	}
+	built.Status = valueStatus
+
 	return built, nil
 }
 
@@ -468,6 +491,9 @@ func matchSnapshot(sandbox *api.Sandbox, item SnapshotRecord, filter SnapshotFil
 		return false
 	}
 	if !sandbox.Deps.OpinionatedAgnosDatabase.IntInRange(item.Data, filter.DataMin, filter.DataMax) {
+		return false
+	}
+	if !sandbox.Deps.OpinionatedAgnosDatabase.TextMatches(item.Status, filter.StatusStartsWith, filter.StatusEquals) {
 		return false
 	}
 	return true

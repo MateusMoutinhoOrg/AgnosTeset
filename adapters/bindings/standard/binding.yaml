@@ -10,6 +10,7 @@ adapters:
     - memoryratelimit
     - nethttpserver
     - osenv
+    - osio
     - ossignal
     - osstd
     - pbkdf2password
@@ -19,3 +20,4 @@ adapters:
     - stdsort
     - stdstrings
     - stdtime
+    - ziparchive

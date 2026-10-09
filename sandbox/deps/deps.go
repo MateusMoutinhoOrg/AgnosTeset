@@ -5,11 +5,13 @@ import (
 	OpinionatedAgnosDatabase "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosDatabase"
 	OpinionatedAgnosFront "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosFront"
 	OpinionatedAgnosServer "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosServer"
+	archivedeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/archivedeps"
 	argvdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/argvdeps"
 	databasedeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/databasedeps"
 	embeddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/embeddeps"
 	envdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/envdeps"
 	hashdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/hashdeps"
+	iodeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/iodeps"
 	jwtdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/jwtdeps"
 	passworddeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/passworddeps"
 	randdeps "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/randdeps"
@@ -31,11 +33,13 @@ type Deps struct {
 	OpinionatedAgnosDatabase OpinionatedAgnosDatabase.Contract
 	OpinionatedAgnosFront    OpinionatedAgnosFront.Contract
 	OpinionatedAgnosServer   OpinionatedAgnosServer.Contract
+	ArchiveDeps              archivedeps.Contract
 	ArgvDeps                 argvdeps.Contract
 	DatabaseDeps             databasedeps.Sandbox
 	EmbedDeps                embeddeps.Contract
 	EnvDeps                  envdeps.Contract
 	HashDeps                 hashdeps.Contract
+	IoDeps                   iodeps.Contract
 	JwtDeps                  jwtdeps.Contract
 	PasswordDeps             passworddeps.Contract
 	RandDeps                 randdeps.Contract

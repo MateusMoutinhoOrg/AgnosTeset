@@ -1,0 +1,16 @@
+category: Backoffice Backups API
+examples:
+    - 'curl -X POST localhost:3000/api/admin/root/create-backup-snapshot -H "Authorization: Bearer $TOKEN"'
+methods:
+    - POST
+paths:
+    - end: 3
+      id: ApiAdminRootCreateBackupSnapshot
+      start: 0
+      trigger:
+        type: equal
+        value: /api/admin/root/create-backup-snapshot
+priority: 100
+response-type: application/json
+segments: 4
+summary: 'Starts a snapshot of every database and answers 202 at once: it is taken in the background'
