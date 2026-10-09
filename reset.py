@@ -31,7 +31,7 @@ def main():
     ## runs a terminal command 
     os.system("agnos start --project-name testebackoffice --module github.com/MateusMoutinhoOrg/AgnosTeset")
     os.system("agnos backoffice-init")
-   
+    os.system(" go run cmd/main/generated.main.go  add-backoffice-user --role root --email admin@admin.com --username admin")
 
 
 
