@@ -50,6 +50,8 @@ or `403`, for example — or let it through to this route.
 | [`backoffice-api-root-guard`](backoffice_api_root_guard.md) | depends on the address — `explain-route` gives the exact answer |
 | [`backoffice-api-token-auth`](backoffice_api_token_auth.md) | depends on the address — `explain-route` gives the exact answer |
 | [`api-download-backup-snapshot`](api_download_backup_snapshot.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-download-backup-snapshot-file`](api_download_backup_snapshot_file.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-list-backup-snapshot-files`](api_list_backup_snapshot_files.md) | depends on the address — `explain-route` gives the exact answer |
 | [`api-list-backup-snapshots`](api_list_backup_snapshots.md) | depends on the address — `explain-route` gives the exact answer |
 | [`add-backoffice-api-token-page`](add_backoffice_api_token_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`backoffice-home`](backoffice_home.md) | depends on the address — `explain-route` gives the exact answer |

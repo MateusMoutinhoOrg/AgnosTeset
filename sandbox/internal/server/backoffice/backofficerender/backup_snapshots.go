@@ -54,7 +54,7 @@ func backupSnapshotNoticeOf(sandbox *api.Sandbox, code string) Notice {
 	case backofficesnapshots.NoticeOptimizing:
 		return Notice{Text: "Optimizing started. The stored contents no snapshot holds anymore are being removed in the background.", Kind: "ok"}
 	case backofficesnapshots.NoticeBusy:
-		return Notice{Text: "Another backup job is running: a snapshot, a restore, an upload, a deletion or an optimization. Try again once it ends.", Kind: "error"}
+		return Notice{Text: "Another backup job is running: a snapshot, a restore, an upload, a deletion, an optimization or a write to a snapshot built by hand. Try again once it ends.", Kind: "error"}
 	case backofficesnapshots.NoticeNotFound:
 		return Notice{Text: "That snapshot no longer exists.", Kind: "error"}
 	case backofficesnapshots.NoticeNotReady:

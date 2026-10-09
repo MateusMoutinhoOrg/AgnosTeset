@@ -49,7 +49,7 @@ const (
 
 // BusyMessage is what the api answers, under a 409, to a job refused while
 // another one runs.
-const BusyMessage = "another backup job is running (a snapshot, a restore, an upload, a removal or an optimize): try again once it ends"
+const BusyMessage = "another backup job is running (a snapshot, a restore, an upload, a removal, an optimize or a write to a snapshot built by hand): try again once it ends"
 
 // InvalidNameMessage is what the api answers, under a 400, to a snapshot
 // name the snapshots package refuses.
@@ -58,6 +58,26 @@ const InvalidNameMessage = "a snapshot name is 1 to 100 letters, digits, '.', '_
 // NameTakenMessage is what the api answers, under a 409, to a snapshot name
 // another one holds.
 const NameTakenMessage = "another snapshot already has that name"
+
+// NotOpenMessage is what the api answers, under a 400, to a file added to or
+// a close of a snapshot that is not open.
+const NotOpenMessage = "only an open snapshot, one create-empty-backup-snapshot recorded and close-backup-snapshot has not closed yet, takes files or closes"
+
+// InvalidPathMessage is what the api answers, under a 400, to a file path a
+// snapshot cannot hold.
+const InvalidPathMessage = "a file path is relative to data/, inside a database folder other than backup, as in backofficedb/backoffice-user/1/values/username: no empty, '.' or '..' segment, no '\\' nor ':'"
+
+// InvalidShaMessage is what the api answers, under a 400, to a sha that is
+// not one a content is stored under.
+const InvalidShaMessage = "a sha is the 64 hex digits of the SHA-256 of the content, as add-backup-blob answers it"
+
+// BlobMissingMessage is what the api answers, under a 404, to a sha no
+// stored content has.
+const BlobMissingMessage = "no content is stored under that sha: send it to add-backup-blob first (an optimize removes the ones no snapshot names yet)"
+
+// EmptyMessage is what the api answers, under a 400, to a close of a snapshot
+// holding no file.
+const EmptyMessage = "the snapshot holds no file: restoring it would empty every database, so it is not closed"
 
 // StatusAccepted is the status of a job the api started and does not wait
 // for; api has no constant of its own for it.
@@ -76,4 +96,21 @@ func WriteArchive(sandbox *api.Sandbox, response *serverdeps.Response, snapshot 
 	response.SetHeader("Content-Disposition", "attachment; filename=\""+snapshot.Name+".zip\"")
 	response.SetStatus(api.StatusOK)
 	return response.Write(archive)
+}
+
+// WriteFile answers content, the file at path of a snapshot, as a file to
+// save under the last segment of path. A '"', a '\' or a control character
+// in it is answered as '_', so the header holds one quoted file name.
+func WriteFile(sandbox *api.Sandbox, response *serverdeps.Response, path string, content []byte) error {
+	strings := sandbox.Deps.StringsDeps
+	name := []rune(path[strings.LastIndex(path, "/")+1:])
+	for index, char := range name {
+		if char == '"' || char == '\\' || char < ' ' || char == 0x7f {
+			name[index] = '_'
+		}
+	}
+	response.SetHeader("Content-Type", "application/octet-stream")
+	response.SetHeader("Content-Disposition", "attachment; filename=\""+string(name)+"\"")
+	response.SetStatus(api.StatusOK)
+	return response.Write(content)
 }

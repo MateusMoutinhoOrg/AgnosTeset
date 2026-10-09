@@ -50,8 +50,15 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
+| [`POST /api/admin/root/add-backup-blob`](api_add_backup_blob.md) | Stores the body as one content of the backups, once whatever the number of snapshots that will name it, and answers its sha to reference it by |
+| [`POST /api/admin/root/add-backup-snapshot-file/{Id:integer}/{*Path}`](api_add_backup_snapshot_file.md) | Stores the body as one file of an open snapshot, at the path below data/ the address ends with; a path it already holds is replaced |
+| [`POST /api/admin/root/add-backup-snapshot-reference`](api_add_backup_snapshot_reference.md) | Adds to an open snapshot one file whose content add-backup-blob already stored, by its sha; a path it already holds is replaced |
+| [`POST /api/admin/root/close-backup-snapshot`](api_close_backup_snapshot.md) | Closes an open snapshot once every content it names is stored: it turns ready, and can be downloaded and restored |
 | [`POST /api/admin/root/create-backup-snapshot`](api_create_backup_snapshot.md) | Starts a snapshot of every database, under the name given or one after the current instant, and answers 202 at once: it is taken in the background |
+| [`POST /api/admin/root/create-empty-backup-snapshot`](api_create_empty_backup_snapshot.md) | Records an empty open snapshot, under the name given or one after the current instant, that files are then added to one by one until it is closed |
 | [`GET /api/admin/root/download-backup-snapshot/{Id:integer}`](api_download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
+| [`GET /api/admin/root/download-backup-snapshot-file/{Id:integer}/{*Path}`](api_download_backup_snapshot_file.md) | Downloads one file of a snapshot, at the path below data/ the address ends with |
+| [`GET /api/admin/root/list-backup-snapshot-files/{Id:integer}`](api_list_backup_snapshot_files.md) | Lists every file of a snapshot, or the ones whose path starts with a prefix, as its path below data/ and the sha of its content |
 | [`GET /api/admin/root/list-backup-snapshots`](api_list_backup_snapshots.md) | Lists every snapshot, or the ones whose name starts with a prefix, newest first, and whether a backup job is running |
 | [`POST /api/admin/root/optimize-backup-storage`](api_optimize_backup_storage.md) | Starts removing every stored content no snapshot holds anymore, and answers 202 at once |
 | [`POST /api/admin/root/remove-backup-snapshot`](api_remove_backup_snapshot.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |

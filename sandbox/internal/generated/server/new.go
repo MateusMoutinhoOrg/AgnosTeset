@@ -10,8 +10,15 @@ import (
 	routes_backoffice_api_root_guard "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/middleware/backoffice_api_root_guard"
 	routes_backoffice_api_token_auth "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/middleware/backoffice_api_token_auth"
 	routes_api_add_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_add_backoffice_user"
+	routes_api_add_backup_blob "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_add_backup_blob"
+	routes_api_add_backup_snapshot_file "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_add_backup_snapshot_file"
+	routes_api_add_backup_snapshot_reference "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_add_backup_snapshot_reference"
+	routes_api_close_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_close_backup_snapshot"
 	routes_api_create_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_create_backup_snapshot"
+	routes_api_create_empty_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_create_empty_backup_snapshot"
 	routes_api_download_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_download_backup_snapshot"
+	routes_api_download_backup_snapshot_file "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_download_backup_snapshot_file"
+	routes_api_list_backup_snapshot_files "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_list_backup_snapshot_files"
 	routes_api_list_backup_snapshots "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_list_backup_snapshots"
 	routes_api_optimize_backup_storage "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_optimize_backup_storage"
 	routes_api_remove_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_remove_backoffice_user"
@@ -74,11 +81,18 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routes_add_backoffice_user_form.NewRoute(sandbox),
 		routes_add_backoffice_user_page.NewRoute(sandbox),
 		routes_api_add_backoffice_user.NewRoute(sandbox),
+		routes_api_add_backup_blob.NewRoute(sandbox),
+		routes_api_add_backup_snapshot_file.NewRoute(sandbox),
+		routes_api_add_backup_snapshot_reference.NewRoute(sandbox),
+		routes_api_close_backup_snapshot.NewRoute(sandbox),
 		routes_api_create_backup_snapshot.NewRoute(sandbox),
+		routes_api_create_empty_backup_snapshot.NewRoute(sandbox),
 		routes_api_download_backup_snapshot.NewRoute(sandbox),
+		routes_api_download_backup_snapshot_file.NewRoute(sandbox),
 		routes_api_get_backoffice_user.NewRoute(sandbox),
 		routes_api_get_current_backoffice_user.NewRoute(sandbox),
 		routes_api_list_backoffice_users.NewRoute(sandbox),
+		routes_api_list_backup_snapshot_files.NewRoute(sandbox),
 		routes_api_list_backup_snapshots.NewRoute(sandbox),
 		routes_api_optimize_backup_storage.NewRoute(sandbox),
 		routes_api_remove_backoffice_user.NewRoute(sandbox),

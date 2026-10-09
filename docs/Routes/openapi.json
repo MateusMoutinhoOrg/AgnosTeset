@@ -512,6 +512,406 @@
         ]
       }
     },
+    "/api/admin/root/add-backup-blob": {
+      "post": {
+        "operationId": "api-add-backup-blob",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Stores the body as one content of the backups, once whatever the number of snapshots that will name it, and answers its sha to reference it by",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 256 MB.",
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 256 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/octet-stream`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/add-backup-snapshot-file/{Id}/{Path}": {
+      "post": {
+        "operationId": "api-add-backup-snapshot-file",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Stores the body as one file of an open snapshot, at the path below data/ the address ends with; a path it already holds is replaced",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "Path",
+            "in": "path",
+            "description": "The rest of the address — one part or more, like `a/b.png`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-path"
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 256 MB.",
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 256 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/octet-stream`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/add-backup-snapshot-reference": {
+      "post": {
+        "operationId": "api-add-backup-snapshot-reference",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Adds to an open snapshot one file whose content add-backup-blob already stored, by its sha; a path it already holds is replaced",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "path": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "sha": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "path",
+                  "sha"
+                ]
+              },
+              "example": {
+                "id": 1,
+                "path": "text",
+                "sha": "text"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/close-backup-snapshot": {
+      "post": {
+        "operationId": "api-close-backup-snapshot",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Closes an open snapshot once every content it names is stored: it turns ready, and can be downloaded and restored",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "example": {
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
     "/api/admin/root/create-backup-snapshot": {
       "post": {
         "operationId": "api-create-backup-snapshot",
@@ -519,6 +919,98 @@
           "Backoffice Backups API"
         ],
         "summary": "Starts a snapshot of every database, under the name given or one after the current instant, and answers 202 at once: it is taken in the background",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "example": {
+                "name": "text"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/create-empty-backup-snapshot": {
+      "post": {
+        "operationId": "api-create-empty-backup-snapshot",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Records an empty open snapshot, under the name given or one after the current instant, that files are then added to one by one until it is closed",
         "parameters": [
           {
             "name": "x-client-ip",
@@ -645,6 +1137,78 @@
             "description": "It worked. The answer comes as `application/zip`.",
             "content": {
               "application/zip": {}
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/download-backup-snapshot-file/{Id}/{Path}": {
+      "get": {
+        "operationId": "api-download-backup-snapshot-file",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Downloads one file of a snapshot, at the path below data/ the address ends with",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "Path",
+            "in": "path",
+            "description": "The rest of the address — one part or more, like `a/b.png`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-path"
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/octet-stream`.",
+            "content": {
+              "application/octet-stream": {}
             }
           },
           "404": {
@@ -894,6 +1458,77 @@
           },
           "415": {
             "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/list-backup-snapshot-files/{Id}": {
+      "get": {
+        "operationId": "api-list-backup-snapshot-files",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Lists every file of a snapshot, or the ones whose path starts with a prefix, as its path below data/ and the sha of its content",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "description": "keeps only the files whose path below data/ starts with it",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-prefix"
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
             "content": {
               "application/json": {
                 "schema": {

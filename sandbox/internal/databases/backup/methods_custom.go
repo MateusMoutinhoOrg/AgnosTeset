@@ -51,3 +51,47 @@ func ListBlobShas(sandbox *api.Sandbox, db *Backup) ([]BlobSha, error) {
 	}
 	return listed, nil
 }
+
+// HasBlob tells whether a blob record holds sha, never reading its value:
+// FindBlobBySha would load the whole stored content to answer the same.
+func HasBlob(sandbox *api.Sandbox, db *Backup, sha string) (bool, error) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(db.database, "blob")
+	if err != nil {
+		return false, err
+	}
+	_, ok, failure := collection.FindByKey("sha", sha)
+	if failure != nil {
+		return false, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	return ok, nil
+}
+
+// RemoveSnapshotContent deletes one content record nested under one snapshot
+// record. The generated methods add and list the content of a snapshot, never
+// remove one of it, so it is written here. A content record already gone is
+// not an error.
+func RemoveSnapshotContent(sandbox *api.Sandbox, db *Backup, snapshotId int64, contentId int64) error {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(db.database, "snapshot")
+	if err != nil {
+		return err
+	}
+	parent, ok, failure := collection.FindByID(snapshotId)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return sandbox.Deps.StdDeps.Errorf("snapshot %d not found", snapshotId)
+	}
+	nested, failure := parent.Nested("content")
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	record, ok, failure := nested.FindByID(contentId)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return nil
+	}
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Remove())
+}

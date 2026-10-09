@@ -16,8 +16,8 @@ import (
 // slow, so a route only starts them: the work runs on a goroutine of its own
 // once the route has answered. A snapshot is recorded the moment it is
 // started, under StatusCreating, and turns StatusReady or StatusFailed when
-// its job ends. Every job — those three, an upload and a removal — runs one
-// at a time.
+// its job ends. Every job — those three, an upload, a removal and every write
+// of manual.go — runs one at a time.
 
 // DataDir is the directory every database of the project lives under, one
 // directory per database.
@@ -37,6 +37,10 @@ const (
 	// holds part of its files at most, so it is never restored nor
 	// downloaded.
 	StatusFailed = "failed"
+	// StatusOpen is a snapshot built by hand, still taking files one at a
+	// time until Close turns it StatusReady. It is never restored nor
+	// downloaded whole, and a server that stops leaves it open.
+	StatusOpen = "open"
 )
 
 // The outcomes StartRestore, Export, Import and Remove answer with.
@@ -58,6 +62,21 @@ const (
 	OutcomeInvalidName = "invalid-name"
 	// OutcomeNameTaken is a name another snapshot already holds.
 	OutcomeNameTaken = "name-taken"
+	// OutcomeNotOpen is a file added to, or a close of, a snapshot that is
+	// not StatusOpen.
+	OutcomeNotOpen = "not-open"
+	// OutcomeInvalidPath is a file path SafePath refuses.
+	OutcomeInvalidPath = "invalid-path"
+	// OutcomeInvalidSha is a sha that is not the lowercase hex SHA-256 a
+	// content is stored under.
+	OutcomeInvalidSha = "invalid-sha"
+	// OutcomeEmpty is a close of a snapshot holding no file: restoring it
+	// would empty every database.
+	OutcomeEmpty = "empty"
+	// OutcomeFileNotFound is a path the snapshot holds no file at.
+	OutcomeFileNotFound = "file-not-found"
+	// OutcomeBlobMissing is a sha no stored content has.
+	OutcomeBlobMissing = "blob-missing"
 )
 
 // MaxArchiveBytes is the largest archive an upload may send.
@@ -113,31 +132,21 @@ func nowSeconds(sandbox *api.Sandbox) int64 {
 // OutcomeNameTaken for one another snapshot holds, or OutcomeBusy while
 // another job runs; nothing is recorded unless OutcomeOk.
 func StartCreate(sandbox *api.Sandbox, name string) (snapshot backup.SnapshotRecord, outcome string, err error) {
-	name = sandbox.Deps.StringsDeps.TrimSpace(name)
-	if name != "" {
-		valid, err := ValidName(sandbox, name)
-		if err != nil {
-			return backup.SnapshotRecord{}, "", err
-		}
-		if !valid {
-			return backup.SnapshotRecord{}, OutcomeInvalidName, nil
-		}
+	name, valid, err := cleanName(sandbox, name)
+	if err != nil {
+		return backup.SnapshotRecord{}, "", err
+	}
+	if !valid {
+		return backup.SnapshotRecord{}, OutcomeInvalidName, nil
 	}
 	if !acquire(sandbox) {
 		return backup.SnapshotRecord{}, OutcomeBusy, nil
 	}
 	db := backup.New(sandbox)
-	if name == "" {
-		snapshot, err = begin(sandbox, db, "snapshot")
-	} else if _, taken := db.FindSnapshotByName(name); taken {
+	snapshot, outcome, err = record(sandbox, db, name, "snapshot", StatusCreating)
+	if err != nil || outcome != OutcomeOk {
 		release(sandbox)
-		return backup.SnapshotRecord{}, OutcomeNameTaken, nil
-	} else {
-		snapshot, err = db.AddSnapshot(backup.SnapshotInput{Name: name, Data: nowSeconds(sandbox), Status: StatusCreating})
-	}
-	if err != nil {
-		release(sandbox)
-		return backup.SnapshotRecord{}, "", err
+		return backup.SnapshotRecord{}, outcome, err
 	}
 	go func() {
 		defer release(sandbox)
@@ -152,10 +161,44 @@ func ValidName(sandbox *api.Sandbox, name string) (bool, error) {
 	return sandbox.Deps.StringsDeps.MatchPattern(namePattern, name)
 }
 
+// cleanName is name with its surrounding spaces trimmed, and whether a
+// snapshot may be given it: an empty one may, standing for one after the
+// current instant.
+func cleanName(sandbox *api.Sandbox, name string) (string, bool, error) {
+	name = sandbox.Deps.StringsDeps.TrimSpace(name)
+	if name == "" {
+		return name, true, nil
+	}
+	valid, err := ValidName(sandbox, name)
+	return name, valid, err
+}
+
+// record records a new snapshot under status, named name — cleanName
+// already passed it — or, when name is empty, prefix followed by the current
+// instant. The outcome is OutcomeOk, or OutcomeNameTaken for a name another
+// snapshot holds. The caller holds the job token.
+func record(sandbox *api.Sandbox, db *backup.Backup, name string, prefix string, status string) (backup.SnapshotRecord, string, error) {
+	if name == "" {
+		snapshot, err := begin(sandbox, db, prefix, status)
+		if err != nil {
+			return backup.SnapshotRecord{}, "", err
+		}
+		return snapshot, OutcomeOk, nil
+	}
+	if _, taken := db.FindSnapshotByName(name); taken {
+		return backup.SnapshotRecord{}, OutcomeNameTaken, nil
+	}
+	snapshot, err := db.AddSnapshot(backup.SnapshotInput{Name: name, Data: nowSeconds(sandbox), Status: status})
+	if err != nil {
+		return backup.SnapshotRecord{}, "", err
+	}
+	return snapshot, OutcomeOk, nil
+}
+
 // create takes one snapshot named after prefix and waits for it. The caller
 // holds the job token.
 func create(sandbox *api.Sandbox, db *backup.Backup, prefix string) (backup.SnapshotRecord, error) {
-	snapshot, err := begin(sandbox, db, prefix)
+	snapshot, err := begin(sandbox, db, prefix, StatusCreating)
 	if err != nil {
 		return snapshot, err
 	}
@@ -166,12 +209,12 @@ func create(sandbox *api.Sandbox, db *backup.Backup, prefix string) (backup.Snap
 	return snapshot, nil
 }
 
-// begin records a new snapshot under StatusCreating, named prefix followed
-// by the current instant.
-func begin(sandbox *api.Sandbox, db *backup.Backup, prefix string) (backup.SnapshotRecord, error) {
+// begin records a new snapshot under status, named prefix followed by the
+// current instant.
+func begin(sandbox *api.Sandbox, db *backup.Backup, prefix string, status string) (backup.SnapshotRecord, error) {
 	now := nowSeconds(sandbox)
 	name := uniqueName(sandbox, db, prefix+"-"+sandbox.Deps.TimeDeps.FormatUnix(now, NameLayout))
-	return db.AddSnapshot(backup.SnapshotInput{Name: name, Data: now, Status: StatusCreating})
+	return db.AddSnapshot(backup.SnapshotInput{Name: name, Data: now, Status: status})
 }
 
 // finish stores every file of DataDir under snapshot and records how that

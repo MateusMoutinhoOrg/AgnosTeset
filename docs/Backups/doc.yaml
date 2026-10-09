@@ -1,4 +1,4 @@
-description: 'Snapshots of every database of data/ from the backoffice: take one in the background, download, upload and restore'
+description: 'Snapshots of every database of data/ from the backoffice: take one in the background, download, upload and restore, or build one by hand file by file'
 name: Backups
 themes:
     - server-usage
