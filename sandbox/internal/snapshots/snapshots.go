@@ -5,8 +5,9 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/backup"
 )
 
-// A snapshot is every file of every database under DataDir — the backup
-// database itself, under BackupDir, aside — as it was at one instant, kept in
+// A snapshot is every file of every database under DataDir — the folder
+// --database names, the backup database itself, under BackupDir, aside — as
+// it was at one instant, kept in
 // the backup database: the content of each file once in the blob table,
 // indexed by its SHA-256, and the snapshot a list of (path, sha) pairs under
 // its content. A file that did not change between two snapshots is stored
@@ -20,11 +21,14 @@ import (
 // of manual.go — runs one at a time.
 
 // DataDir is the directory every database of the project lives under, one
-// directory per database.
-const DataDir = "data"
+// directory per database: sandbox.Config.DatabaseDir, which --database sets on
+// every command line and which is data by default.
+func DataDir(sandbox *api.Sandbox) string {
+	return sandbox.Config.DatabaseDir
+}
 
-// BackupDir is the directory of DataDir the backup database lives in. It is
-// never put in a snapshot, and a restore never touches it.
+// BackupDir is the directory of DataDir the backup database lives in, its
+// key-prefix. It is never put in a snapshot, and a restore never touches it.
 const BackupDir = "backup"
 
 // The status of a snapshot.
@@ -250,10 +254,10 @@ func finish(sandbox *api.Sandbox, db *backup.Backup, snapshot backup.SnapshotRec
 func fill(sandbox *api.Sandbox, db *backup.Backup, id int64) (int, error) {
 	io := sandbox.Deps.IoDeps
 	files := 0
-	for _, path := range collect(sandbox) {
-		content, err := io.ReadFile(path)
+	for _, file := range collect(sandbox) {
+		content, err := io.ReadFile(file.host)
 		if err != nil {
-			if !io.Exists(path) {
+			if !io.Exists(file.host) {
 				continue
 			}
 			return files, err
@@ -262,7 +266,7 @@ func fill(sandbox *api.Sandbox, db *backup.Backup, id int64) (int, error) {
 		if err != nil {
 			return files, err
 		}
-		if _, err := db.AddSnapshotContent(id, backup.SnapshotContentInput{Path: relative(sandbox, path), Sha: sha}); err != nil {
+		if _, err := db.AddSnapshotContent(id, backup.SnapshotContentInput{Path: file.path, Sha: sha}); err != nil {
 			return files, err
 		}
 		files++
@@ -270,24 +274,32 @@ func fill(sandbox *api.Sandbox, db *backup.Backup, id int64) (int, error) {
 	return files, nil
 }
 
-// collect is the path of every file a snapshot holds: every file under every
-// database directory of DataDir but BackupDir, in lexical order, leaving out
-// the temporary and lock files the store keeps while it writes.
-func collect(sandbox *api.Sandbox) []string {
+// collected is one file a snapshot holds: the host path it is read at, and
+// the path it is stored under, relative to DataDir.
+type collected struct {
+	host string
+	path string
+}
+
+// collect is every file a snapshot holds: every file under every database
+// directory of DataDir but BackupDir, in lexical order, leaving out the
+// temporary and lock files the store keeps while it writes.
+func collect(sandbox *api.Sandbox) []collected {
 	io := sandbox.Deps.IoDeps
-	backupDir := io.Join(DataDir, BackupDir)
-	paths := []string{}
-	for _, dir := range io.ListDirs(DataDir) {
+	root := DataDir(sandbox)
+	backupDir := io.Join(root, BackupDir)
+	files := []collected{}
+	for _, dir := range io.ListDirs(root) {
 		if dir == backupDir {
 			continue
 		}
 		for _, path := range io.ListFilesRecursively(dir) {
 			if kept(sandbox, path) {
-				paths = append(paths, path)
+				files = append(files, collected{host: path, path: relative(sandbox, dir, path)})
 			}
 		}
 	}
-	return paths
+	return files
 }
 
 // kept tells whether the file at path belongs in a snapshot: the store names
@@ -300,11 +312,17 @@ func kept(sandbox *api.Sandbox, path string) bool {
 	return !strings.HasPrefix(name, ".") && !strings.HasSuffix(name, keepLockSuffix)
 }
 
-// relative is path, a host path under DataDir, as a snapshot stores it:
-// slash-separated and relative to DataDir.
-func relative(sandbox *api.Sandbox, path string) string {
+// relative is path, the host path of a file under dir — a database directory
+// io.ListDirs found in DataDir — as a snapshot stores it: slash-separated and
+// relative to DataDir, the name of dir first. It is read off dir rather than
+// off DataDir, so a --database spelled ./data, absolute or with a trailing
+// slash stores the same paths.
+func relative(sandbox *api.Sandbox, dir string, path string) string {
 	strings := sandbox.Deps.StringsDeps
-	return strings.TrimPrefix(strings.ReplaceAll(path, "\\", "/"), DataDir+"/")
+	slashedDir := strings.ReplaceAll(dir, "\\", "/")
+	slashed := strings.ReplaceAll(path, "\\", "/")
+	name := slashedDir[strings.LastIndex(slashedDir, "/")+1:]
+	return name + "/" + strings.TrimPrefix(slashed, slashedDir+"/")
 }
 
 // storeBlob stores content once, under its SHA-256, and answers that sha.

@@ -496,7 +496,7 @@
         <a href="/admin/home">Home</a>
         <a href="/admin/list-backoffice-users">Users</a>
         <a href="/admin/list-backoffice-api-tokens">API tokens</a>
-        <a href="/admin/root/list-backup-snapshots" class="active">Backups</a>
+        <a href="/admin/root/list-backups" class="active">Backups</a>
       </nav>
     </div>
     <div class="who">
@@ -512,13 +512,13 @@
     <section class="head">
       <div>
         <h1>Backups</h1>
-        <p class="muted">Snapshots of every database under data/. A snapshot is taken in the background; download one as a zip, upload a zip back, restore one over the current data or delete it. A content shared by several snapshots is stored once: deleting a snapshot frees the contents only it held once you optimize the backups size.</p>
+        <p class="muted">Snapshots of every database of the project. A snapshot is taken in the background; download one as a zip, upload a zip back, restore one over the current data or delete it. A content shared by several snapshots is stored once: deleting a snapshot frees the contents only it held once you optimize the backups size.</p>
       </div>
       <div class="actions">
         <form action="/admin/root/optimize-backup-storage" method="POST">
           <button type="submit" class="btn" title="Remove every stored content no snapshot holds anymore"{{if .Busy}} disabled{{end}}>Optimize backups size</button>
         </form>
-        <form class="create" action="/admin/root/create-backup-snapshot" method="POST">
+        <form class="create" action="/admin/root/create-backup" method="POST">
           <input type="text" name="name" maxlength="100" pattern="[A-Za-z0-9][A-Za-z0-9._\-]*" placeholder="Name (optional)" aria-label="Snapshot name" title="Letters, digits, '.', '_' or '-', starting with a letter or a digit. Empty names it after the current time."{{if .Busy}} disabled{{end}}>
           <button type="submit" class="btn btn-primary"{{if .Busy}} disabled{{end}}>+ Create snapshot</button>
         </form>
@@ -528,7 +528,7 @@
     {{if .Notice.Text}}<div class="notice notice-{{.Notice.Kind}}" role="status">{{html .Notice.Text}}</div>{{end}}
     {{if .Busy}}<div class="notice notice-ok" role="status">A backup job is running. This page refreshes until it ends.</div>{{end}}
 
-    <form class="card upload" id="snapshot-upload" action="/admin/root/upload-backup-snapshot" method="POST">
+    <form class="card upload" id="snapshot-upload" action="/admin/root/upload-backup" method="POST">
       <div class="grow">
         <label for="snapshot-file">Upload a snapshot</label>
         <input type="file" id="snapshot-file" accept=".zip,application/zip" required>
@@ -538,14 +538,14 @@
       <div class="notice notice-error" id="upload-error" role="status" hidden></div>
     </form>
 
-    <form class="card filters" action="/admin/root/list-backup-snapshots" method="GET">
+    <form class="card filters" action="/admin/root/list-backups" method="GET">
       <div class="field grow">
         <label for="prefix">Search by name prefix</label>
         <input type="search" id="prefix" name="prefix" value="{{html .Prefix}}" maxlength="100" placeholder="daily-, pre-restore-, upload-…">
       </div>
       <div class="actions">
         <button type="submit" class="btn btn-primary">Search</button>
-        <a class="btn" href="/admin/root/list-backup-snapshots">Clear</a>
+        <a class="btn" href="/admin/root/list-backups">Clear</a>
       </div>
     </form>
 
@@ -569,15 +569,15 @@
             <td data-label="Actions">
               <div class="row-actions">
                 {{if .IsReady}}
-                <a class="btn btn-small" href="/admin/root/download-backup-snapshot/{{.Id}}">Download</a>
-                <form action="/admin/root/restore-backup-snapshot/{{.Id}}" method="POST" data-confirm="Restore the snapshot {{html .Name}}? Every database under data/ is replaced by it, after a pre-restore snapshot of the current data. You may be signed out.">
+                <a class="btn btn-small" href="/admin/root/download-backup/{{.Id}}">Download</a>
+                <form action="/admin/root/restore-backup/{{.Id}}" method="POST" data-confirm="Restore the snapshot {{html .Name}}? Every database is replaced by it, after a pre-restore snapshot of the current data. You may be signed out.">
                   <button type="submit" class="btn btn-small btn-danger"{{if $.Busy}} disabled{{end}}>Restore</button>
                 </form>
                 {{else}}
                 <span class="btn btn-small disabled">Download</span>
                 <span class="btn btn-small btn-danger disabled">Restore</span>
                 {{end}}
-                <form action="/admin/root/remove-backup-snapshot/{{.Id}}" method="POST" data-confirm="Delete the snapshot {{html .Name}}? It cannot be restored or downloaded afterwards.">
+                <form action="/admin/root/remove-backup/{{.Id}}" method="POST" data-confirm="Delete the snapshot {{html .Name}}? It cannot be restored or downloaded afterwards.">
                   <button type="submit" class="btn btn-small btn-danger"{{if $.Busy}} disabled{{end}}>Delete</button>
                 </form>
               </div>

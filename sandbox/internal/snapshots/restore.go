@@ -49,7 +49,7 @@ func restore(sandbox *api.Sandbox, db *backup.Backup, target backup.SnapshotReco
 	if err != nil {
 		return sandbox.Deps.StdDeps.Errorf("the safety snapshot failed, nothing was restored: %s", err.Error())
 	}
-	sandbox.Deps.StdDeps.Logf("restore of snapshot %s: what data held is kept as snapshot %s\n", target.Name, safety.Name)
+	sandbox.Deps.StdDeps.Logf("restore of snapshot %s: what %s held is kept as snapshot %s\n", target.Name, DataDir(sandbox), safety.Name)
 
 	contents, err := db.ListSnapshotContents(target.Id)
 	if err != nil {
@@ -65,8 +65,9 @@ func restore(sandbox *api.Sandbox, db *backup.Backup, target backup.SnapshotReco
 	}
 
 	io := sandbox.Deps.IoDeps
-	backupDir := io.Join(DataDir, BackupDir)
-	for _, dir := range io.ListDirs(DataDir) {
+	root := DataDir(sandbox)
+	backupDir := io.Join(root, BackupDir)
+	for _, dir := range io.ListDirs(root) {
 		if dir != backupDir {
 			io.RemoveDir(dir)
 		}
@@ -76,7 +77,7 @@ func restore(sandbox *api.Sandbox, db *backup.Backup, target backup.SnapshotReco
 		if !ok {
 			return sandbox.Deps.StdDeps.Errorf("the content of %s went missing while restoring", content.Path)
 		}
-		segments := append([]string{DataDir}, sandbox.Deps.StringsDeps.Split(content.Path, "/")...)
+		segments := append([]string{root}, sandbox.Deps.StringsDeps.Split(content.Path, "/")...)
 		if err := io.WriteFile(io.Join(segments...), blob.Value); err != nil {
 			return err
 		}

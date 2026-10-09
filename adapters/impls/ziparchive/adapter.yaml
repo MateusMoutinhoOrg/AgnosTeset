@@ -2,4 +2,4 @@ dep: archivedeps
 help: Zip archives over archive/zip
 module: ""
 name: ziparchive
-origin: project
+origin: catalog

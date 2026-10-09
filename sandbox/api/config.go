@@ -12,6 +12,12 @@ type Config struct {
 	// mechanic adds its own part beside the project's rather than editing it.
 	BackofficeConfig
 
+	// DatabaseConfig is a part of the Config, declared in sandbox/api/databaseconfig.go.
+	// Embedded, so each of its fields is read as sandbox.Config.<Field>.
+	// Every struct of a sandbox/api/<x>config.go file is one, so a
+	// mechanic adds its own part beside the project's rather than editing it.
+	DatabaseConfig
+
 	// ProjectConfig is a part of the Config, declared in sandbox/api/projectconfig.go.
 	// Embedded, so each of its fields is read as sandbox.Config.<Field>.
 	// Every struct of a sandbox/api/<x>config.go file is one, so a

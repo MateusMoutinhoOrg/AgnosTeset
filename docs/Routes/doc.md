@@ -51,19 +51,19 @@ it prints the address it took. Change it to wherever your server runs.
 | Route | What it does |
 | --- | --- |
 | [`POST /api/admin/root/add-backup-blob`](api_add_backup_blob.md) | Stores the body as one content of the backups, once whatever the number of snapshots that will name it, and answers its sha to reference it by |
-| [`POST /api/admin/root/add-backup-snapshot-file/{Id:integer}/{*Path}`](api_add_backup_snapshot_file.md) | Stores the body as one file of an open snapshot, at the path below data/ the address ends with; a path it already holds is replaced |
-| [`POST /api/admin/root/add-backup-snapshot-reference`](api_add_backup_snapshot_reference.md) | Adds to an open snapshot one file whose content add-backup-blob already stored, by its sha; a path it already holds is replaced |
-| [`POST /api/admin/root/close-backup-snapshot`](api_close_backup_snapshot.md) | Closes an open snapshot once every content it names is stored: it turns ready, and can be downloaded and restored |
-| [`POST /api/admin/root/create-backup-snapshot`](api_create_backup_snapshot.md) | Starts a snapshot of every database, under the name given or one after the current instant, and answers 202 at once: it is taken in the background |
-| [`POST /api/admin/root/create-empty-backup-snapshot`](api_create_empty_backup_snapshot.md) | Records an empty open snapshot, under the name given or one after the current instant, that files are then added to one by one until it is closed |
-| [`GET /api/admin/root/download-backup-snapshot/{Id:integer}`](api_download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
-| [`GET /api/admin/root/download-backup-snapshot-file/{Id:integer}/{*Path}`](api_download_backup_snapshot_file.md) | Downloads one file of a snapshot, at the path below data/ the address ends with |
-| [`GET /api/admin/root/list-backup-snapshot-files/{Id:integer}`](api_list_backup_snapshot_files.md) | Lists every file of a snapshot, or the ones whose path starts with a prefix, as its path below data/ and the sha of its content |
-| [`GET /api/admin/root/list-backup-snapshots`](api_list_backup_snapshots.md) | Lists every snapshot, or the ones whose name starts with a prefix, newest first, and whether a backup job is running |
+| [`POST /api/admin/root/add-backup-file/{Id:integer}/{*Path}`](api_add_backup_file.md) | Stores the body as one file of an open snapshot, at the path below the --database folder the address ends with; a path it already holds is replaced |
+| [`POST /api/admin/root/add-backup-reference`](api_add_backup_reference.md) | Adds to an open snapshot one file whose content add-backup-blob already stored, by its sha; a path it already holds is replaced |
+| [`POST /api/admin/root/close-backup`](api_close_backup.md) | Closes an open snapshot once every content it names is stored: it turns ready, and can be downloaded and restored |
+| [`POST /api/admin/root/create-backup`](api_create_backup.md) | Starts a snapshot of every database, under the name given or one after the current instant, and answers 202 at once: it is taken in the background |
+| [`POST /api/admin/root/create-empty-backup`](api_create_empty_backup.md) | Records an empty open snapshot, under the name given or one after the current instant, that files are then added to one by one until it is closed |
+| [`GET /api/admin/root/download-backup/{Id:integer}`](api_download_backup.md) | Downloads a snapshot as a zip archive |
+| [`GET /api/admin/root/download-backup-file/{Id:integer}/{*Path}`](api_download_backup_file.md) | Downloads one file of a snapshot, at the path below the --database folder the address ends with |
+| [`GET /api/admin/root/list-backup-files/{Id:integer}`](api_list_backup_files.md) | Lists every file of a snapshot, or the ones whose path starts with a prefix, as its path below the --database folder and the sha of its content |
+| [`GET /api/admin/root/list-backups`](api_list_backups.md) | Lists every snapshot, or the ones whose name starts with a prefix, newest first, and whether a backup job is running |
 | [`POST /api/admin/root/optimize-backup-storage`](api_optimize_backup_storage.md) | Starts removing every stored content no snapshot holds anymore, and answers 202 at once |
-| [`POST /api/admin/root/remove-backup-snapshot`](api_remove_backup_snapshot.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
-| [`POST /api/admin/root/restore-backup-snapshot`](api_restore_backup_snapshot.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers 202 at once |
-| [`POST /api/admin/root/upload-backup-snapshot`](api_upload_backup_snapshot.md) | Stores a zip archive a download built as a new snapshot |
+| [`POST /api/admin/root/remove-backup`](api_remove_backup.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
+| [`POST /api/admin/root/restore-backup`](api_restore_backup.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers 202 at once |
+| [`POST /api/admin/root/upload-backup`](api_upload_backup.md) | Stores a zip archive a download built as a new snapshot |
 
 ## Backoffice API Tokens
 
@@ -97,13 +97,13 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`POST /admin/root/create-backup-snapshot`](create_backup_snapshot_form.md) | Starts a snapshot of every database, under the name the form gives or one after the current instant, and answers at once: it is taken in the background |
-| [`GET /admin/root/download-backup-snapshot/{Id:integer}`](download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
-| [`GET /admin/root/list-backup-snapshots`](list_backup_snapshots_page.md) | Lists every snapshot of the databases, or the ones whose name starts with a prefix, with the controls that take, download, upload and restore one |
+| [`POST /admin/root/create-backup`](create_backup_form.md) | Starts a snapshot of every database, under the name the form gives or one after the current instant, and answers at once: it is taken in the background |
+| [`GET /admin/root/download-backup/{Id:integer}`](download_backup.md) | Downloads a snapshot as a zip archive |
+| [`GET /admin/root/list-backups`](list_backups_page.md) | Lists every snapshot of the databases, or the ones whose name starts with a prefix, with the controls that take, download, upload and restore one |
 | [`POST /admin/root/optimize-backup-storage`](optimize_backup_storage_form.md) | Starts removing every stored content no snapshot holds anymore, and answers at once |
-| [`POST /admin/root/remove-backup-snapshot/{Id:integer}`](remove_backup_snapshot_form.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
-| [`POST /admin/root/restore-backup-snapshot/{Id:integer}`](restore_backup_snapshot_form.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers at once |
-| [`POST /admin/root/upload-backup-snapshot`](upload_backup_snapshot.md) | Stores a zip archive a download built as a new snapshot |
+| [`POST /admin/root/remove-backup/{Id:integer}`](remove_backup_form.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
+| [`POST /admin/root/restore-backup/{Id:integer}`](restore_backup_form.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers at once |
+| [`POST /admin/root/upload-backup`](upload_backup.md) | Stores a zip archive a download built as a new snapshot |
 
 ## Assets
 

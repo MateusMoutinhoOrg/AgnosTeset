@@ -29,6 +29,7 @@ struct of function fields, filled by a binder.
 | [`sandbox/api/clisandbox.go`](api.clisandbox.md) | `CliSandbox` |
 | [`sandbox/api/command.go`](api.command.md) | `ArgString`, `ArgInteger`, `ArgNumber`, `ArgUuid`, `FlagString`, `FlagInteger`, `FlagNumber`, `FlagBoolean`, `FlagStringArray`, `FlagIntegerArray`, `FailureHandler`, `FailureNotFound`, `FailureBadUsage`, `FailureUnknownFlag`, `FailureUnexpectedArg`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command` |
 | [`sandbox/api/config.go`](api.config.md) | `Config` |
+| [`sandbox/api/databaseconfig.go`](api.databaseconfig.md) | `DefaultDatabaseDir`, `DatabaseConfig` |
 | [`sandbox/api/projectconfig.go`](api.projectconfig.md) | `ProjectConfig` |
 | [`sandbox/api/projectsandbox.go`](api.projectsandbox.md) | `ProjectSandbox` |
 | [`sandbox/api/route.go`](api.route.md) | `PathString`, `PathInteger`, `PathNumber`, `PathUuid`, `SourceHeader`, `SourceQuery`, `SourceCookie`, `ParameterString`, `ParameterNumber`, `ParameterBoolean`, `ParameterDateTime`, `ParameterStringArray`, `ParameterInteger`, `ParameterIntegerArray`, `AnyMethod`, `PathType`, `Path`, `ParameterSource`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route` |

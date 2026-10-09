@@ -8,8 +8,10 @@ import (
 
 // A snapshot travels as a zip archive: ManifestPath, naming it, and every one
 // of its files under ArchiveDataDir at the path it holds below DataDir — so
-// the archive unzipped at the root of the project puts the databases back by
-// hand.
+// the archive unzipped at the root of a project running with the default
+// --database puts the databases back by hand. The archive's folder is data/
+// whatever --database names: an archive taken from one folder restores into
+// another.
 
 // ManifestPath is the archive entry naming the snapshot: a JSON object with
 // its name, the Unix instant it was taken at as data, and how many files it
@@ -18,7 +20,7 @@ const ManifestPath = "snapshot.json"
 
 // ArchiveDataDir is the folder of the archive every file of the snapshot
 // sits under.
-const ArchiveDataDir = DataDir + "/"
+const ArchiveDataDir = "data/"
 
 // namePattern is a snapshot name a root may give StartCreate or an upload
 // may keep from its manifest: one that is safe in a file name and a header.

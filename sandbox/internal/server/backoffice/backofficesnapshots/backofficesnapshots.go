@@ -14,7 +14,7 @@ import (
 // every password hash and session.
 
 // ListPath is the page every action on a snapshot sends the browser back to.
-const ListPath = "/admin/root/list-backup-snapshots"
+const ListPath = "/admin/root/list-backups"
 
 // The notices an action hands the list page through ListPath?notice=<code>.
 // Each one is a fixed word the page words itself, so nothing the client sent
@@ -61,11 +61,11 @@ const NameTakenMessage = "another snapshot already has that name"
 
 // NotOpenMessage is what the api answers, under a 400, to a file added to or
 // a close of a snapshot that is not open.
-const NotOpenMessage = "only an open snapshot, one create-empty-backup-snapshot recorded and close-backup-snapshot has not closed yet, takes files or closes"
+const NotOpenMessage = "only an open snapshot, one create-empty-backup recorded and close-backup has not closed yet, takes files or closes"
 
 // InvalidPathMessage is what the api answers, under a 400, to a file path a
 // snapshot cannot hold.
-const InvalidPathMessage = "a file path is relative to data/, inside a database folder other than backup, as in backofficedb/backoffice-user/1/values/username: no empty, '.' or '..' segment, no '\\' nor ':'"
+const InvalidPathMessage = "a file path is relative to the --database folder (data by default), inside a database folder other than backup, as in backofficedb/backoffice-user/1/values/username: no empty, '.' or '..' segment, no '\\' nor ':'"
 
 // InvalidShaMessage is what the api answers, under a 400, to a sha that is
 // not one a content is stored under.

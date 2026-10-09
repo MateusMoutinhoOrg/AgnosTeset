@@ -9,6 +9,7 @@ import (
 	help "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/info/help"
 	version "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/info/version"
 	backoffice_start_server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/middleware/backoffice_start_server"
+	database_dir "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/middleware/database_dir"
 	help_flag "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/middleware/help_flag"
 	start_server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/commands/server/start_server"
 )
@@ -25,6 +26,7 @@ func NewCli(sandbox *api.Sandbox) api.Cli {
 
 	cli.Commands = []*api.Command{
 		help_flag.NewCommand(sandbox),
+		database_dir.NewCommand(sandbox),
 		backoffice_start_server.NewCommand(sandbox),
 		add_backoffice_user.NewCommand(sandbox),
 		help.NewCommand(sandbox),

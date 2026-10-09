@@ -49,10 +49,10 @@ or `403`, for example — or let it through to this route.
 | [`api-get-current-backoffice-user`](api_get_current_backoffice_user.md) | depends on the address — `explain-route` gives the exact answer |
 | [`backoffice-api-root-guard`](backoffice_api_root_guard.md) | depends on the address — `explain-route` gives the exact answer |
 | [`backoffice-api-token-auth`](backoffice_api_token_auth.md) | depends on the address — `explain-route` gives the exact answer |
-| [`api-download-backup-snapshot`](api_download_backup_snapshot.md) | depends on the address — `explain-route` gives the exact answer |
-| [`api-download-backup-snapshot-file`](api_download_backup_snapshot_file.md) | depends on the address — `explain-route` gives the exact answer |
-| [`api-list-backup-snapshot-files`](api_list_backup_snapshot_files.md) | depends on the address — `explain-route` gives the exact answer |
-| [`api-list-backup-snapshots`](api_list_backup_snapshots.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-download-backup`](api_download_backup.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-download-backup-file`](api_download_backup_file.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-list-backup-files`](api_list_backup_files.md) | depends on the address — `explain-route` gives the exact answer |
+| [`api-list-backups`](api_list_backups.md) | depends on the address — `explain-route` gives the exact answer |
 | [`add-backoffice-api-token-page`](add_backoffice_api_token_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`backoffice-home`](backoffice_home.md) | depends on the address — `explain-route` gives the exact answer |
 | [`list-backoffice-api-tokens-page`](list_backoffice_api_tokens_page.md) | depends on the address — `explain-route` gives the exact answer |
@@ -63,8 +63,8 @@ or `403`, for example — or let it through to this route.
 | [`backoffice-security-headers`](backoffice_security_headers.md) | depends on the address — `explain-route` gives the exact answer |
 | [`backoffice-session-auth`](backoffice_session_auth.md) | depends on the address — `explain-route` gives the exact answer |
 | [`add-backoffice-user-page`](add_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |
-| [`download-backup-snapshot`](download_backup_snapshot.md) | depends on the address — `explain-route` gives the exact answer |
-| [`list-backup-snapshots-page`](list_backup_snapshots_page.md) | depends on the address — `explain-route` gives the exact answer |
+| [`download-backup`](download_backup.md) | depends on the address — `explain-route` gives the exact answer |
+| [`list-backups-page`](list_backups_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`set-backoffice-user-page`](set_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`health`](health.md) | depends on the address — `explain-route` gives the exact answer |
 | [`openapi`](openapi.md) | depends on the address — `explain-route` gives the exact answer |

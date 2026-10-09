@@ -58,7 +58,7 @@ func JobJSON(sandbox *api.Sandbox, status string) *serializabledeps.Serializable
 }
 
 // SnapshotFileJSON is the JSON object one file of a snapshot is answered as:
-// its path below data/ and the sha of its content.
+// its path below the --database folder and the sha of its content.
 func SnapshotFileJSON(sandbox *api.Sandbox, file backup.SnapshotContentRecord) *serializabledeps.SerializableObject {
 	object := sandbox.Deps.SerializableDeps.CreateObject()
 	object.AddItemToObject("path", file.Path)

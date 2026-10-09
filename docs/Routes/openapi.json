@@ -597,13 +597,13 @@
         ]
       }
     },
-    "/api/admin/root/add-backup-snapshot-file/{Id}/{Path}": {
+    "/api/admin/root/add-backup-file/{Id}/{Path}": {
       "post": {
-        "operationId": "api-add-backup-snapshot-file",
+        "operationId": "api-add-backup-file",
         "tags": [
           "Backoffice Backups API"
         ],
-        "summary": "Stores the body as one file of an open snapshot, at the path below data/ the address ends with; a path it already holds is replaced",
+        "summary": "Stores the body as one file of an open snapshot, at the path below the --database folder the address ends with; a path it already holds is replaced",
         "parameters": [
           {
             "name": "Id",
@@ -711,9 +711,9 @@
         ]
       }
     },
-    "/api/admin/root/add-backup-snapshot-reference": {
+    "/api/admin/root/add-backup-reference": {
       "post": {
-        "operationId": "api-add-backup-snapshot-reference",
+        "operationId": "api-add-backup-reference",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -817,9 +817,9 @@
         ]
       }
     },
-    "/api/admin/root/close-backup-snapshot": {
+    "/api/admin/root/close-backup": {
       "post": {
-        "operationId": "api-close-backup-snapshot",
+        "operationId": "api-close-backup",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -912,9 +912,9 @@
         ]
       }
     },
-    "/api/admin/root/create-backup-snapshot": {
+    "/api/admin/root/create-backup": {
       "post": {
-        "operationId": "api-create-backup-snapshot",
+        "operationId": "api-create-backup",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -1004,9 +1004,9 @@
         ]
       }
     },
-    "/api/admin/root/create-empty-backup-snapshot": {
+    "/api/admin/root/create-empty-backup": {
       "post": {
-        "operationId": "api-create-empty-backup-snapshot",
+        "operationId": "api-create-empty-backup",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -1096,9 +1096,9 @@
         ]
       }
     },
-    "/api/admin/root/download-backup-snapshot/{Id}": {
+    "/api/admin/root/download-backup/{Id}": {
       "get": {
-        "operationId": "api-download-backup-snapshot",
+        "operationId": "api-download-backup",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -1158,13 +1158,13 @@
         ]
       }
     },
-    "/api/admin/root/download-backup-snapshot-file/{Id}/{Path}": {
+    "/api/admin/root/download-backup-file/{Id}/{Path}": {
       "get": {
-        "operationId": "api-download-backup-snapshot-file",
+        "operationId": "api-download-backup-file",
         "tags": [
           "Backoffice Backups API"
         ],
-        "summary": "Downloads one file of a snapshot, at the path below data/ the address ends with",
+        "summary": "Downloads one file of a snapshot, at the path below the --database folder the address ends with",
         "parameters": [
           {
             "name": "Id",
@@ -1475,13 +1475,13 @@
         ]
       }
     },
-    "/api/admin/root/list-backup-snapshot-files/{Id}": {
+    "/api/admin/root/list-backup-files/{Id}": {
       "get": {
-        "operationId": "api-list-backup-snapshot-files",
+        "operationId": "api-list-backup-files",
         "tags": [
           "Backoffice Backups API"
         ],
-        "summary": "Lists every file of a snapshot, or the ones whose path starts with a prefix, as its path below data/ and the sha of its content",
+        "summary": "Lists every file of a snapshot, or the ones whose path starts with a prefix, as its path below the --database folder and the sha of its content",
         "parameters": [
           {
             "name": "Id",
@@ -1495,7 +1495,7 @@
           {
             "name": "prefix",
             "in": "query",
-            "description": "keeps only the files whose path below data/ starts with it",
+            "description": "keeps only the files whose path below the --database folder starts with it",
             "schema": {
               "type": "string"
             },
@@ -1546,9 +1546,9 @@
         ]
       }
     },
-    "/api/admin/root/list-backup-snapshots": {
+    "/api/admin/root/list-backups": {
       "get": {
-        "operationId": "api-list-backup-snapshots",
+        "operationId": "api-list-backups",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -1736,9 +1736,9 @@
         ]
       }
     },
-    "/api/admin/root/remove-backup-snapshot": {
+    "/api/admin/root/remove-backup": {
       "post": {
-        "operationId": "api-remove-backup-snapshot",
+        "operationId": "api-remove-backup",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -1831,9 +1831,9 @@
         ]
       }
     },
-    "/api/admin/root/restore-backup-snapshot": {
+    "/api/admin/root/restore-backup": {
       "post": {
-        "operationId": "api-restore-backup-snapshot",
+        "operationId": "api-restore-backup",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -2045,9 +2045,9 @@
         ]
       }
     },
-    "/api/admin/root/upload-backup-snapshot": {
+    "/api/admin/root/upload-backup": {
       "post": {
-        "operationId": "api-upload-backup-snapshot",
+        "operationId": "api-upload-backup",
         "tags": [
           "Backoffice Backups API"
         ],
@@ -2349,9 +2349,9 @@
         }
       }
     },
-    "/admin/root/create-backup-snapshot": {
+    "/admin/root/create-backup": {
       "post": {
-        "operationId": "create-backup-snapshot-form",
+        "operationId": "create-backup-form",
         "tags": [
           "Backoffice Backups"
         ],
@@ -2450,9 +2450,9 @@
         }
       }
     },
-    "/admin/root/download-backup-snapshot/{Id}": {
+    "/admin/root/download-backup/{Id}": {
       "get": {
-        "operationId": "download-backup-snapshot",
+        "operationId": "download-backup",
         "tags": [
           "Backoffice Backups"
         ],
@@ -2737,9 +2737,9 @@
         }
       }
     },
-    "/admin/root/list-backup-snapshots": {
+    "/admin/root/list-backups": {
       "get": {
-        "operationId": "list-backup-snapshots-page",
+        "operationId": "list-backups-page",
         "tags": [
           "Backoffice Backups"
         ],
@@ -2976,9 +2976,9 @@
         }
       }
     },
-    "/admin/root/remove-backup-snapshot/{Id}": {
+    "/admin/root/remove-backup/{Id}": {
       "post": {
-        "operationId": "remove-backup-snapshot-form",
+        "operationId": "remove-backup-form",
         "tags": [
           "Backoffice Backups"
         ],
@@ -3050,9 +3050,9 @@
         }
       }
     },
-    "/admin/root/restore-backup-snapshot/{Id}": {
+    "/admin/root/restore-backup/{Id}": {
       "post": {
-        "operationId": "restore-backup-snapshot-form",
+        "operationId": "restore-backup-form",
         "tags": [
           "Backoffice Backups"
         ],
@@ -3405,9 +3405,9 @@
         }
       }
     },
-    "/admin/root/upload-backup-snapshot": {
+    "/admin/root/upload-backup": {
       "post": {
-        "operationId": "upload-backup-snapshot",
+        "operationId": "upload-backup",
         "tags": [
           "Backoffice Backups"
         ],

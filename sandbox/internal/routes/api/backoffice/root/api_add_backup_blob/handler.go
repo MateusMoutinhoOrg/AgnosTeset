@@ -11,7 +11,7 @@ import (
 
 // Handle answers POST /api/admin/root/add-backup-blob: the body is stored
 // once, under its SHA-256, and answered 201 as {"blob": {sha, size}} — the
-// sha add-backup-snapshot-reference names it by. A content no snapshot names
+// sha add-backup-reference names it by. A content no snapshot names
 // is removed by the next optimize-backup-storage, so it is referenced soon
 // after. Another backup job running is answered 409.
 func Handle(sandbox *api.Sandbox, props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {

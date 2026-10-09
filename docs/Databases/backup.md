@@ -1,6 +1,6 @@
 # `Backup`
 
-`sandbox/internal/databases/backup/`, keys under `data/backup`. Build one with
+`sandbox/internal/databases/backup/`, keys under `backup`. Build one with
 `backup.New(sandbox)` — it touches no key, so building one is free.
 
 ## `blob`
