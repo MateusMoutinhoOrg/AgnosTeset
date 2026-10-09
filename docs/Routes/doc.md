@@ -41,9 +41,10 @@ it prints the address it took. Change it to wherever your server runs.
 | [`ANY /api/admin/root/*`](backoffice_api_root_guard.md) | Lets only root users reach /api/admin/root |
 | [`ANY /api/admin/*`](backoffice_api_token_auth.md) | Requires a valid API token on every /api/admin route |
 | [`ANY /*`](backoffice_client_ip.md) | Works out the client ip every route after it reads, from the connection or the reverse proxy in front |
+| [`ANY /*`](backoffice_maintenance.md) | Answers 503 to every request while a restore writes the databases, and to every write while a snapshot reads them |
 | [`ANY /admin/root/*`](backoffice_root_guard.md) | Lets only root users reach /admin/root |
 | [`ANY /admin/*`](backoffice_same_origin.md) | Refuses a request to /admin another site's page sent |
-| [`ANY /~(^/(api/)?admin(/|$))`](backoffice_security_headers.md) | Sends the security headers on every /admin and /api/admin response |
+| [`ANY /*`](backoffice_security_headers.md) | Sends the security headers on every /admin and /api/admin response, and the basic ones on every other |
 | [`ANY /admin/* !(/admin/login)`](backoffice_session_auth.md) | Requires a valid backoffice session on /admin, except /admin/login |
 
 ## Backoffice Backups API
@@ -80,6 +81,7 @@ it prints the address it took. Change it to wherever your server runs.
 | --- | --- |
 | [`GET /admin/home`](backoffice_home.md) | Shows the backoffice home page to the signed-in user |
 | [`POST /admin/login`](backoffice_login.md) | Signs a backoffice user in and sets the session cookie |
+| [`GET /admin/login`](backoffice_login_page.md) | Shows the sign-in form |
 | [`POST /admin/logout`](backoffice_logout.md) | Ends the current session |
 
 ## Backoffice Users

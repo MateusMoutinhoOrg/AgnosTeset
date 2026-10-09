@@ -22,16 +22,17 @@ type Input struct {
 // Body is one object of this route's declared json-schema, as the
 // generated ReadBody hands it over.
 type Body struct {
-	Id int
+	Id                int
+	IncludeBackoffice bool
 }
 
 // MaxBodyBytes is the largest request body this route reads, from the
 // `max-bytes` of its declaration. A longer one is answered 413.
-const MaxBodyBytes = 1048576
+const MaxBodyBytes = 4096
 
 // BodySchema is this route's declared json-schema in canonical form — the text
 // Deps.OpinionatedAgnosServer.ValidateSchema checks a request body against.
-const BodySchema = "{\"properties\":{\"id\":{\"type\":\"integer\"}},\"required\":[\"id\"],\"type\":\"object\"}"
+const BodySchema = "{\"properties\":{\"id\":{\"type\":\"integer\"},\"include-backoffice\":{\"type\":\"boolean\"}},\"required\":[\"id\"],\"type\":\"object\"}"
 
 // ReadBody reads, validates and converts the request body of one bound route.
 // The generic Run calls it — through the ReadBody generated.new.go closes over
@@ -49,7 +50,7 @@ func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 	raw, err := route.Request.ReadBody(MaxBodyBytes)
 	if err != nil {
 		return body, sandbox.Deps.OpinionatedAgnosServer.FailWithCause(api.StatusPayloadTooLarge, "",
-			"the request body is larger than 1048576 bytes", err.Error())
+			"the request body is larger than 4096 bytes", err.Error())
 	}
 
 	if len(raw) == 0 {
@@ -73,5 +74,6 @@ func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 func bindBody(sandbox *api.Sandbox, document *serializabledeps.SerializableObject) Body {
 	value := Body{}
 	value.Id = sandbox.Deps.OpinionatedAgnosServer.ReadInt(document, "id")
+	value.IncludeBackoffice = sandbox.Deps.OpinionatedAgnosServer.ReadBool(document, "include-backoffice")
 	return value
 }

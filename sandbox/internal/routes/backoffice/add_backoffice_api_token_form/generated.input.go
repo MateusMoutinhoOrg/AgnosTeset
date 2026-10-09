@@ -26,15 +26,16 @@ type Body struct {
 	Expiration string
 	Ips        string
 	Name       string
+	Password   string
 }
 
 // MaxBodyBytes is the largest request body this route reads, from the
 // `max-bytes` of its declaration. A longer one is answered 413.
-const MaxBodyBytes = 1048576
+const MaxBodyBytes = 16384
 
 // BodySchema is this route's declared form-schema in canonical form — the text
 // Deps.OpinionatedAgnosServer.ValidateForm checks a request body against.
-const BodySchema = "{\"properties\":{\"date\":{\"type\":\"string\"},\"expiration\":{\"enum\":[\"7\",\"30\",\"60\",\"90\",\"365\",\"custom\",\"never\"],\"type\":\"string\"},\"ips\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"}},\"required\":[\"expiration\",\"name\"],\"type\":\"object\"}"
+const BodySchema = "{\"properties\":{\"date\":{\"type\":\"string\"},\"expiration\":{\"enum\":[\"7\",\"30\",\"60\",\"90\",\"365\",\"custom\",\"never\"],\"type\":\"string\"},\"ips\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"password\":{\"maxLength\":1024,\"type\":\"string\"}},\"required\":[\"expiration\",\"name\",\"password\"],\"type\":\"object\"}"
 
 // ReadBody reads, validates and converts the request body of one bound route.
 // The generic Run calls it — through the ReadBody generated.new.go closes over
@@ -52,7 +53,7 @@ func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 	raw, err := route.Request.ReadBody(MaxBodyBytes)
 	if err != nil {
 		return body, sandbox.Deps.OpinionatedAgnosServer.FailWithCause(api.StatusPayloadTooLarge, "",
-			"the request body is larger than 1048576 bytes", err.Error())
+			"the request body is larger than 16384 bytes", err.Error())
 	}
 
 	if len(raw) == 0 {
@@ -85,5 +86,6 @@ func bindBody(sandbox *api.Sandbox, document *serializabledeps.SerializableObjec
 	value.Expiration = sandbox.Deps.OpinionatedAgnosServer.ReadString(document, "expiration")
 	value.Ips = sandbox.Deps.OpinionatedAgnosServer.ReadString(document, "ips")
 	value.Name = sandbox.Deps.OpinionatedAgnosServer.ReadString(document, "name")
+	value.Password = sandbox.Deps.OpinionatedAgnosServer.ReadString(document, "password")
 	return value
 }

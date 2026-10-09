@@ -28,11 +28,11 @@ type Body struct {
 
 // MaxBodyBytes is the largest request body this route reads, from the
 // `max-bytes` of its declaration. A longer one is answered 413.
-const MaxBodyBytes = 1048576
+const MaxBodyBytes = 4096
 
 // BodySchema is this route's declared form-schema in canonical form — the text
 // Deps.OpinionatedAgnosServer.ValidateForm checks a request body against.
-const BodySchema = "{\"properties\":{\"password\":{\"type\":\"string\"},\"username\":{\"type\":\"string\"}},\"required\":[\"password\",\"username\"],\"type\":\"object\"}"
+const BodySchema = "{\"properties\":{\"password\":{\"maxLength\":1024,\"type\":\"string\"},\"username\":{\"maxLength\":254,\"type\":\"string\"}},\"required\":[\"password\",\"username\"],\"type\":\"object\"}"
 
 // ReadBody reads, validates and converts the request body of one bound route.
 // The generic Run calls it — through the ReadBody generated.new.go closes over
@@ -50,7 +50,7 @@ func ReadBody(sandbox *api.Sandbox, route *api.Route) (Body, error) {
 	raw, err := route.Request.ReadBody(MaxBodyBytes)
 	if err != nil {
 		return body, sandbox.Deps.OpinionatedAgnosServer.FailWithCause(api.StatusPayloadTooLarge, "",
-			"the request body is larger than 1048576 bytes", err.Error())
+			"the request body is larger than 4096 bytes", err.Error())
 	}
 
 	if len(raw) == 0 {

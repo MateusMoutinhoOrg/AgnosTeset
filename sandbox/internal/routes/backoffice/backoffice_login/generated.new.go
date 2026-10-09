@@ -27,7 +27,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Pattern = "/admin/login"
 	self.Category = "Backoffice"
 	self.Summary = "Signs a backoffice user in and sets the session cookie"
-	self.Description = "The username field takes a username or an email. A match sets the session cookie and redirects to /admin/home; anything else answers the login page under a 401. After 20 failed sign-ins from one client ip, or 10 on one login, in 15 minutes, every attempt is answered the login page under a 429 with Retry-After, its password unchecked, until the 15 minutes pass."
+	self.Description = "The username field takes a username or an email. A match sets the session cookie and redirects to /admin/home; anything else answers the login page under a 401. Every attempt is counted before its password is checked. After 20 failed sign-ins from one client ip, or 10 on one account (its username and its email together) from the ips it was not signed in from in the last 30 days, in 15 minutes, every attempt is answered the login page under a 429 with Retry-After, its password unchecked, until the 15 minutes pass; an ip the account signed in from keeps 10 of its own. A body over 4 KiB, a username over 254 bytes or a password over 1024 is refused unchecked."
 	self.Examples = []string{}
 	self.Hidden = false
 
@@ -47,7 +47,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Body = api.RouteBody{
 		Type:        "form",
 		Required:    true,
-		MaxBytes:    1048576,
+		MaxBytes:    4096,
 		ContentType: "application/x-www-form-urlencoded",
 		Schema:      BodySchema,
 	}

@@ -24,21 +24,21 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Priority = 8
 	self.ResponseType = "text/plain"
 	self.Segments = 0
-	self.Pattern = "/~(^/(api/)?admin(/|$))"
+	self.Pattern = "/*"
 	self.Category = "Middleware"
-	self.Summary = "Sends the security headers on every /admin and /api/admin response"
+	self.Summary = "Sends the security headers on every /admin and /api/admin response, and the basic ones on every other"
 	self.Description = ""
 	self.Examples = []string{}
 	self.Hidden = false
 
 	self.Paths = []api.Path{
 		{
-			Id:          "ApiAdmin",
+			Id:          "Root",
 			Start:       0,
 			End:         -1,
 			Type:        api.PathString,
 			Description: "",
-			Trigger:     api.Trigger{Set: true, Type: api.TriggerRegex, Value: "^/(api/)?admin(/|$)", Negate: false, IgnoreCase: false},
+			Trigger:     api.Trigger{Set: true, Type: api.TriggerPrefix, Value: "/", Negate: false, IgnoreCase: false},
 		},
 	}
 

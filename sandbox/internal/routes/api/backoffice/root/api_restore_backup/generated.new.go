@@ -27,8 +27,8 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Pattern = "/api/admin/root/restore-backup"
 	self.Category = "Backoffice Backups API"
 	self.Summary = "Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers 202 at once"
-	self.Description = ""
-	self.Examples = []string{"curl -X POST localhost:3000/api/admin/root/restore-backup -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"id\":1}'"}
+	self.Description = "The backoffice's own users, sessions and API tokens (backofficedb) are kept as they are unless include-backoffice is true: an older copy would bring back revoked tokens, closed sessions, removed users and old passwords. A restore that fails, or that the process stopped in the middle of, puts the pre-restore snapshot back; every request is answered 503 while it runs."
+	self.Examples = []string{"curl -X POST localhost:3000/api/admin/root/restore-backup -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"id\":1,\"include-backoffice\":false}'"}
 	self.Hidden = false
 
 	self.Paths = []api.Path{
@@ -47,7 +47,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Body = api.RouteBody{
 		Type:        "json",
 		Required:    true,
-		MaxBytes:    1048576,
+		MaxBytes:    4096,
 		ContentType: "application/json",
 		Schema:      BodySchema,
 	}

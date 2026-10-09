@@ -32,10 +32,12 @@ import (
 	routes_add_backoffice_api_token_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/add_backoffice_api_token_page"
 	routes_backoffice_home "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/backoffice_home"
 	routes_backoffice_login "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/backoffice_login"
+	routes_backoffice_login_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/backoffice_login_page"
 	routes_backoffice_logout "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/backoffice_logout"
 	routes_list_backoffice_api_tokens_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/list_backoffice_api_tokens_page"
 	routes_list_backoffice_users_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/list_backoffice_users_page"
 	routes_backoffice_client_ip "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/middleware/backoffice_client_ip"
+	routes_backoffice_maintenance "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/middleware/backoffice_maintenance"
 	routes_backoffice_root_guard "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/middleware/backoffice_root_guard"
 	routes_backoffice_same_origin "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/middleware/backoffice_same_origin"
 	routes_backoffice_security_headers "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/middleware/backoffice_security_headers"
@@ -71,6 +73,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 	server := api.Server{}
 
 	server.Routes = []*api.Route{
+		routes_backoffice_maintenance.NewRoute(sandbox),
 		routes_backoffice_client_ip.NewRoute(sandbox),
 		routes_backoffice_security_headers.NewRoute(sandbox),
 		routes_backoffice_same_origin.NewRoute(sandbox),
@@ -104,6 +107,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routes_api_upload_backup.NewRoute(sandbox),
 		routes_backoffice_home.NewRoute(sandbox),
 		routes_backoffice_login.NewRoute(sandbox),
+		routes_backoffice_login_page.NewRoute(sandbox),
 		routes_backoffice_logout.NewRoute(sandbox),
 		routes_create_backup_form.NewRoute(sandbox),
 		routes_download_backup.NewRoute(sandbox),

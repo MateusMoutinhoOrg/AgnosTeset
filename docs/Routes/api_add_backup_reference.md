@@ -19,6 +19,7 @@ curl -X POST localhost:3000/api/admin/root/add-backup-reference \
   -H 'authorization: my-authorization' \
   -H 'x-client-ip: my-x-client-ip' \
   -H 'x-forwarded-for: my-x-forwarded-for' \
+  -H 'x-request-method: my-x-request-method' \
   -H 'Content-Type: application/json' \
   -d '{"id":1,"path":"text","sha":"text"}'
 ```
@@ -36,6 +37,7 @@ curl -X POST localhost:3000/api/admin/root/add-backup-reference -H "Authorizatio
 | `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> — read by [`backoffice-api-token-auth`](backoffice_api_token_auth.md), which runs first |
 | `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
 | `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
+| `x-request-method` | header | text | no | `my-x-request-method` | the method of the request, set by the server and never by the client — read by [`backoffice-maintenance`](backoffice_maintenance.md), which runs first |
 
 ## Body
 
@@ -78,7 +80,8 @@ or `403`, for example — or let it through to this route.
 | [`backoffice-api-root-guard`](backoffice_api_root_guard.md) | always |
 | [`backoffice-api-token-auth`](backoffice_api_token_auth.md) | always |
 | [`backoffice-client-ip`](backoffice_client_ip.md) | always |
-| [`backoffice-security-headers`](backoffice_security_headers.md) | depends on the address — `explain-route` gives the exact answer |
+| [`backoffice-maintenance`](backoffice_maintenance.md) | always |
+| [`backoffice-security-headers`](backoffice_security_headers.md) | always |
 
 ---
 

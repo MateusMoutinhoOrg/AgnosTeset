@@ -47,7 +47,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Body = api.RouteBody{
 		Type:        "form",
 		Required:    true,
-		MaxBytes:    1048576,
+		MaxBytes:    16384,
 		ContentType: "application/x-www-form-urlencoded",
 		Schema:      BodySchema,
 	}
