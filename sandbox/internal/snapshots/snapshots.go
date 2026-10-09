@@ -12,10 +12,12 @@ import (
 // its content. A file that did not change between two snapshots is stored
 // once, whatever the number of snapshots holding it.
 //
-// Creating one and restoring one are slow, so a route only starts them: the
-// work runs on a goroutine of its own once the route has answered, one job at
-// a time. A snapshot is recorded the moment it is started, under
-// StatusCreating, and turns StatusReady or StatusFailed when its job ends.
+// Creating one, restoring one and removing the blobs no snapshot holds are
+// slow, so a route only starts them: the work runs on a goroutine of its own
+// once the route has answered. A snapshot is recorded the moment it is
+// started, under StatusCreating, and turns StatusReady or StatusFailed when
+// its job ends. Every job — those three, an upload and a removal — runs one
+// at a time.
 
 // DataDir is the directory every database of the project lives under, one
 // directory per database.
@@ -37,12 +39,16 @@ const (
 	StatusFailed = "failed"
 )
 
-// The outcomes StartRestore and Export answer with.
+// The outcomes StartRestore, Export, Import and Remove answer with.
 const (
-	// OutcomeOk is a restore started, or an archive built.
+	// OutcomeOk is a restore started, an archive built or stored, or a
+	// snapshot removed.
 	OutcomeOk = "ok"
-	// OutcomeBusy is a restore refused because another job runs.
+	// OutcomeBusy is a job refused because another one runs.
 	OutcomeBusy = "busy"
+	// OutcomeRefused is an archive that is not one a snapshot can be read
+	// from.
+	OutcomeRefused = "refused"
 	// OutcomeNotFound is an id no snapshot holds.
 	OutcomeNotFound = "not-found"
 	// OutcomeNotReady is a snapshot that is not StatusReady.
@@ -63,9 +69,10 @@ const NameLayout = "20060102-150405"
 // writes it.
 const keepLockSuffix = ".keeplock"
 
-// jobs holds a token while a create or a restore runs, so a second one is
-// refused rather than run over the first: both read and write every database
-// of DataDir.
+// jobs holds a token while a job runs, so a second one is refused rather than
+// run over the first: a create and a restore read and write every database
+// of DataDir, and an optimize removes every blob no (path, sha) pair names —
+// one a create or an upload is about to name included.
 var jobs = make(chan struct{}, 1)
 
 // acquire takes the job token and reports whether it was free.
@@ -83,7 +90,7 @@ func release(sandbox *api.Sandbox) {
 	<-jobs
 }
 
-// Busy tells whether a create or a restore is running.
+// Busy tells whether a job is running.
 func Busy(sandbox *api.Sandbox) bool {
 	return len(jobs) > 0
 }

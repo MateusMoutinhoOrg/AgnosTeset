@@ -66,30 +66,69 @@ func manifest(sandbox *api.Sandbox, snapshot backup.SnapshotRecord, files int) [
 }
 
 // Import stores the snapshot an archive Export built — or one written by
-// hand the same way — as a new StatusReady snapshot, and answers it. It
-// touches nothing under DataDir, so it runs beside a job. The name and the
-// instant come from ManifestPath when it carries usable ones, and the name
-// is made unique; without them the snapshot is named upload followed by the
-// current instant. refused is why the archive was refused, "" when it was
-// not: one that is not a zip, unpacks past MaxUnpackedBytes, holds an entry
-// outside ArchiveDataDir, a path SafePath refuses or the same path twice, or
-// no file at all.
-func Import(sandbox *api.Sandbox, archive []byte) (snapshot backup.SnapshotRecord, refused string, err error) {
+// hand the same way — as a new StatusReady snapshot, and answers it with
+// OutcomeOk. The name and the instant come from ManifestPath when it carries
+// usable ones, and the name is made unique; without them the snapshot is
+// named upload followed by the current instant.
+//
+// The archive is checked first, and an archive that is not one a snapshot
+// can be read from answers OutcomeRefused with why in refused: one that is
+// not a zip, unpacks past MaxUnpackedBytes, holds an entry outside
+// ArchiveDataDir, a path SafePath refuses or the same path twice, or no file
+// at all. Storing it is a job — an optimize running beside it could remove a
+// blob it is about to name — so while another one runs it answers
+// OutcomeBusy and stores nothing.
+func Import(sandbox *api.Sandbox, archive []byte) (snapshot backup.SnapshotRecord, outcome string, refused string, err error) {
+	files, name, data, refused, err := unpack(sandbox, archive)
+	if err != nil {
+		return snapshot, "", "", err
+	}
+	if refused != "" {
+		return snapshot, OutcomeRefused, refused, nil
+	}
+	if !acquire(sandbox) {
+		return snapshot, OutcomeBusy, "", nil
+	}
+	defer release(sandbox)
+
+	db := backup.New(sandbox)
+	snapshot, err = db.AddSnapshot(backup.SnapshotInput{Name: uniqueName(sandbox, db, name), Data: data, Status: StatusCreating})
+	if err != nil {
+		return snapshot, "", "", err
+	}
+	if err := store(sandbox, db, snapshot.Id, files); err != nil {
+		if removeErr := db.RemoveSnapshot(snapshot.Id); removeErr != nil {
+			sandbox.Deps.StdDeps.Eprintf("snapshot %s: removing it after a failed upload failed: %s\n", snapshot.Name, removeErr.Error())
+		}
+		return backup.SnapshotRecord{}, "", "", err
+	}
+	if err := db.SetSnapshotStatus(snapshot.Id, StatusReady); err != nil {
+		return snapshot, "", "", err
+	}
+	snapshot.Status = StatusReady
+	sandbox.Deps.StdDeps.Logf("snapshot %s uploaded: %d files\n", snapshot.Name, len(files))
+	return snapshot, OutcomeOk, "", nil
+}
+
+// unpack reads archive into the files a snapshot of it holds, each at its
+// path below DataDir, and the name and the instant to store it under — the
+// manifest's, or upload followed by now. refused is why the archive cannot
+// be one, "" when it can.
+func unpack(sandbox *api.Sandbox, archive []byte) (files []archivedeps.File, name string, data int64, refused string, err error) {
 	strings := sandbox.Deps.StringsDeps
 	unpacked, err := sandbox.Deps.ArchiveDeps.Unzip(archive, MaxUnpackedBytes)
 	if err != nil {
-		return snapshot, "not a zip archive a snapshot can be read from: " + err.Error(), nil
+		return nil, "", 0, "not a zip archive a snapshot can be read from: " + err.Error(), nil
 	}
 
-	name := ""
-	data := nowSeconds(sandbox)
-	files := []archivedeps.File{}
+	data = nowSeconds(sandbox)
+	files = []archivedeps.File{}
 	seen := map[string]bool{}
 	for _, file := range unpacked {
 		if file.Path == ManifestPath {
 			named, taken, ok := readManifest(sandbox, file.Content)
 			if !ok {
-				return snapshot, ManifestPath + " is not a JSON object", nil
+				return nil, "", 0, ManifestPath + " is not a JSON object", nil
 			}
 			name = named
 			if taken > 0 {
@@ -99,43 +138,26 @@ func Import(sandbox *api.Sandbox, archive []byte) (snapshot backup.SnapshotRecor
 		}
 		path := strings.TrimPrefix(file.Path, ArchiveDataDir)
 		if !strings.HasPrefix(file.Path, ArchiveDataDir) || !SafePath(sandbox, path) {
-			return snapshot, "the entry " + strings.Quote(file.Path) + " is not a file a snapshot may hold: every file sits in a database folder under " + ArchiveDataDir + ", never " + ArchiveDataDir + BackupDir, nil
+			return nil, "", 0, "the entry " + strings.Quote(file.Path) + " is not a file a snapshot may hold: every file sits in a database folder under " + ArchiveDataDir + ", never " + ArchiveDataDir + BackupDir, nil
 		}
 		if seen[path] {
-			return snapshot, "the entry " + strings.Quote(file.Path) + " is in the archive twice", nil
+			return nil, "", 0, "the entry " + strings.Quote(file.Path) + " is in the archive twice", nil
 		}
 		seen[path] = true
 		files = append(files, archivedeps.File{Path: path, Content: file.Content})
 	}
 	if len(files) == 0 {
-		return snapshot, "the archive holds no file under " + ArchiveDataDir, nil
+		return nil, "", 0, "the archive holds no file under " + ArchiveDataDir, nil
 	}
 
 	valid, err := strings.MatchPattern(namePattern, name)
 	if err != nil {
-		return snapshot, "", err
+		return nil, "", 0, "", err
 	}
 	if !valid {
 		name = "upload-" + sandbox.Deps.TimeDeps.FormatUnix(nowSeconds(sandbox), NameLayout)
 	}
-
-	db := backup.New(sandbox)
-	snapshot, err = db.AddSnapshot(backup.SnapshotInput{Name: uniqueName(sandbox, db, name), Data: data, Status: StatusCreating})
-	if err != nil {
-		return snapshot, "", err
-	}
-	if err := store(sandbox, db, snapshot.Id, files); err != nil {
-		if removeErr := db.RemoveSnapshot(snapshot.Id); removeErr != nil {
-			sandbox.Deps.StdDeps.Eprintf("snapshot %s: removing it after a failed upload failed: %s\n", snapshot.Name, removeErr.Error())
-		}
-		return backup.SnapshotRecord{}, "", err
-	}
-	if err := db.SetSnapshotStatus(snapshot.Id, StatusReady); err != nil {
-		return snapshot, "", err
-	}
-	snapshot.Status = StatusReady
-	sandbox.Deps.StdDeps.Logf("snapshot %s uploaded: %d files\n", snapshot.Name, len(files))
-	return snapshot, "", nil
+	return files, name, data, "", nil
 }
 
 // store stores every one of files under the snapshot of id.

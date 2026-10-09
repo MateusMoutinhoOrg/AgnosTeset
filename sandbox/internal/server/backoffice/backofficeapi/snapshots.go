@@ -25,8 +25,8 @@ func SnapshotResponseJSON(sandbox *api.Sandbox, snapshot backup.SnapshotRecord) 
 	return document
 }
 
-// SnapshotListJSON is every snapshot, newest first, and whether a snapshot or
-// a restore is running.
+// SnapshotListJSON is every snapshot, newest first, and whether a backup job
+// is running.
 func SnapshotListJSON(sandbox *api.Sandbox, listed []backup.SnapshotRecord, busy bool) *serializabledeps.SerializableObject {
 	items := sandbox.Deps.SerializableDeps.CreateArray()
 	for _, snapshot := range listed {
@@ -48,10 +48,10 @@ func SnapshotCreatingJSON(sandbox *api.Sandbox, snapshot backup.SnapshotRecord) 
 	return document
 }
 
-// RestoringJSON is {"status": "restoring"}: a restore started and not waited
-// for.
-func RestoringJSON(sandbox *api.Sandbox) *serializabledeps.SerializableObject {
+// JobJSON is {"status": status}: a job started and not waited for —
+// "restoring", "optimizing".
+func JobJSON(sandbox *api.Sandbox, status string) *serializabledeps.SerializableObject {
 	document := sandbox.Deps.SerializableDeps.CreateObject()
-	document.AddItemToObject("status", "restoring")
+	document.AddItemToObject("status", status)
 	return document
 }

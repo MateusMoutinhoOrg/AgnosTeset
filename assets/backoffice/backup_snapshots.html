@@ -501,9 +501,12 @@
     <section class="head">
       <div>
         <h1>Backups</h1>
-        <p class="muted">Snapshots of every database under data/. A snapshot is taken in the background; download one as a zip, upload a zip back, or restore one over the current data.</p>
+        <p class="muted">Snapshots of every database under data/. A snapshot is taken in the background; download one as a zip, upload a zip back, restore one over the current data or delete it. A content shared by several snapshots is stored once: deleting a snapshot frees the contents only it held once you optimize the backups size.</p>
       </div>
       <div class="actions">
+        <form action="/admin/root/optimize-backup-storage" method="POST">
+          <button type="submit" class="btn" title="Remove every stored content no snapshot holds anymore"{{if .Busy}} disabled{{end}}>Optimize backups size</button>
+        </form>
         <form action="/admin/root/create-backup-snapshot" method="POST">
           <button type="submit" class="btn btn-primary"{{if .Busy}} disabled{{end}}>+ Create snapshot</button>
         </form>
@@ -511,7 +514,7 @@
     </section>
 
     {{if .Notice.Text}}<div class="notice notice-{{.Notice.Kind}}" role="status">{{html .Notice.Text}}</div>{{end}}
-    {{if .Busy}}<div class="notice notice-ok" role="status">A snapshot or a restore is running. This page refreshes until it ends.</div>{{end}}
+    {{if .Busy}}<div class="notice notice-ok" role="status">A backup job is running. This page refreshes until it ends.</div>{{end}}
 
     <form class="card upload" id="snapshot-upload" action="/admin/root/upload-backup-snapshot" method="POST">
       <div class="grow">
@@ -551,6 +554,9 @@
                 <span class="btn btn-small disabled">Download</span>
                 <span class="btn btn-small btn-danger disabled">Restore</span>
                 {{end}}
+                <form action="/admin/root/remove-backup-snapshot/{{.Id}}" method="POST" data-confirm="Delete the snapshot {{html .Name}}? It cannot be restored or downloaded afterwards.">
+                  <button type="submit" class="btn btn-small btn-danger"{{if $.Busy}} disabled{{end}}>Delete</button>
+                </form>
               </div>
             </td>
           </tr>

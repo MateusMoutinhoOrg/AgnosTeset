@@ -7,7 +7,8 @@ import (
 )
 
 // The backups of the backoffice: the pages and the api through which a root
-// takes, downloads, uploads and restores the snapshots of sandbox/internal/snapshots.
+// takes, downloads, uploads, restores and removes the snapshots of
+// sandbox/internal/snapshots, and removes the blobs none of them holds.
 // Every one of them is under /admin/root or /api/admin/root, so only a root
 // reaches it: a restore replaces every database, and an archive carries
 // every password hash and session.
@@ -26,7 +27,11 @@ const (
 	NoticeRestoring = "restoring"
 	// NoticeUploaded follows an archive uploaded.
 	NoticeUploaded = "uploaded"
-	// NoticeBusy follows a create or a restore refused while another runs.
+	// NoticeRemoved follows a snapshot removed.
+	NoticeRemoved = "removed"
+	// NoticeOptimizing follows an optimize of the backups started.
+	NoticeOptimizing = "optimizing"
+	// NoticeBusy follows a job refused while another one runs.
 	NoticeBusy = "busy"
 	// NoticeNotFound follows an action on a snapshot that does not exist.
 	NoticeNotFound = "not-found"
@@ -34,6 +39,10 @@ const (
 	// not ready.
 	NoticeNotReady = "not-ready"
 )
+
+// BusyMessage is what the api answers, under a 409, to a job refused while
+// another one runs.
+const BusyMessage = "another backup job is running (a snapshot, a restore, an upload, a removal or an optimize): try again once it ends"
 
 // StatusAccepted is the status of a job the api started and does not wait
 // for; api has no constant of its own for it.

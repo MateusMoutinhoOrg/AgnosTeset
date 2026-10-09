@@ -16,8 +16,7 @@ type BackupSnapshotsPage struct {
 	// Notice is shown above the list, its Text "" for none.
 	Notice    Notice
 	Snapshots []BackupSnapshotRow
-	// Busy disables what would start a second job: a snapshot or a restore
-	// runs.
+	// Busy disables what would start a second job, while one runs.
 	Busy bool
 	// Refresh reloads the page every few seconds, while a job runs or a
 	// snapshot is still being created.
@@ -48,8 +47,12 @@ func backupSnapshotNoticeOf(sandbox *api.Sandbox, code string) Notice {
 		return Notice{Text: "Restore started. A pre-restore snapshot of the current data is taken first, then every database is replaced: you may be signed out when it ends.", Kind: "ok"}
 	case backofficesnapshots.NoticeUploaded:
 		return Notice{Text: "Snapshot uploaded. It can be downloaded or restored now.", Kind: "ok"}
+	case backofficesnapshots.NoticeRemoved:
+		return Notice{Text: "Snapshot deleted. The contents only it held stay stored until you optimize the backups size.", Kind: "ok"}
+	case backofficesnapshots.NoticeOptimizing:
+		return Notice{Text: "Optimizing started. The stored contents no snapshot holds anymore are being removed in the background.", Kind: "ok"}
 	case backofficesnapshots.NoticeBusy:
-		return Notice{Text: "Another snapshot or restore is running. Try again once it ends.", Kind: "error"}
+		return Notice{Text: "Another backup job is running: a snapshot, a restore, an upload, a deletion or an optimization. Try again once it ends.", Kind: "error"}
 	case backofficesnapshots.NoticeNotFound:
 		return Notice{Text: "That snapshot no longer exists.", Kind: "error"}
 	case backofficesnapshots.NoticeNotReady:

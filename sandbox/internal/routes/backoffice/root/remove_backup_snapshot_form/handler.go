@@ -1,4 +1,4 @@
-package create_backup_snapshot_form
+package remove_backup_snapshot_form
 
 import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
@@ -8,22 +8,23 @@ import (
 	"github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/snapshots"
 )
 
-// Handle answers POST /admin/root/create-backup-snapshot: a snapshot
-// of every database is recorded as creating and the browser is sent to the
-// list at once, while its files are stored in the background. Another backup
-// job running refuses it with a notice.
+// Handle answers POST /admin/root/remove-backup-snapshot/{id}: the
+// snapshot is deleted with its list of files, and the browser is sent to the
+// list with the outcome. The contents only it held stay stored until the
+// backups size is optimized. Another backup job running refuses it with a
+// notice: it may be creating, restoring or uploading that very snapshot.
 func Handle(sandbox *api.Sandbox, props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {
 	if props.User == nil {
 		return sandbox.Deps.OpinionatedAgnosServer.Fail(api.StatusUnauthorized, "", "no authenticated user")
 	}
 
-	_, started, err := snapshots.StartCreate(sandbox)
+	outcome, err := snapshots.Remove(sandbox, int64(input.Id))
 	if err != nil {
 		return err
 	}
-	notice := backofficesnapshots.NoticeCreating
-	if !started {
-		notice = backofficesnapshots.NoticeBusy
+	notice := outcome
+	if outcome == snapshots.OutcomeOk {
+		notice = backofficesnapshots.NoticeRemoved
 	}
 	return sandbox.Deps.OpinionatedAgnosServer.Redirect(*response, api.StatusSeeOther, backofficesnapshots.ListLocation(sandbox, notice))
 }

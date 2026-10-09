@@ -905,6 +905,49 @@
         ]
       }
     },
+    "/api/admin/root/optimize-backup-storage": {
+      "post": {
+        "operationId": "api-optimize-backup-storage",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Starts removing every stored content no snapshot holds anymore, and answers 202 at once",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
     "/api/admin/root/remove-backoffice-user": {
       "post": {
         "operationId": "api-remove-backoffice-user",
@@ -912,6 +955,101 @@
           "Backoffice Users API"
         ],
         "summary": "Removes a backoffice user and every session of it",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "example": {
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/remove-backup-snapshot": {
+      "post": {
+        "operationId": "api-remove-backup-snapshot",
+        "tags": [
+          "Backoffice Backups API"
+        ],
+        "summary": "Deletes a snapshot; the contents only it held stay stored until the backups size is optimized",
         "parameters": [
           {
             "name": "x-client-ip",
@@ -1961,6 +2099,61 @@
         }
       }
     },
+    "/admin/root/optimize-backup-storage": {
+      "post": {
+        "operationId": "optimize-backup-storage-form",
+        "tags": [
+          "Backoffice Backups"
+        ],
+        "summary": "Starts removing every stored content no snapshot holds anymore, and answers at once",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
     "/admin/root/remove-backoffice-user/{Id}": {
       "post": {
         "operationId": "remove-backoffice-user-form",
@@ -1968,6 +2161,80 @@
           "Backoffice Users"
         ],
         "summary": "Removes a backoffice user and every session of it",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/root/remove-backup-snapshot/{Id}": {
+      "post": {
+        "operationId": "remove-backup-snapshot-form",
+        "tags": [
+          "Backoffice Backups"
+        ],
+        "summary": "Deletes a snapshot; the contents only it held stay stored until the backups size is optimized",
         "parameters": [
           {
             "name": "Id",

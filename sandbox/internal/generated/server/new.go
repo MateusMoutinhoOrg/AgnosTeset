@@ -13,7 +13,9 @@ import (
 	routes_api_create_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_create_backup_snapshot"
 	routes_api_download_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_download_backup_snapshot"
 	routes_api_list_backup_snapshots "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_list_backup_snapshots"
+	routes_api_optimize_backup_storage "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_optimize_backup_storage"
 	routes_api_remove_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_remove_backoffice_user"
+	routes_api_remove_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_remove_backup_snapshot"
 	routes_api_restore_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_restore_backup_snapshot"
 	routes_api_set_backoffice_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_set_backoffice_user"
 	routes_api_upload_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/api/backoffice/root/api_upload_backup_snapshot"
@@ -35,7 +37,9 @@ import (
 	routes_create_backup_snapshot_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/create_backup_snapshot_form"
 	routes_download_backup_snapshot "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/download_backup_snapshot"
 	routes_list_backup_snapshots_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/list_backup_snapshots_page"
+	routes_optimize_backup_storage_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/optimize_backup_storage_form"
 	routes_remove_backoffice_user_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/remove_backoffice_user_form"
+	routes_remove_backup_snapshot_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/remove_backup_snapshot_form"
 	routes_restore_backup_snapshot_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/restore_backup_snapshot_form"
 	routes_set_backoffice_user_form "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/set_backoffice_user_form"
 	routes_set_backoffice_user_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/set_backoffice_user_page"
@@ -76,7 +80,9 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routes_api_get_current_backoffice_user.NewRoute(sandbox),
 		routes_api_list_backoffice_users.NewRoute(sandbox),
 		routes_api_list_backup_snapshots.NewRoute(sandbox),
+		routes_api_optimize_backup_storage.NewRoute(sandbox),
 		routes_api_remove_backoffice_user.NewRoute(sandbox),
+		routes_api_remove_backup_snapshot.NewRoute(sandbox),
 		routes_api_restore_backup_snapshot.NewRoute(sandbox),
 		routes_api_set_backoffice_user.NewRoute(sandbox),
 		routes_api_upload_backup_snapshot.NewRoute(sandbox),
@@ -90,7 +96,9 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routes_list_backoffice_users_page.NewRoute(sandbox),
 		routes_list_backup_snapshots_page.NewRoute(sandbox),
 		routes_openapi.NewRoute(sandbox),
+		routes_optimize_backup_storage_form.NewRoute(sandbox),
 		routes_remove_backoffice_user_form.NewRoute(sandbox),
+		routes_remove_backup_snapshot_form.NewRoute(sandbox),
 		routes_restore_backup_snapshot_form.NewRoute(sandbox),
 		routes_revoke_backoffice_api_token_form.NewRoute(sandbox),
 		routes_set_backoffice_user_form.NewRoute(sandbox),

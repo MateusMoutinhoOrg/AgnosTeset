@@ -53,6 +53,8 @@ it prints the address it took. Change it to wherever your server runs.
 | [`POST /api/admin/root/create-backup-snapshot`](api_create_backup_snapshot.md) | Starts a snapshot of every database and answers 202 at once: it is taken in the background |
 | [`GET /api/admin/root/download-backup-snapshot/{Id:integer}`](api_download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
 | [`GET /api/admin/root/list-backup-snapshots`](api_list_backup_snapshots.md) | Lists every snapshot, newest first, and whether a snapshot or a restore is running |
+| [`POST /api/admin/root/optimize-backup-storage`](api_optimize_backup_storage.md) | Starts removing every stored content no snapshot holds anymore, and answers 202 at once |
+| [`POST /api/admin/root/remove-backup-snapshot`](api_remove_backup_snapshot.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
 | [`POST /api/admin/root/restore-backup-snapshot`](api_restore_backup_snapshot.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers 202 at once |
 | [`POST /api/admin/root/upload-backup-snapshot`](api_upload_backup_snapshot.md) | Stores a zip archive a download built as a new snapshot |
 
@@ -91,6 +93,8 @@ it prints the address it took. Change it to wherever your server runs.
 | [`POST /admin/root/create-backup-snapshot`](create_backup_snapshot_form.md) | Starts a snapshot of every database and answers at once: it is taken in the background |
 | [`GET /admin/root/download-backup-snapshot/{Id:integer}`](download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
 | [`GET /admin/root/list-backup-snapshots`](list_backup_snapshots_page.md) | Lists every snapshot of the databases, with the controls that take, download, upload and restore one |
+| [`POST /admin/root/optimize-backup-storage`](optimize_backup_storage_form.md) | Starts removing every stored content no snapshot holds anymore, and answers at once |
+| [`POST /admin/root/remove-backup-snapshot/{Id:integer}`](remove_backup_snapshot_form.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
 | [`POST /admin/root/restore-backup-snapshot/{Id:integer}`](restore_backup_snapshot_form.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers at once |
 | [`POST /admin/root/upload-backup-snapshot`](upload_backup_snapshot.md) | Stores a zip archive a download built as a new snapshot |
 
