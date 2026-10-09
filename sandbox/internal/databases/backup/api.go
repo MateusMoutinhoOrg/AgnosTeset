@@ -33,6 +33,44 @@ type BlobFilter struct {
 	ValueEquals     []byte
 }
 
+// SnapshotRecord is one stored snapshot record: its permanent id and every
+// plain field the declaration gives it.
+type SnapshotRecord struct {
+	Id   int64
+	Name string
+	Data int64
+}
+
+// SnapshotInput is one insert into snapshot: the fields a new record carries.
+type SnapshotInput struct {
+	Name string
+	Data int64
+}
+
+// SnapshotFilter narrows a ListSnapshot. Every plain field is here, because
+// only a `key` field is indexed and this is the one way to reach the rest. A
+// zero value turns its own filter off.
+type SnapshotFilter struct {
+	NameStartsWith string
+	NameEquals     string
+	DataMin        int64
+	DataMax        int64
+}
+
+// SnapshotContentRecord is one stored content record: its permanent id and every
+// plain field the declaration gives it.
+type SnapshotContentRecord struct {
+	Id   int64
+	Path string
+	Sha  string
+}
+
+// SnapshotContentInput is one insert into content: the fields a new record carries.
+type SnapshotContentInput struct {
+	Path string
+	Sha  string
+}
+
 // Backup is the backup database: the store database it was built over and
 // one function field per generated method. Building one is free — it touches
 // no key and creates nothing until the first record is written — so whoever
@@ -59,4 +97,26 @@ type Backup struct {
 	SetBlobValue func(id int64, value []byte) error
 	// RemoveBlob deletes one blob record and everything nested under it.
 	RemoveBlob func(id int64) error
+	// AddSnapshot inserts one snapshot record.
+	AddSnapshot func(props SnapshotInput) (SnapshotRecord, error)
+	// FindSnapshotById reads one snapshot record by its permanent id.
+	FindSnapshotById func(id int64) (SnapshotRecord, bool)
+	// FindSnapshotByName reads one snapshot record by its indexed name.
+	FindSnapshotByName func(value string) (SnapshotRecord, bool)
+	// ListSnapshots reads every snapshot record the filter keeps.
+	ListSnapshots func(filter SnapshotFilter) ([]SnapshotRecord, error)
+	// ListSnapshotsPage reads up to limit snapshot records after the first offset, every one past them when limit is 0.
+	ListSnapshotsPage func(offset int, limit int) ([]SnapshotRecord, error)
+	// CountSnapshot is how many snapshot records are live.
+	CountSnapshot func() (int, error)
+	// SetSnapshotName writes a new name on one snapshot record.
+	SetSnapshotName func(id int64, value string) error
+	// SetSnapshotData writes a new data on one snapshot record.
+	SetSnapshotData func(id int64, value int64) error
+	// RemoveSnapshot deletes one snapshot record and everything nested under it.
+	RemoveSnapshot func(id int64) error
+	// AddSnapshotContent inserts one content record under one snapshot record.
+	AddSnapshotContent func(parentId int64, props SnapshotContentInput) (SnapshotContentRecord, error)
+	// ListSnapshotContents reads every content record of one snapshot record.
+	ListSnapshotContents func(parentId int64) ([]SnapshotContentRecord, error)
 }

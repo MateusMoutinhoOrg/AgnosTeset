@@ -178,6 +178,219 @@ func RemoveBlob(sandbox *api.Sandbox, self *Backup, id int64) error {
 	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Remove())
 }
 
+// AddSnapshot inserts one snapshot record.
+func AddSnapshot(sandbox *api.Sandbox, self *Backup, props SnapshotInput) (SnapshotRecord, error) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return SnapshotRecord{}, err
+	}
+	record, failure := collection.Insert(newSnapshotFields(props))
+	if failure != nil {
+		return SnapshotRecord{}, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	return buildSnapshotRecord(sandbox, record)
+}
+
+// FindSnapshotById reads one snapshot record by its permanent id.
+func FindSnapshotById(sandbox *api.Sandbox, self *Backup, id int64) (SnapshotRecord, bool) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		sandbox.Deps.StdDeps.Logf("FindSnapshotById: %s \n", err.Error())
+		return SnapshotRecord{}, false
+	}
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		sandbox.Deps.StdDeps.Logf("FindSnapshotById: %s \n", sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure).Error())
+		return SnapshotRecord{}, false
+	}
+	if !ok {
+		return SnapshotRecord{}, false
+	}
+	built, err := buildSnapshotRecord(sandbox, record)
+	if err != nil {
+		sandbox.Deps.StdDeps.Logf("FindSnapshotById: %s \n", err.Error())
+		return SnapshotRecord{}, false
+	}
+	return built, true
+}
+
+// FindSnapshotByName reads one snapshot record by its indexed name.
+func FindSnapshotByName(sandbox *api.Sandbox, self *Backup, value string) (SnapshotRecord, bool) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		sandbox.Deps.StdDeps.Logf("FindSnapshotByName: %s \n", err.Error())
+		return SnapshotRecord{}, false
+	}
+	record, ok, failure := collection.FindByKey("name", value)
+	if failure != nil {
+		sandbox.Deps.StdDeps.Logf("FindSnapshotByName: %s \n", sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure).Error())
+		return SnapshotRecord{}, false
+	}
+	if !ok {
+		return SnapshotRecord{}, false
+	}
+	built, err := buildSnapshotRecord(sandbox, record)
+	if err != nil {
+		sandbox.Deps.StdDeps.Logf("FindSnapshotByName: %s \n", err.Error())
+		return SnapshotRecord{}, false
+	}
+	return built, true
+}
+
+// ListSnapshots reads every snapshot record the filter keeps.
+func ListSnapshots(sandbox *api.Sandbox, self *Backup, filter SnapshotFilter) ([]SnapshotRecord, error) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return nil, err
+	}
+	records, failure := collection.ListAll()
+	if failure != nil {
+		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	kept := []SnapshotRecord{}
+	for _, record := range records {
+		built, err := buildSnapshotRecord(sandbox, record)
+		if err != nil {
+			return nil, err
+		}
+		if !matchSnapshot(sandbox, built, filter) {
+			continue
+		}
+		kept = append(kept, built)
+	}
+	return kept, nil
+}
+
+// ListSnapshotsPage reads up to limit snapshot records after the first offset, every one past them when limit is 0.
+func ListSnapshotsPage(sandbox *api.Sandbox, self *Backup, offset int, limit int) ([]SnapshotRecord, error) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return nil, err
+	}
+	records, failure := collection.List(offset+1, limit)
+	if failure != nil {
+		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	page := []SnapshotRecord{}
+	for _, record := range records {
+		built, err := buildSnapshotRecord(sandbox, record)
+		if err != nil {
+			return nil, err
+		}
+		page = append(page, built)
+	}
+	return page, nil
+}
+
+// CountSnapshot is how many snapshot records are live.
+func CountSnapshot(sandbox *api.Sandbox, self *Backup) (int, error) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return 0, err
+	}
+	records, failure := collection.ListAll()
+	if failure != nil {
+		return 0, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	return len(records), nil
+}
+
+// SetSnapshotName writes a new name on one snapshot record.
+func SetSnapshotName(sandbox *api.Sandbox, self *Backup, id int64, value string) error {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return err
+	}
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return sandbox.Deps.StdDeps.Errorf("snapshot %d not found", id)
+	}
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("name", value))
+}
+
+// SetSnapshotData writes a new data on one snapshot record.
+func SetSnapshotData(sandbox *api.Sandbox, self *Backup, id int64, value int64) error {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return err
+	}
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return sandbox.Deps.StdDeps.Errorf("snapshot %d not found", id)
+	}
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("data", value))
+}
+
+// RemoveSnapshot deletes one snapshot record and everything nested under it.
+func RemoveSnapshot(sandbox *api.Sandbox, self *Backup, id int64) error {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return err
+	}
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return sandbox.Deps.StdDeps.Errorf("snapshot %d not found", id)
+	}
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Remove())
+}
+
+// AddSnapshotContent inserts one content record under one snapshot record.
+func AddSnapshotContent(sandbox *api.Sandbox, self *Backup, parentId int64, props SnapshotContentInput) (SnapshotContentRecord, error) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return SnapshotContentRecord{}, err
+	}
+	parent, ok, failure := collection.FindByID(parentId)
+	if failure != nil {
+		return SnapshotContentRecord{}, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return SnapshotContentRecord{}, sandbox.Deps.StdDeps.Errorf("snapshot %d not found", parentId)
+	}
+	record, failure := parent.InsertNested("content", newSnapshotContentFields(props))
+	if failure != nil {
+		return SnapshotContentRecord{}, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	return buildSnapshotContentRecord(sandbox, record)
+}
+
+// ListSnapshotContents reads every content record of one snapshot record.
+func ListSnapshotContents(sandbox *api.Sandbox, self *Backup, parentId int64) ([]SnapshotContentRecord, error) {
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "snapshot")
+	if err != nil {
+		return nil, err
+	}
+	parent, ok, failure := collection.FindByID(parentId)
+	if failure != nil {
+		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	if !ok {
+		return nil, sandbox.Deps.StdDeps.Errorf("snapshot %d not found", parentId)
+	}
+	records, failure := parent.ListNested("content")
+	if failure != nil {
+		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	nested := []SnapshotContentRecord{}
+	for _, record := range records {
+		built, err := buildSnapshotContentRecord(sandbox, record)
+		if err != nil {
+			return nil, err
+		}
+		nested = append(nested, built)
+	}
+	return nested, nil
+}
+
 // newBlobFields is one insert into blob as the stored field map.
 func newBlobFields(props BlobInput) map[string]any {
 	return map[string]any{
@@ -217,4 +430,74 @@ func matchBlob(sandbox *api.Sandbox, item BlobRecord, filter BlobFilter) bool {
 		return false
 	}
 	return true
+}
+
+// newSnapshotFields is one insert into snapshot as the stored field map.
+func newSnapshotFields(props SnapshotInput) map[string]any {
+	return map[string]any{
+		"name": props.Name,
+		"data": props.Data,
+	}
+}
+
+// buildSnapshotRecord reads one stored snapshot record back into its Go form.
+// Every conversion is checked, so a value of the wrong type is an error rather
+// than a panic.
+func buildSnapshotRecord(sandbox *api.Sandbox, record databasedeps.Record) (SnapshotRecord, error) {
+	built := SnapshotRecord{Id: record.ID}
+
+	valueName, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "name")
+	if err != nil {
+		return built, err
+	}
+	built.Name = valueName
+
+	valueData, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(record, "data")
+	if err != nil {
+		return built, err
+	}
+	built.Data = valueData
+
+	return built, nil
+}
+
+// matchSnapshot is one SnapshotFilter applied to one record. A zero value
+// never filters, so an empty filter keeps everything.
+func matchSnapshot(sandbox *api.Sandbox, item SnapshotRecord, filter SnapshotFilter) bool {
+	if !sandbox.Deps.OpinionatedAgnosDatabase.TextMatches(item.Name, filter.NameStartsWith, filter.NameEquals) {
+		return false
+	}
+	if !sandbox.Deps.OpinionatedAgnosDatabase.IntInRange(item.Data, filter.DataMin, filter.DataMax) {
+		return false
+	}
+	return true
+}
+
+// newSnapshotContentFields is one insert into content as the stored field map.
+func newSnapshotContentFields(props SnapshotContentInput) map[string]any {
+	return map[string]any{
+		"path": props.Path,
+		"sha":  props.Sha,
+	}
+}
+
+// buildSnapshotContentRecord reads one stored content record back into its Go form.
+// Every conversion is checked, so a value of the wrong type is an error rather
+// than a panic.
+func buildSnapshotContentRecord(sandbox *api.Sandbox, record databasedeps.Record) (SnapshotContentRecord, error) {
+	built := SnapshotContentRecord{Id: record.ID}
+
+	valuePath, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "path")
+	if err != nil {
+		return built, err
+	}
+	built.Path = valuePath
+
+	valueSha, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "sha")
+	if err != nil {
+		return built, err
+	}
+	built.Sha = valueSha
+
+	return built, nil
 }

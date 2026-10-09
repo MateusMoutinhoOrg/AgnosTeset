@@ -24,6 +24,16 @@ func New(sandbox *api.Sandbox) *Backup {
 					{Name: "value", Type: databasedeps.Bytes, Required: true},
 				},
 			},
+			{
+				Name: "snapshot",
+				Fields: []databasedeps.Field{
+					{Name: "name", Type: databasedeps.Key, Required: true},
+					{Name: "data", Type: databasedeps.Int, Required: true},
+					{Name: "content", Type: databasedeps.Nested, Fields: []databasedeps.Field{
+						{Name: "path", Type: databasedeps.String, Required: true},
+						{Name: "sha", Type: databasedeps.String, Required: true}}},
+				},
+			},
 		},
 	}
 
@@ -60,6 +70,39 @@ func New(sandbox *api.Sandbox) *Backup {
 	}
 	self.RemoveBlob = func(id int64) error {
 		return RemoveBlob(self.sandbox, &self, id)
+	}
+	self.AddSnapshot = func(props SnapshotInput) (SnapshotRecord, error) {
+		return AddSnapshot(self.sandbox, &self, props)
+	}
+	self.FindSnapshotById = func(id int64) (SnapshotRecord, bool) {
+		return FindSnapshotById(self.sandbox, &self, id)
+	}
+	self.FindSnapshotByName = func(value string) (SnapshotRecord, bool) {
+		return FindSnapshotByName(self.sandbox, &self, value)
+	}
+	self.ListSnapshots = func(filter SnapshotFilter) ([]SnapshotRecord, error) {
+		return ListSnapshots(self.sandbox, &self, filter)
+	}
+	self.ListSnapshotsPage = func(offset int, limit int) ([]SnapshotRecord, error) {
+		return ListSnapshotsPage(self.sandbox, &self, offset, limit)
+	}
+	self.CountSnapshot = func() (int, error) {
+		return CountSnapshot(self.sandbox, &self)
+	}
+	self.SetSnapshotName = func(id int64, value string) error {
+		return SetSnapshotName(self.sandbox, &self, id, value)
+	}
+	self.SetSnapshotData = func(id int64, value int64) error {
+		return SetSnapshotData(self.sandbox, &self, id, value)
+	}
+	self.RemoveSnapshot = func(id int64) error {
+		return RemoveSnapshot(self.sandbox, &self, id)
+	}
+	self.AddSnapshotContent = func(parentId int64, props SnapshotContentInput) (SnapshotContentRecord, error) {
+		return AddSnapshotContent(self.sandbox, &self, parentId, props)
+	}
+	self.ListSnapshotContents = func(parentId int64) ([]SnapshotContentRecord, error) {
+		return ListSnapshotContents(self.sandbox, &self, parentId)
 	}
 
 	return &self
