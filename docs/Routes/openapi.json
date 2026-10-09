@@ -1,0 +1,1868 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "testebackoffice",
+    "description": "Every address testebackoffice answers: what to send and what comes back.",
+    "version": "unversioned"
+  },
+  "servers": [
+    {
+      "url": "{scheme}://{host}",
+      "variables": {
+        "scheme": {
+          "default": "http",
+          "enum": [
+            "http",
+            "https"
+          ]
+        },
+        "host": {
+          "default": "localhost:3000",
+          "description": "the host and port the server listens on"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Backoffice API Tokens"
+    },
+    {
+      "name": "Backoffice Users"
+    },
+    {
+      "name": "Backoffice Users API"
+    },
+    {
+      "name": "Backoffice API"
+    },
+    {
+      "name": "Backoffice"
+    },
+    {
+      "name": "Server"
+    },
+    {
+      "name": "Assets"
+    }
+  ],
+  "paths": {
+    "/admin/add-backoffice-api-token": {
+      "post": {
+        "operationId": "add-backoffice-api-token-form",
+        "tags": [
+          "Backoffice API Tokens"
+        ],
+        "summary": "Creates an API token and shows it once",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "type": "string"
+                  },
+                  "expiration": {
+                    "type": "string",
+                    "enum": [
+                      "7",
+                      "30",
+                      "60",
+                      "90",
+                      "365",
+                      "custom",
+                      "never"
+                    ]
+                  },
+                  "ips": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "expiration",
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/x-www-form-urlencoded`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "add-backoffice-api-token-page",
+        "tags": [
+          "Backoffice API Tokens"
+        ],
+        "summary": "Shows the form that creates an API token",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/admin/root/add-backoffice-user": {
+      "post": {
+        "operationId": "add-backoffice-user-form",
+        "tags": [
+          "Backoffice Users"
+        ],
+        "summary": "Adds a backoffice user",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "integer"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "role",
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/x-www-form-urlencoded`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "add-backoffice-user-page",
+        "tags": [
+          "Backoffice Users"
+        ],
+        "summary": "Shows the form that adds a backoffice user",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/root/add-backoffice-user": {
+      "post": {
+        "operationId": "api-add-backoffice-user",
+        "tags": [
+          "Backoffice Users API"
+        ],
+        "summary": "Adds a backoffice user",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "root",
+                      "viewer"
+                    ]
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "role",
+                  "username"
+                ]
+              },
+              "example": {
+                "email": "text",
+                "password": "text",
+                "role": "root",
+                "username": "text"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/get-backoffice-user": {
+      "post": {
+        "operationId": "api-get-backoffice-user",
+        "tags": [
+          "Backoffice Users API"
+        ],
+        "summary": "Answers one backoffice user by id",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "example": {
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/me": {
+      "get": {
+        "operationId": "api-get-current-backoffice-user",
+        "tags": [
+          "Backoffice API"
+        ],
+        "summary": "Answers the backoffice user of the Bearer token",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/list-backoffice-users": {
+      "post": {
+        "operationId": "api-list-backoffice-users",
+        "tags": [
+          "Backoffice Users API"
+        ],
+        "summary": "Lists backoffice users, filtered and paginated",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "limit": {
+                    "type": "integer"
+                  },
+                  "page": {
+                    "type": "integer"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "root",
+                      "viewer"
+                    ]
+                  },
+                  "search": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "limit": 1,
+                "page": 1,
+                "role": "root",
+                "search": "text"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/remove-backoffice-user": {
+      "post": {
+        "operationId": "api-remove-backoffice-user",
+        "tags": [
+          "Backoffice Users API"
+        ],
+        "summary": "Removes a backoffice user and every session of it",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "example": {
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/root/set-backoffice-user": {
+      "post": {
+        "operationId": "api-set-backoffice-user",
+        "tags": [
+          "Backoffice Users API"
+        ],
+        "summary": "Edits a backoffice user; a missing or blank password keeps the current one",
+        "description": "A new password ends every session of the user and revokes every API token of theirs, the token this request carries included when a root changes their own password.",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "root",
+                      "viewer"
+                    ]
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "id",
+                  "role",
+                  "username"
+                ]
+              },
+              "example": {
+                "email": "text",
+                "id": 1,
+                "password": "text",
+                "role": "root",
+                "username": "text"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "backoffice-api-token-auth": []
+          }
+        ]
+      }
+    },
+    "/admin/home": {
+      "get": {
+        "operationId": "backoffice-home",
+        "tags": [
+          "Backoffice"
+        ],
+        "summary": "Shows the backoffice home page to the signed-in user",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/admin/login": {
+      "post": {
+        "operationId": "backoffice-login",
+        "tags": [
+          "Backoffice"
+        ],
+        "summary": "Signs a backoffice user in and sets the session cookie",
+        "description": "The username field takes a username or an email. A match sets the session cookie and redirects to /admin/home; anything else answers the login page under a 401. After 20 failed sign-ins from one client ip, or 10 on one login, in 15 minutes, every attempt is answered the login page under a 429 with Retry-After, its password unchecked, until the 15 minutes pass.",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "password",
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/x-www-form-urlencoded`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/logout": {
+      "post": {
+        "operationId": "backoffice-logout",
+        "tags": [
+          "Backoffice"
+        ],
+        "summary": "Ends the current session",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "tags": [
+          "Server"
+        ],
+        "summary": "Reports that the server is up",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/admin/list-backoffice-api-tokens": {
+      "get": {
+        "operationId": "list-backoffice-api-tokens-page",
+        "tags": [
+          "Backoffice API Tokens"
+        ],
+        "summary": "Lists your API tokens, or every user's for a root",
+        "parameters": [
+          {
+            "name": "notice",
+            "in": "query",
+            "description": "the outcome code of the last revoke",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-notice"
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/admin/list-backoffice-users": {
+      "get": {
+        "operationId": "list-backoffice-users-page",
+        "tags": [
+          "Backoffice Users"
+        ],
+        "summary": "Lists backoffice users, filtered and paginated",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "matches the username or the email, case-insensitive",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-search"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "root, viewer, or empty for every role",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-role"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "the page to show, counted from 1",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "how many users a page shows, from 1 to 100",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "example": 20
+          },
+          {
+            "name": "notice",
+            "in": "query",
+            "description": "the outcome code of the last add, edit or remove",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-notice"
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "operationId": "openapi",
+        "tags": [
+          "Server"
+        ],
+        "summary": "Answers the OpenAPI document of every route, to import into Postman or open in Swagger UI",
+        "parameters": [
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `application/json`.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/admin/root/remove-backoffice-user/{Id}": {
+      "post": {
+        "operationId": "remove-backoffice-user-form",
+        "tags": [
+          "Backoffice Users"
+        ],
+        "summary": "Removes a backoffice user and every session of it",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/revoke-backoffice-api-token/{Id}": {
+      "post": {
+        "operationId": "revoke-backoffice-api-token-form",
+        "tags": [
+          "Backoffice API Tokens"
+        ],
+        "summary": "Revokes an API token: your own, or anyone's for a root",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/root/set-backoffice-user/{Id}": {
+      "post": {
+        "operationId": "set-backoffice-user-form",
+        "tags": [
+          "Backoffice Users"
+        ],
+        "summary": "Edits a backoffice user; a blank password keeps the current one",
+        "description": "A new password ends every session of the user and revokes every API token of theirs; when a root changes their own password, the session they sent it from stays open.",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "integer"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "role",
+                  "username"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/x-www-form-urlencoded`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "set-backoffice-user-page",
+        "tags": [
+          "Backoffice Users"
+        ],
+        "summary": "Shows the form that edits a backoffice user",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          },
+          {
+            "name": "origin",
+            "in": "header",
+            "description": "the origin of the page that sent the request, sent by the browser\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-origin"
+          },
+          {
+            "name": "host",
+            "in": "header",
+            "description": "the host the request was sent to\n\nRead by `backoffice-same-origin`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-host"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html`.",
+            "content": {
+              "text/html": {}
+            }
+          },
+          "404": {
+            "description": "`{Id:integer}` is not a whole number, so this route does not answer the address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{Rest}": {
+      "get": {
+        "operationId": "front",
+        "tags": [
+          "Assets"
+        ],
+        "summary": "Serves any file of the embedded assets/front tree",
+        "parameters": [
+          {
+            "name": "Rest",
+            "in": "path",
+            "description": "the file under assets/front; none is its index.html\n\nThe rest of the address — one part or more, like `a/b.png`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-rest"
+          },
+          {
+            "name": "x-client-ip",
+            "in": "header",
+            "description": "the ip of the connection, set by the server and never by the client\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-client-ip"
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "description": "the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for\n\nRead by `backoffice-client-ip`, which runs in front of this route.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-x-forwarded-for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It worked. The answer comes as `text/html; charset=utf-8`.",
+            "content": {
+              "text/html; charset=utf-8": {}
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "what went wrong"
+          },
+          "field": {
+            "type": "string",
+            "description": "the value that was wrong, when it is one"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "backoffice-api-token-auth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "authorization",
+        "description": "an API token created on /admin/list-backoffice-api-tokens, as Bearer <token>"
+      }
+    }
+  }
+}

@@ -61,6 +61,7 @@ or `403`, for example — or let it through to this route.
 | [`add-backoffice-user-page`](add_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`set-backoffice-user-page`](set_backoffice_user_page.md) | depends on the address — `explain-route` gives the exact answer |
 | [`health`](health.md) | depends on the address — `explain-route` gives the exact answer |
+| [`openapi`](openapi.md) | depends on the address — `explain-route` gives the exact answer |
 
 ---
 

@@ -32,6 +32,7 @@ import (
 	routes_set_backoffice_user_page "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/backoffice/root/set_backoffice_user_page"
 	routes_front "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/front"
 	routes_health "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/health"
+	routes_openapi "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/routes/openapi"
 	errors "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server/errors"
 )
 
@@ -70,6 +71,7 @@ func NewServer(sandbox *api.Sandbox) api.Server {
 		routes_health.NewRoute(sandbox),
 		routes_list_backoffice_api_tokens_page.NewRoute(sandbox),
 		routes_list_backoffice_users_page.NewRoute(sandbox),
+		routes_openapi.NewRoute(sandbox),
 		routes_remove_backoffice_user_form.NewRoute(sandbox),
 		routes_revoke_backoffice_api_token_form.NewRoute(sandbox),
 		routes_set_backoffice_user_form.NewRoute(sandbox),

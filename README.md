@@ -27,7 +27,7 @@ Serving http - bring the server up, declare routes, read a body
 | --- | --- |
 | [ServerUsage](docs/ServerUsage/doc.md) | Serve http from testebackoffice: bring the layer up, declare routes, read a body |
 | [FrontUsage](docs/FrontUsage/doc.md) | Serve a website from testebackoffice: bring the front layer up, drop files in assets/front, add pages |
-| [Routes](docs/Routes/doc.md) | Every address testebackoffice answers: what to send, a request to run and what comes back |
+| [Routes](docs/Routes/doc.md) | Every address testebackoffice answers: what to send, a request to run, what comes back, and the OpenAPI document for Postman or Swagger |
 | [Backoffice](docs/Backoffice/doc.md) | The admin backoffice of testebackoffice: secret, users, roles, sessions, API tokens and the /api/admin JSON api |
 
 ### LibUsage
