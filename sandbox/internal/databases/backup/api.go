@@ -9,6 +9,30 @@ import (
 // A query database.yaml cannot describe goes in methods_custom.go, which no build
 // reads and no build rewrites.
 
+// BlobRecord is one stored blob record: its permanent id and every
+// plain field the declaration gives it.
+type BlobRecord struct {
+	Id    int64
+	Sha   string
+	Value []byte
+}
+
+// BlobInput is one insert into blob: the fields a new record carries.
+type BlobInput struct {
+	Sha   string
+	Value []byte
+}
+
+// BlobFilter narrows a ListBlob. Every plain field is here, because
+// only a `key` field is indexed and this is the one way to reach the rest. A
+// zero value turns its own filter off.
+type BlobFilter struct {
+	ShaStartsWith   string
+	ShaEquals       string
+	ValueStartsWith []byte
+	ValueEquals     []byte
+}
+
 // Backup is the backup database: the store database it was built over and
 // one function field per generated method. Building one is free — it touches
 // no key and creates nothing until the first record is written — so whoever
@@ -16,4 +40,23 @@ import (
 type Backup struct {
 	sandbox  *api.Sandbox
 	database databasedeps.Database
+
+	// AddBlob inserts one blob record.
+	AddBlob func(props BlobInput) (BlobRecord, error)
+	// FindBlobById reads one blob record by its permanent id.
+	FindBlobById func(id int64) (BlobRecord, bool)
+	// FindBlobBySha reads one blob record by its indexed sha.
+	FindBlobBySha func(value string) (BlobRecord, bool)
+	// ListBlobs reads every blob record the filter keeps.
+	ListBlobs func(filter BlobFilter) ([]BlobRecord, error)
+	// ListBlobsPage reads up to limit blob records after the first offset, every one past them when limit is 0.
+	ListBlobsPage func(offset int, limit int) ([]BlobRecord, error)
+	// CountBlob is how many blob records are live.
+	CountBlob func() (int, error)
+	// SetBlobSha writes a new sha on one blob record.
+	SetBlobSha func(id int64, value string) error
+	// SetBlobValue writes a new value on one blob record.
+	SetBlobValue func(id int64, value []byte) error
+	// RemoveBlob deletes one blob record and everything nested under it.
+	RemoveBlob func(id int64) error
 }
