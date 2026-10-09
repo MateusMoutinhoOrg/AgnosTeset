@@ -24,7 +24,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Segments = 3
 	self.Pattern = "/admin/root/list-backup-snapshots"
 	self.Category = "Backoffice Backups"
-	self.Summary = "Lists every snapshot of the databases, with the controls that take, download, upload and restore one"
+	self.Summary = "Lists every snapshot of the databases, or the ones whose name starts with a prefix, with the controls that take, download, upload and restore one"
 	self.Description = ""
 	self.Examples = []string{}
 	self.Hidden = false
@@ -50,6 +50,17 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 			Default:     "",
 			HasDefault:  false,
 			Description: "the outcome code of the last action on a snapshot",
+			Trigger:     api.Trigger{Set: false, Type: api.TriggerEqual, Value: "", Negate: false, IgnoreCase: false},
+		},
+		{
+			Id:          "Prefix",
+			Key:         "prefix",
+			Sources:     []api.ParameterSource{api.SourceQuery},
+			Required:    false,
+			Type:        api.ParameterString,
+			Default:     "",
+			HasDefault:  false,
+			Description: "keeps only the snapshots whose name starts with it",
 			Trigger:     api.Trigger{Set: false, Type: api.TriggerEqual, Value: "", Negate: false, IgnoreCase: false},
 		},
 	}

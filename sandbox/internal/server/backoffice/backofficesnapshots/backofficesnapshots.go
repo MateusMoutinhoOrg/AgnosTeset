@@ -18,8 +18,9 @@ const ListPath = "/admin/root/list-backup-snapshots"
 
 // The notices an action hands the list page through ListPath?notice=<code>.
 // Each one is a fixed word the page words itself, so nothing the client sent
-// is ever shown back. NoticeBusy, NoticeNotFound and NoticeNotReady spell
-// the snapshots outcome of the same meaning.
+// is ever shown back. NoticeBusy, NoticeNotFound, NoticeNotReady,
+// NoticeInvalidName and NoticeNameTaken spell the snapshots outcome of the
+// same meaning.
 const (
 	// NoticeCreating follows a snapshot started.
 	NoticeCreating = "creating"
@@ -38,11 +39,25 @@ const (
 	// NoticeNotReady follows a download or a restore of a snapshot that is
 	// not ready.
 	NoticeNotReady = "not-ready"
+	// NoticeInvalidName follows a snapshot refused for a name it cannot be
+	// given.
+	NoticeInvalidName = "invalid-name"
+	// NoticeNameTaken follows a snapshot refused for a name another one
+	// holds.
+	NoticeNameTaken = "name-taken"
 )
 
 // BusyMessage is what the api answers, under a 409, to a job refused while
 // another one runs.
 const BusyMessage = "another backup job is running (a snapshot, a restore, an upload, a removal or an optimize): try again once it ends"
+
+// InvalidNameMessage is what the api answers, under a 400, to a snapshot
+// name the snapshots package refuses.
+const InvalidNameMessage = "a snapshot name is 1 to 100 letters, digits, '.', '_' or '-', starting with a letter or a digit"
+
+// NameTakenMessage is what the api answers, under a 409, to a snapshot name
+// another one holds.
+const NameTakenMessage = "another snapshot already has that name"
 
 // StatusAccepted is the status of a job the api started and does not wait
 // for; api has no constant of its own for it.

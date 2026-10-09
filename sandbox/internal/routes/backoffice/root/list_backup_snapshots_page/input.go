@@ -10,4 +10,5 @@ type Input struct {
 	FullRoute                    string `id:"FullRoute"`
 	AdminRootListBackupSnapshots string `id:"AdminRootListBackupSnapshots"`
 	Notice                       string `id:"Notice"`
+	Prefix                       string `id:"Prefix"`
 }

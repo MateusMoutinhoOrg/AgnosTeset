@@ -442,6 +442,12 @@
       gap: 0.5rem;
     }
     .head .actions form { display: inline-flex; }
+    .head .actions .create { gap: 0.5rem; }
+    .head .actions .create input { width: 220px; padding: 0.6rem 0.9rem; font-size: 0.9rem; }
+    @media (max-width: 640px) {
+      .head .actions .create { width: 100%; }
+      .head .actions .create input { width: auto; flex: 1; }
+    }
     .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
     .upload {
@@ -507,7 +513,8 @@
         <form action="/admin/root/optimize-backup-storage" method="POST">
           <button type="submit" class="btn" title="Remove every stored content no snapshot holds anymore"{{if .Busy}} disabled{{end}}>Optimize backups size</button>
         </form>
-        <form action="/admin/root/create-backup-snapshot" method="POST">
+        <form class="create" action="/admin/root/create-backup-snapshot" method="POST">
+          <input type="text" name="name" maxlength="100" pattern="[A-Za-z0-9][A-Za-z0-9._\-]*" placeholder="Name (optional)" aria-label="Snapshot name" title="Letters, digits, '.', '_' or '-', starting with a letter or a digit. Empty names it after the current time."{{if .Busy}} disabled{{end}}>
           <button type="submit" class="btn btn-primary"{{if .Busy}} disabled{{end}}>+ Create snapshot</button>
         </form>
       </div>
@@ -524,6 +531,17 @@
       <button type="submit" class="btn" id="snapshot-upload-button">Upload</button>
       <p class="muted hint">A zip a download of this page built, up to {{.MaxUploadMegabytes}} MB. It is stored as a new snapshot; nothing is restored until you ask.</p>
       <div class="notice notice-error" id="upload-error" role="status" hidden></div>
+    </form>
+
+    <form class="card filters" action="/admin/root/list-backup-snapshots" method="GET">
+      <div class="field grow">
+        <label for="prefix">Search by name prefix</label>
+        <input type="search" id="prefix" name="prefix" value="{{html .Prefix}}" maxlength="100" placeholder="daily-, pre-restore-, upload-…">
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a class="btn" href="/admin/root/list-backup-snapshots">Clear</a>
+      </div>
     </form>
 
     <div class="card table-card">
@@ -563,6 +581,8 @@
           {{end}}
         </tbody>
       </table>
+      {{else if .Prefix}}
+      <p class="empty">No snapshot name starts with <span class="mono">{{html .Prefix}}</span>. Names are case-sensitive.</p>
       {{else}}
       <p class="empty">No snapshots yet. Create one to back up every database.</p>
       {{end}}

@@ -9,14 +9,15 @@ import (
 )
 
 // Handle answers GET /api/admin/root/list-backup-snapshots: every
-// snapshot, newest first, as {"snapshots": [...], "busy": ...}, busy telling
+// snapshot whose name starts with the prefix query value — every one without
+// it — newest first, as {"snapshots": [...], "busy": ...}, busy telling
 // whether a snapshot or a restore is running.
 func Handle(sandbox *api.Sandbox, props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {
 	if props.User == nil {
 		return sandbox.Deps.OpinionatedAgnosServer.Fail(api.StatusUnauthorized, "", "no authenticated user")
 	}
 
-	listed, err := snapshots.List(sandbox)
+	listed, err := snapshots.List(sandbox, input.Prefix)
 	if err != nil {
 		return err
 	}

@@ -9,4 +9,5 @@ package api_list_backup_snapshots
 type Input struct {
 	FullRoute                       string `id:"FullRoute"`
 	ApiAdminRootListBackupSnapshots string `id:"ApiAdminRootListBackupSnapshots"`
+	Prefix                          string `id:"Prefix"`
 }

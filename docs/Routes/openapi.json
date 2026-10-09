@@ -518,7 +518,7 @@
         "tags": [
           "Backoffice Backups API"
         ],
-        "summary": "Starts a snapshot of every database and answers 202 at once: it is taken in the background",
+        "summary": "Starts a snapshot of every database, under the name given or one after the current instant, and answers 202 at once: it is taken in the background",
         "parameters": [
           {
             "name": "x-client-ip",
@@ -539,11 +539,60 @@
             "example": "my-x-forwarded-for"
           }
         ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "example": {
+                "name": "text"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "It worked. The answer comes as `application/json`.",
             "content": {
               "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         },
@@ -868,8 +917,17 @@
         "tags": [
           "Backoffice Backups API"
         ],
-        "summary": "Lists every snapshot, newest first, and whether a snapshot or a restore is running",
+        "summary": "Lists every snapshot, or the ones whose name starts with a prefix, newest first, and whether a backup job is running",
         "parameters": [
+          {
+            "name": "prefix",
+            "in": "query",
+            "description": "keeps only the snapshots whose name starts with it",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-prefix"
+          },
           {
             "name": "x-client-ip",
             "in": "header",
@@ -1662,7 +1720,7 @@
         "tags": [
           "Backoffice Backups"
         ],
-        "summary": "Starts a snapshot of every database and answers at once: it is taken in the background",
+        "summary": "Starts a snapshot of every database, under the name the form gives or one after the current instant, and answers at once: it is taken in the background",
         "parameters": [
           {
             "name": "x-client-ip",
@@ -1701,11 +1759,57 @@
             "example": "my-host"
           }
         ],
+        "requestBody": {
+          "description": "Up to 1 MB.",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "It worked. The answer comes as `text/html`.",
             "content": {
               "text/html": {}
+            }
+          },
+          "400": {
+            "description": "Something you sent is missing or has the wrong type or format. The answer's `field` names it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 1 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "The body was not sent with `Content-Type: application/x-www-form-urlencoded`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -2004,7 +2108,7 @@
         "tags": [
           "Backoffice Backups"
         ],
-        "summary": "Lists every snapshot of the databases, with the controls that take, download, upload and restore one",
+        "summary": "Lists every snapshot of the databases, or the ones whose name starts with a prefix, with the controls that take, download, upload and restore one",
         "parameters": [
           {
             "name": "notice",
@@ -2014,6 +2118,15 @@
               "type": "string"
             },
             "example": "my-notice"
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "description": "keeps only the snapshots whose name starts with it",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-prefix"
           },
           {
             "name": "x-client-ip",

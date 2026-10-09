@@ -1,6 +1,6 @@
 # `GET /api/admin/root/list-backup-snapshots`
 
-Lists every snapshot, newest first, and whether a snapshot or a restore is running
+Lists every snapshot, or the ones whose name starts with a prefix, newest first, and whether a backup job is running
 
 ## Try it
 
@@ -13,7 +13,7 @@ curl localhost:3000/api/admin/root/list-backup-snapshots
 With every value it reads:
 
 ```bash
-curl localhost:3000/api/admin/root/list-backup-snapshots \
+curl 'localhost:3000/api/admin/root/list-backup-snapshots?prefix=my-prefix' \
   -H 'authorization: my-authorization' \
   -H 'x-client-ip: my-x-client-ip' \
   -H 'x-forwarded-for: my-x-forwarded-for'
@@ -23,12 +23,14 @@ More examples:
 
 ```bash
 curl localhost:3000/api/admin/root/list-backup-snapshots -H "Authorization: Bearer $TOKEN"
+curl "localhost:3000/api/admin/root/list-backup-snapshots?prefix=daily-" -H "Authorization: Bearer $TOKEN"
 ```
 
 ## Query string, headers and cookies
 
 | Name | Sent in | What goes there | Required | Example | Description |
 | --- | --- | --- | --- | --- | --- |
+| `prefix` | query string | text | no | `my-prefix` | keeps only the snapshots whose name starts with it |
 | `authorization` | header | text | no | `my-authorization` | an API token created on /admin/list-backoffice-api-tokens, as Bearer <token> — read by [`backoffice-api-token-auth`](backoffice_api_token_auth.md), which runs first |
 | `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
 | `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |

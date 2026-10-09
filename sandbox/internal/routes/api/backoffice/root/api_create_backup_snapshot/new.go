@@ -24,9 +24,9 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Segments = 4
 	self.Pattern = "/api/admin/root/create-backup-snapshot"
 	self.Category = "Backoffice Backups API"
-	self.Summary = "Starts a snapshot of every database and answers 202 at once: it is taken in the background"
+	self.Summary = "Starts a snapshot of every database, under the name given or one after the current instant, and answers 202 at once: it is taken in the background"
 	self.Description = ""
-	self.Examples = []string{"curl -X POST localhost:3000/api/admin/root/create-backup-snapshot -H \"Authorization: Bearer $TOKEN\""}
+	self.Examples = []string{"curl -X POST localhost:3000/api/admin/root/create-backup-snapshot -H \"Authorization: Bearer $TOKEN\"", "curl -X POST localhost:3000/api/admin/root/create-backup-snapshot -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' -d '{\"name\":\"before-migration\"}'"}
 	self.Hidden = false
 
 	self.Paths = []api.Path{
@@ -43,11 +43,15 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Parameters = []api.Parameter{}
 
 	self.Body = api.RouteBody{
-		Type:        "none",
+		Type:        "json",
 		Required:    false,
 		MaxBytes:    1048576,
-		ContentType: "",
-		Schema:      "",
+		ContentType: "application/json",
+		Schema:      BodySchema,
+	}
+
+	self.ReadBody = func(bound *api.Route) (any, error) {
+		return ReadBody(sandbox, bound)
 	}
 
 	self.Handle = func(props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {

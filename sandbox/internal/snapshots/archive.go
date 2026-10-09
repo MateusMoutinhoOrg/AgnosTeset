@@ -20,8 +20,8 @@ const ManifestPath = "snapshot.json"
 // sits under.
 const ArchiveDataDir = DataDir + "/"
 
-// namePattern is a snapshot name an upload may keep from its manifest: one
-// that is safe in a file name and a header.
+// namePattern is a snapshot name a root may give StartCreate or an upload
+// may keep from its manifest: one that is safe in a file name and a header.
 const namePattern = `^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$`
 
 // Export packs the snapshot of id into its archive. The outcome is OutcomeOk,
@@ -150,7 +150,7 @@ func unpack(sandbox *api.Sandbox, archive []byte) (files []archivedeps.File, nam
 		return nil, "", 0, "the archive holds no file under " + ArchiveDataDir, nil
 	}
 
-	valid, err := strings.MatchPattern(namePattern, name)
+	valid, err := ValidName(sandbox, name)
 	if err != nil {
 		return nil, "", 0, "", err
 	}

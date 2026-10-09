@@ -14,7 +14,9 @@ import (
 type BackupSnapshotsPage struct {
 	Viewer Viewer
 	// Notice is shown above the list, its Text "" for none.
-	Notice    Notice
+	Notice Notice
+	// Prefix is the name prefix the list is narrowed to, "" for none.
+	Prefix    string
 	Snapshots []BackupSnapshotRow
 	// Busy disables what would start a second job, while one runs.
 	Busy bool
@@ -57,6 +59,10 @@ func backupSnapshotNoticeOf(sandbox *api.Sandbox, code string) Notice {
 		return Notice{Text: "That snapshot no longer exists.", Kind: "error"}
 	case backofficesnapshots.NoticeNotReady:
 		return Notice{Text: "That snapshot is not ready: only a finished snapshot can be downloaded or restored.", Kind: "error"}
+	case backofficesnapshots.NoticeInvalidName:
+		return Notice{Text: "That name cannot be used: a snapshot name is 1 to 100 letters, digits, '.', '_' or '-', starting with a letter or a digit.", Kind: "error"}
+	case backofficesnapshots.NoticeNameTaken:
+		return Notice{Text: "Another snapshot already has that name. Pick another one, or delete that snapshot first.", Kind: "error"}
 	}
 	return Notice{}
 }
@@ -75,9 +81,10 @@ func backupSnapshotRow(sandbox *api.Sandbox, snapshot backup.SnapshotRecord) Bac
 }
 
 // RenderBackupSnapshotsPage answers, under status, the snapshot list page
-// for user: listed, newest first, with the notice code notice above it, and
-// what starts a job disabled while busy.
-func RenderBackupSnapshotsPage(sandbox *api.Sandbox, response *serverdeps.Response, status int, user *backoffice_db.BackofficeUserRecord, listed []backup.SnapshotRecord, busy bool, notice string) error {
+// for user: listed, newest first, narrowed to the names starting with prefix,
+// with the notice code notice above it, and what starts a job disabled while
+// busy.
+func RenderBackupSnapshotsPage(sandbox *api.Sandbox, response *serverdeps.Response, status int, user *backoffice_db.BackofficeUserRecord, listed []backup.SnapshotRecord, busy bool, prefix string, notice string) error {
 	rows := []BackupSnapshotRow{}
 	refresh := busy
 	for _, snapshot := range listed {
@@ -89,6 +96,7 @@ func RenderBackupSnapshotsPage(sandbox *api.Sandbox, response *serverdeps.Respon
 	return RenderHTML(sandbox, response, status, "backoffice/backup_snapshots.html", BackupSnapshotsPage{
 		Viewer:             viewerOf(sandbox, user),
 		Notice:             backupSnapshotNoticeOf(sandbox, notice),
+		Prefix:             sandbox.Deps.StringsDeps.TrimSpace(prefix),
 		Snapshots:          rows,
 		Busy:               busy,
 		Refresh:            refresh,

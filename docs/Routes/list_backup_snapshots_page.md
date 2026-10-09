@@ -1,6 +1,6 @@
 # `GET /admin/root/list-backup-snapshots`
 
-Lists every snapshot of the databases, with the controls that take, download, upload and restore one
+Lists every snapshot of the databases, or the ones whose name starts with a prefix, with the controls that take, download, upload and restore one
 
 ## Try it
 
@@ -13,7 +13,7 @@ curl localhost:3000/admin/root/list-backup-snapshots
 With every value it reads:
 
 ```bash
-curl 'localhost:3000/admin/root/list-backup-snapshots?notice=my-notice' \
+curl 'localhost:3000/admin/root/list-backup-snapshots?notice=my-notice&prefix=my-prefix' \
   -H 'x-client-ip: my-x-client-ip' \
   -H 'x-forwarded-for: my-x-forwarded-for' \
   -H 'origin: my-origin' \
@@ -25,6 +25,7 @@ curl 'localhost:3000/admin/root/list-backup-snapshots?notice=my-notice' \
 | Name | Sent in | What goes there | Required | Example | Description |
 | --- | --- | --- | --- | --- | --- |
 | `notice` | query string | text | no | `my-notice` | the outcome code of the last action on a snapshot |
+| `prefix` | query string | text | no | `my-prefix` | keeps only the snapshots whose name starts with it |
 | `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
 | `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
 | `origin` | header | text | no | `my-origin` | the origin of the page that sent the request, sent by the browser — read by [`backoffice-same-origin`](backoffice_same_origin.md), which runs first |

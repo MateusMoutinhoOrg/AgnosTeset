@@ -50,9 +50,9 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`POST /api/admin/root/create-backup-snapshot`](api_create_backup_snapshot.md) | Starts a snapshot of every database and answers 202 at once: it is taken in the background |
+| [`POST /api/admin/root/create-backup-snapshot`](api_create_backup_snapshot.md) | Starts a snapshot of every database, under the name given or one after the current instant, and answers 202 at once: it is taken in the background |
 | [`GET /api/admin/root/download-backup-snapshot/{Id:integer}`](api_download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
-| [`GET /api/admin/root/list-backup-snapshots`](api_list_backup_snapshots.md) | Lists every snapshot, newest first, and whether a snapshot or a restore is running |
+| [`GET /api/admin/root/list-backup-snapshots`](api_list_backup_snapshots.md) | Lists every snapshot, or the ones whose name starts with a prefix, newest first, and whether a backup job is running |
 | [`POST /api/admin/root/optimize-backup-storage`](api_optimize_backup_storage.md) | Starts removing every stored content no snapshot holds anymore, and answers 202 at once |
 | [`POST /api/admin/root/remove-backup-snapshot`](api_remove_backup_snapshot.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
 | [`POST /api/admin/root/restore-backup-snapshot`](api_restore_backup_snapshot.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers 202 at once |
@@ -90,9 +90,9 @@ it prints the address it took. Change it to wherever your server runs.
 
 | Route | What it does |
 | --- | --- |
-| [`POST /admin/root/create-backup-snapshot`](create_backup_snapshot_form.md) | Starts a snapshot of every database and answers at once: it is taken in the background |
+| [`POST /admin/root/create-backup-snapshot`](create_backup_snapshot_form.md) | Starts a snapshot of every database, under the name the form gives or one after the current instant, and answers at once: it is taken in the background |
 | [`GET /admin/root/download-backup-snapshot/{Id:integer}`](download_backup_snapshot.md) | Downloads a snapshot as a zip archive |
-| [`GET /admin/root/list-backup-snapshots`](list_backup_snapshots_page.md) | Lists every snapshot of the databases, with the controls that take, download, upload and restore one |
+| [`GET /admin/root/list-backup-snapshots`](list_backup_snapshots_page.md) | Lists every snapshot of the databases, or the ones whose name starts with a prefix, with the controls that take, download, upload and restore one |
 | [`POST /admin/root/optimize-backup-storage`](optimize_backup_storage_form.md) | Starts removing every stored content no snapshot holds anymore, and answers at once |
 | [`POST /admin/root/remove-backup-snapshot/{Id:integer}`](remove_backup_snapshot_form.md) | Deletes a snapshot; the contents only it held stay stored until the backups size is optimized |
 | [`POST /admin/root/restore-backup-snapshot/{Id:integer}`](restore_backup_snapshot_form.md) | Starts putting a snapshot back over every database, after a pre-restore snapshot of them, and answers at once |

@@ -53,6 +53,11 @@ const (
 	OutcomeNotFound = "not-found"
 	// OutcomeNotReady is a snapshot that is not StatusReady.
 	OutcomeNotReady = "not-ready"
+	// OutcomeInvalidName is a name a snapshot cannot be given: one
+	// namePattern refuses.
+	OutcomeInvalidName = "invalid-name"
+	// OutcomeNameTaken is a name another snapshot already holds.
+	OutcomeNameTaken = "name-taken"
 )
 
 // MaxArchiveBytes is the largest archive an upload may send.
@@ -102,22 +107,49 @@ func nowSeconds(sandbox *api.Sandbox) int64 {
 
 // StartCreate records a new snapshot under StatusCreating and answers it at
 // once, leaving its files to a goroutine that runs after the caller returns.
-// started is false, and nothing is recorded, when another job runs.
-func StartCreate(sandbox *api.Sandbox) (snapshot backup.SnapshotRecord, started bool, err error) {
+// The snapshot is named name, its surrounding spaces trimmed; an empty one
+// names it snapshot followed by the current instant. The outcome is
+// OutcomeOk, OutcomeInvalidName for a name namePattern refuses,
+// OutcomeNameTaken for one another snapshot holds, or OutcomeBusy while
+// another job runs; nothing is recorded unless OutcomeOk.
+func StartCreate(sandbox *api.Sandbox, name string) (snapshot backup.SnapshotRecord, outcome string, err error) {
+	name = sandbox.Deps.StringsDeps.TrimSpace(name)
+	if name != "" {
+		valid, err := ValidName(sandbox, name)
+		if err != nil {
+			return backup.SnapshotRecord{}, "", err
+		}
+		if !valid {
+			return backup.SnapshotRecord{}, OutcomeInvalidName, nil
+		}
+	}
 	if !acquire(sandbox) {
-		return backup.SnapshotRecord{}, false, nil
+		return backup.SnapshotRecord{}, OutcomeBusy, nil
 	}
 	db := backup.New(sandbox)
-	snapshot, err = begin(sandbox, db, "snapshot")
+	if name == "" {
+		snapshot, err = begin(sandbox, db, "snapshot")
+	} else if _, taken := db.FindSnapshotByName(name); taken {
+		release(sandbox)
+		return backup.SnapshotRecord{}, OutcomeNameTaken, nil
+	} else {
+		snapshot, err = db.AddSnapshot(backup.SnapshotInput{Name: name, Data: nowSeconds(sandbox), Status: StatusCreating})
+	}
 	if err != nil {
 		release(sandbox)
-		return backup.SnapshotRecord{}, true, err
+		return backup.SnapshotRecord{}, "", err
 	}
 	go func() {
 		defer release(sandbox)
 		finish(sandbox, db, snapshot)
 	}()
-	return snapshot, true, nil
+	return snapshot, OutcomeOk, nil
+}
+
+// ValidName tells whether name is one a snapshot may be given: namePattern,
+// so it is safe in a file name and a header.
+func ValidName(sandbox *api.Sandbox, name string) (bool, error) {
+	return sandbox.Deps.StringsDeps.MatchPattern(namePattern, name)
 }
 
 // create takes one snapshot named after prefix and waits for it. The caller
@@ -261,9 +293,12 @@ func uniqueName(sandbox *api.Sandbox, db *backup.Backup, base string) string {
 	}
 }
 
-// List is every snapshot, newest first.
-func List(sandbox *api.Sandbox) ([]backup.SnapshotRecord, error) {
-	listed, err := backup.New(sandbox).ListSnapshots(backup.SnapshotFilter{})
+// List is every snapshot whose name starts with prefix, newest first: every
+// one when prefix, its surrounding spaces trimmed, is empty. The match is
+// case-sensitive, as names are.
+func List(sandbox *api.Sandbox, prefix string) ([]backup.SnapshotRecord, error) {
+	prefix = sandbox.Deps.StringsDeps.TrimSpace(prefix)
+	listed, err := backup.New(sandbox).ListSnapshots(backup.SnapshotFilter{NameStartsWith: prefix})
 	if err != nil {
 		return nil, err
 	}

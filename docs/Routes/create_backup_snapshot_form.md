@@ -1,6 +1,6 @@
 # `POST /admin/root/create-backup-snapshot`
 
-Starts a snapshot of every database and answers at once: it is taken in the background
+Starts a snapshot of every database, under the name the form gives or one after the current instant, and answers at once: it is taken in the background
 
 ## Try it
 
@@ -17,7 +17,9 @@ curl -X POST localhost:3000/admin/root/create-backup-snapshot \
   -H 'x-client-ip: my-x-client-ip' \
   -H 'x-forwarded-for: my-x-forwarded-for' \
   -H 'origin: my-origin' \
-  -H 'host: my-host'
+  -H 'host: my-host' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'name=text'
 ```
 
 ## Query string, headers and cookies
@@ -29,11 +31,28 @@ curl -X POST localhost:3000/admin/root/create-backup-snapshot \
 | `origin` | header | text | no | `my-origin` | the origin of the page that sent the request, sent by the browser — read by [`backoffice-same-origin`](backoffice_same_origin.md), which runs first |
 | `host` | header | text | no | `my-host` | the host the request was sent to — read by [`backoffice-same-origin`](backoffice_same_origin.md), which runs first |
 
+## Body
+
+Send form fields, like `name=value&other=value` with the header `Content-Type: application/x-www-form-urlencoded`, up to 1 MB. The body is optional.
+
+| Field | What goes there | Required | Rules |
+| --- | --- | --- | --- |
+| `name` | text | no | at most 100 characters |
+
+Example:
+
+```text
+name=text
+```
+
 ## What comes back
 
 | Status | Means |
 | --- | --- |
 | `200` | It worked. The answer comes as `text/html`. |
+| `400` | Something you sent is missing or has the wrong type or format. The answer's `field` names it. |
+| `413` | The body is larger than 1 MB. |
+| `415` | The body was not sent with `Content-Type: application/x-www-form-urlencoded`. |
 
 Any route may also answer `404`, `405` or `500`: see [when something goes wrong](doc.md#when-something-goes-wrong).
 

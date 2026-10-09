@@ -1,3 +1,13 @@
+body:
+    content-type: application/x-www-form-urlencoded
+    form-schema:
+        properties:
+            name:
+                maxLength: 100
+                type: string
+        type: object
+    max-bytes: 1048576
+    type: form
 category: Backoffice Backups
 methods:
     - POST
@@ -11,4 +21,4 @@ paths:
 priority: 100
 response-type: text/html
 segments: 3
-summary: 'Starts a snapshot of every database and answers at once: it is taken in the background'
+summary: 'Starts a snapshot of every database, under the name the form gives or one after the current instant, and answers at once: it is taken in the background'

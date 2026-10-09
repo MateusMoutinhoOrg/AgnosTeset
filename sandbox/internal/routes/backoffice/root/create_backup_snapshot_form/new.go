@@ -24,7 +24,7 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Segments = 3
 	self.Pattern = "/admin/root/create-backup-snapshot"
 	self.Category = "Backoffice Backups"
-	self.Summary = "Starts a snapshot of every database and answers at once: it is taken in the background"
+	self.Summary = "Starts a snapshot of every database, under the name the form gives or one after the current instant, and answers at once: it is taken in the background"
 	self.Description = ""
 	self.Examples = []string{}
 	self.Hidden = false
@@ -43,11 +43,15 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Parameters = []api.Parameter{}
 
 	self.Body = api.RouteBody{
-		Type:        "none",
+		Type:        "form",
 		Required:    false,
 		MaxBytes:    1048576,
-		ContentType: "",
-		Schema:      "",
+		ContentType: "application/x-www-form-urlencoded",
+		Schema:      BodySchema,
+	}
+
+	self.ReadBody = func(bound *api.Route) (any, error) {
+		return ReadBody(sandbox, bound)
 	}
 
 	self.Handle = func(props *routeprops.RouteProps, input *Input, response *serverdeps.Response) error {

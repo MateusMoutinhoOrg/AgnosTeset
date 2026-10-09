@@ -36,8 +36,8 @@ Root only: `backoffice-root-guard` and `backoffice-api-root-guard` answer `403` 
 
 | Page | Does |
 |---|---|
-| GET `/admin/root/list-backup-snapshots` | every snapshot, newest first; reloads every 5 s while a job runs or one is `creating` |
-| POST `/admin/root/create-backup-snapshot` | starts one, `303` to the list at once |
+| GET `/admin/root/list-backup-snapshots?prefix=` | every snapshot, newest first, or the ones whose name starts with `prefix`; reloads every 5 s while a job runs or one is `creating` |
+| POST `/admin/root/create-backup-snapshot` | form field `name` (optional): starts one, `303` to the list at once |
 | POST `/admin/root/restore-backup-snapshot/{id}` | starts restoring one, `303` to the list at once |
 | GET `/admin/root/download-backup-snapshot/{id}` | the zip, `attachment; filename="<name>.zip"` |
 | POST `/admin/root/upload-backup-snapshot` | the zip as the whole body (`application/zip`), sent by `backoffice.js`: `201`, `400` or `409` |
@@ -46,8 +46,8 @@ Root only: `backoffice-root-guard` and `backoffice-api-root-guard` answer `403` 
 
 | JSON (`Authorization: Bearer <token>`) | Answers |
 |---|---|
-| GET `/api/admin/root/list-backup-snapshots` | `200 {snapshots: [{id, name, data, status}], busy}` |
-| POST `/api/admin/root/create-backup-snapshot` | `202 {status: "creating", snapshot}`; `409` while a job runs |
+| GET `/api/admin/root/list-backup-snapshots?prefix=` | `200 {snapshots: [{id, name, data, status}], busy}`, narrowed to the names starting with `prefix` when given |
+| POST `/api/admin/root/create-backup-snapshot` `{name?}` | `202 {status: "creating", snapshot}`; `400` invalid name, `409` name taken or while a job runs |
 | POST `/api/admin/root/restore-backup-snapshot` `{id}` | `202 {status: "restoring"}`; `404`, `400` not ready, `409` |
 | GET `/api/admin/root/download-backup-snapshot/{id}` | the zip; `404`, `400` not ready |
 | POST `/api/admin/root/upload-backup-snapshot` | `201 {snapshot}`; `400` with why, `409` |
@@ -58,6 +58,14 @@ Every request with its curl is in [Routes](../Routes/doc.md).
 
 ## Rules
 
+- Names: a create may name its snapshot; the name is trimmed and must match
+  `^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$` (`400`, or the `invalid-name` notice), and one another snapshot
+  holds is refused (`409`, or `name-taken`), never renamed. Without one it is `snapshot-<ts>`; a
+  restore's safety copy is `pre-restore-<ts>`, an upload without a usable name `upload-<ts>`, `<ts>`
+  being `YYYYMMDD-hhmmss`.
+- Search: `prefix` keeps the snapshots whose name starts with it, case-sensitive, its surrounding
+  spaces trimmed; empty keeps every one. Naming snapshots by a scheme (`daily-…`, `before-…`) is
+  what makes a prefix find a family of them.
 - A snapshot is every file of every directory of `data/` but `data/backup`; the store's `.keep-tmp-*`
   and `*.keeplock` are left out.
 - Create, restore and optimize answer at once and run on a goroutine after the route returns. Every

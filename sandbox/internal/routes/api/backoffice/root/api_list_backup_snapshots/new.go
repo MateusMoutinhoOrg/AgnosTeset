@@ -24,9 +24,9 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 	self.Segments = 4
 	self.Pattern = "/api/admin/root/list-backup-snapshots"
 	self.Category = "Backoffice Backups API"
-	self.Summary = "Lists every snapshot, newest first, and whether a snapshot or a restore is running"
+	self.Summary = "Lists every snapshot, or the ones whose name starts with a prefix, newest first, and whether a backup job is running"
 	self.Description = ""
-	self.Examples = []string{"curl localhost:3000/api/admin/root/list-backup-snapshots -H \"Authorization: Bearer $TOKEN\""}
+	self.Examples = []string{"curl localhost:3000/api/admin/root/list-backup-snapshots -H \"Authorization: Bearer $TOKEN\"", "curl \"localhost:3000/api/admin/root/list-backup-snapshots?prefix=daily-\" -H \"Authorization: Bearer $TOKEN\""}
 	self.Hidden = false
 
 	self.Paths = []api.Path{
@@ -40,7 +40,19 @@ func NewRoute(sandbox *api.Sandbox) *api.Route {
 		},
 	}
 
-	self.Parameters = []api.Parameter{}
+	self.Parameters = []api.Parameter{
+		{
+			Id:          "Prefix",
+			Key:         "prefix",
+			Sources:     []api.ParameterSource{api.SourceQuery},
+			Required:    false,
+			Type:        api.ParameterString,
+			Default:     "",
+			HasDefault:  false,
+			Description: "keeps only the snapshots whose name starts with it",
+			Trigger:     api.Trigger{Set: false, Type: api.TriggerEqual, Value: "", Negate: false, IgnoreCase: false},
+		},
+	}
 
 	self.Body = api.RouteBody{
 		Type:        "none",
