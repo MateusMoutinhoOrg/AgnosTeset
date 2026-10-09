@@ -1,4 +1,4 @@
-# `sandbox/api/databaseconfig.go`
+# `sandbox/api/generated.databaseconfig.go`
 
 | Constant | Value | Description |
 | --- | --- | --- |

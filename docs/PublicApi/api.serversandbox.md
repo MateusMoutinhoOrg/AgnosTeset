@@ -1,4 +1,4 @@
-# `sandbox/api/serversandbox.go`
+# `sandbox/api/generated.serversandbox.go`
 
 ## `ServerSandbox`
 

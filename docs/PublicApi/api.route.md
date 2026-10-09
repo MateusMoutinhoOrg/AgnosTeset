@@ -1,4 +1,4 @@
-# `sandbox/api/route.go`
+# `sandbox/api/generated.route.go`
 
 | Constant | Value | Description |
 | --- | --- | --- |
