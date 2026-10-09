@@ -44,8 +44,9 @@ func convProjectSandbox(v remoteapi.ProjectSandbox) databasedeps.ProjectSandbox 
 // convDatabases carries one value between the two copies of the contract.
 func convDatabases(v remoteapi.Databases) databasedeps.Databases {
 	return databasedeps.Databases{
-		New: func(p0 databasedeps.Props) databasedeps.DatabaseHandle {
-			return convDatabaseHandle(v.New(revProps(p0)))
+		New: func(p0 databasedeps.Props) (databasedeps.Database, *databasedeps.Error) {
+			r0, r1 := v.New(revProps(p0))
+			return convDatabase(r0), convPtrError(r1)
 		},
 	}
 }
@@ -75,43 +76,43 @@ func revSliceSchema(v []databasedeps.Schema) []remoteapi.Schema {
 // revSchema carries one value between the two copies of the contract.
 func revSchema(v databasedeps.Schema) remoteapi.Schema {
 	return remoteapi.Schema{
-		Name:  v.Name,
-		Itens: revSliceItem(v.Itens),
+		Name:   v.Name,
+		Fields: revSliceField(v.Fields),
 	}
 }
 
-// revSliceItem carries one value between the two copies of the contract.
-func revSliceItem(v []databasedeps.Item) []remoteapi.Item {
+// revSliceField carries one value between the two copies of the contract.
+func revSliceField(v []databasedeps.Field) []remoteapi.Field {
 	if v == nil {
 		return nil
 	}
 
-	out := make([]remoteapi.Item, len(v))
+	out := make([]remoteapi.Field, len(v))
 	for index := range v {
-		out[index] = revItem(v[index])
+		out[index] = revField(v[index])
 	}
 
 	return out
 }
 
-// revItem carries one value between the two copies of the contract.
-func revItem(v databasedeps.Item) remoteapi.Item {
-	return remoteapi.Item{
+// revField carries one value between the two copies of the contract.
+func revField(v databasedeps.Field) remoteapi.Field {
+	return remoteapi.Field{
 		Name:     v.Name,
 		Type:     v.Type,
 		Required: v.Required,
 		Target:   v.Target,
-		Itens:    revSliceItem(v.Itens),
+		Fields:   revSliceField(v.Fields),
 	}
 }
 
-// convDatabaseHandle carries one value between the two copies of the contract.
-func convDatabaseHandle(v remoteapi.DatabaseHandle) databasedeps.DatabaseHandle {
-	return databasedeps.DatabaseHandle{
+// convDatabase carries one value between the two copies of the contract.
+func convDatabase(v remoteapi.Database) databasedeps.Database {
+	return databasedeps.Database{
 		Props: convProps(v.Props),
-		GetSchema: func(p0 string) (databasedeps.SchemaInstance, bool) {
-			r0, r1 := v.GetSchema(p0)
-			return convSchemaInstance(r0), r1
+		Collection: func(p0 string) (databasedeps.Collection, bool) {
+			r0, r1 := v.Collection(p0)
+			return convCollection(r0), r1
 		},
 	}
 }
@@ -141,85 +142,96 @@ func convSliceSchema(v []remoteapi.Schema) []databasedeps.Schema {
 // convSchema carries one value between the two copies of the contract.
 func convSchema(v remoteapi.Schema) databasedeps.Schema {
 	return databasedeps.Schema{
-		Name:  v.Name,
-		Itens: convSliceItem(v.Itens),
+		Name:   v.Name,
+		Fields: convSliceField(v.Fields),
 	}
 }
 
-// convSliceItem carries one value between the two copies of the contract.
-func convSliceItem(v []remoteapi.Item) []databasedeps.Item {
+// convSliceField carries one value between the two copies of the contract.
+func convSliceField(v []remoteapi.Field) []databasedeps.Field {
 	if v == nil {
 		return nil
 	}
 
-	out := make([]databasedeps.Item, len(v))
+	out := make([]databasedeps.Field, len(v))
 	for index := range v {
-		out[index] = convItem(v[index])
+		out[index] = convField(v[index])
 	}
 
 	return out
 }
 
-// convItem carries one value between the two copies of the contract.
-func convItem(v remoteapi.Item) databasedeps.Item {
-	return databasedeps.Item{
+// convField carries one value between the two copies of the contract.
+func convField(v remoteapi.Field) databasedeps.Field {
+	return databasedeps.Field{
 		Name:     v.Name,
 		Type:     v.Type,
 		Required: v.Required,
 		Target:   v.Target,
-		Itens:    convSliceItem(v.Itens),
+		Fields:   convSliceField(v.Fields),
 	}
 }
 
-// convSchemaInstance carries one value between the two copies of the contract.
-func convSchemaInstance(v remoteapi.SchemaInstance) databasedeps.SchemaInstance {
-	return databasedeps.SchemaInstance{
-		Items:  convSliceItem(v.Items),
+// convCollection carries one value between the two copies of the contract.
+func convCollection(v remoteapi.Collection) databasedeps.Collection {
+	return databasedeps.Collection{
+		Fields: convSliceField(v.Fields),
 		Prefix: v.Prefix,
-		NewItem: func(p0 map[string]any) (databasedeps.SchemaItem, *databasedeps.Error) {
-			r0, r1 := v.NewItem(p0)
-			return convSchemaItem(r0), convPtrError(r1)
+		Insert: func(p0 map[string]any) (databasedeps.Record, *databasedeps.Error) {
+			r0, r1 := v.Insert(p0)
+			return convRecord(r0), convPtrError(r1)
 		},
-		FindByKey: func(p0 string, p1 any) (databasedeps.SchemaItem, bool) {
-			r0, r1 := v.FindByKey(p0, p1)
-			return convSchemaItem(r0), r1
+		FindByKey: func(p0 string, p1 any) (databasedeps.Record, bool, *databasedeps.Error) {
+			r0, r1, r2 := v.FindByKey(p0, p1)
+			return convRecord(r0), r1, convPtrError(r2)
 		},
-		FindById: func(p0 int64) (databasedeps.SchemaItem, bool) {
-			r0, r1 := v.FindById(p0)
-			return convSchemaItem(r0), r1
+		FindByID: func(p0 int64) (databasedeps.Record, bool, *databasedeps.Error) {
+			r0, r1, r2 := v.FindByID(p0)
+			return convRecord(r0), r1, convPtrError(r2)
 		},
-		ListAll: func() ([]databasedeps.SchemaItem, *databasedeps.Error) {
+		ListAll: func() ([]databasedeps.Record, *databasedeps.Error) {
 			r0, r1 := v.ListAll()
-			return convSliceSchemaItem(r0), convPtrError(r1)
+			return convSliceRecord(r0), convPtrError(r1)
 		},
-		List: func(p0 int, p1 int) ([]databasedeps.SchemaItem, *databasedeps.Error) {
+		List: func(p0 int, p1 int) ([]databasedeps.Record, *databasedeps.Error) {
 			r0, r1 := v.List(p0, p1)
-			return convSliceSchemaItem(r0), convPtrError(r1)
+			return convSliceRecord(r0), convPtrError(r1)
 		},
+		Repair: func() *databasedeps.Error { return convPtrError(v.Repair()) },
 	}
 }
 
-// convSchemaItem carries one value between the two copies of the contract.
-func convSchemaItem(v remoteapi.SchemaItem) databasedeps.SchemaItem {
-	return databasedeps.SchemaItem{
-		Items:  convSliceItem(v.Items),
+// convRecord carries one value between the two copies of the contract.
+func convRecord(v remoteapi.Record) databasedeps.Record {
+	return databasedeps.Record{
+		Fields: convSliceField(v.Fields),
 		Prefix: v.Prefix,
-		Id:     v.Id,
+		ID:     v.ID,
 		Get: func(p0 string) (any, *databasedeps.Error) {
 			r0, r1 := v.Get(p0)
 			return r0, convPtrError(r1)
 		},
-		GetLink: func(p0 string) (databasedeps.SchemaItem, bool) {
-			r0, r1 := v.GetLink(p0)
-			return convSchemaItem(r0), r1
+		GetLink: func(p0 string) (databasedeps.Record, bool, *databasedeps.Error) {
+			r0, r1, r2 := v.GetLink(p0)
+			return convRecord(r0), r1, convPtrError(r2)
 		},
-		Update:            func(p0 string, p1 any) *databasedeps.Error { return convPtrError(v.Update(p0, p1)) },
-		Remove:            func() *databasedeps.Error { return convPtrError(v.Remove()) },
-		CheckKeysPresence: v.CheckKeysPresence,
-		ListAll:           func(p0 string) []databasedeps.SchemaItem { return convSliceSchemaItem(v.ListAll(p0)) },
-		NewSubItem: func(p0 string, p1 map[string]any) (databasedeps.SchemaItem, *databasedeps.Error) {
-			r0, r1 := v.NewSubItem(p0, p1)
-			return convSchemaItem(r0), convPtrError(r1)
+		Update: func(p0 string, p1 any) *databasedeps.Error { return convPtrError(v.Update(p0, p1)) },
+		Remove: func() *databasedeps.Error { return convPtrError(v.Remove()) },
+		HasValues: func(p0 []string) (bool, *databasedeps.Error) {
+			r0, r1 := v.HasValues(p0)
+			return r0, convPtrError(r1)
+		},
+		Nested: func(p0 string) (databasedeps.Collection, *databasedeps.Error) {
+			r0, r1 := v.Nested(p0)
+			return convCollection(r0), convPtrError(r1)
+		},
+		ListNested: func(p0 string) ([]databasedeps.Record, *databasedeps.Error) {
+			r0, r1 := v.ListNested(p0)
+			return convSliceRecord(r0), convPtrError(r1)
+		},
+		InsertNested: func(p0 string, p1 map[string]any) (databasedeps.Record, *databasedeps.Error) {
+			r0, r1 := v.InsertNested(p0, p1)
+			return convRecord(r0), convPtrError(r1)
 		},
 		String: v.String,
 	}
@@ -238,22 +250,22 @@ func convPtrError(v *remoteapi.Error) *databasedeps.Error {
 // convError carries one value between the two copies of the contract.
 func convError(v remoteapi.Error) databasedeps.Error {
 	return databasedeps.Error{
-		Type:     v.Type,
-		Key:      v.Key,
-		KeyValue: v.KeyValue,
-		Message:  v.Message,
+		Type:    v.Type,
+		Field:   v.Field,
+		Value:   v.Value,
+		Message: v.Message,
 	}
 }
 
-// convSliceSchemaItem carries one value between the two copies of the contract.
-func convSliceSchemaItem(v []remoteapi.SchemaItem) []databasedeps.SchemaItem {
+// convSliceRecord carries one value between the two copies of the contract.
+func convSliceRecord(v []remoteapi.Record) []databasedeps.Record {
 	if v == nil {
 		return nil
 	}
 
-	out := make([]databasedeps.SchemaItem, len(v))
+	out := make([]databasedeps.Record, len(v))
 	for index := range v {
-		out[index] = convSchemaItem(v[index])
+		out[index] = convRecord(v[index])
 	}
 
 	return out

@@ -15,29 +15,33 @@ import (
 
 // AddBackofficeUser inserts one backoffice-user record.
 func AddBackofficeUser(sandbox *api.Sandbox, self *BackofficeDb, props BackofficeUserInput) (BackofficeUserRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return BackofficeUserRecord{}, err
 	}
-	item, failure := schema.NewItem(newBackofficeUserFields(props))
+	record, failure := collection.Insert(newBackofficeUserFields(props))
 	if failure != nil {
 		return BackofficeUserRecord{}, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
-	return buildBackofficeUserRecord(sandbox, item)
+	return buildBackofficeUserRecord(sandbox, record)
 }
 
 // FindBackofficeUserById reads one backoffice-user record by its permanent id.
 func FindBackofficeUserById(sandbox *api.Sandbox, self *BackofficeDb, id int64) (BackofficeUserRecord, bool) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		sandbox.Deps.StdDeps.Logf("FindBackofficeUserById: %s \n", err.Error())
 		return BackofficeUserRecord{}, false
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		sandbox.Deps.StdDeps.Logf("FindBackofficeUserById: %s \n", sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure).Error())
+		return BackofficeUserRecord{}, false
+	}
 	if !ok {
 		return BackofficeUserRecord{}, false
 	}
-	built, err := buildBackofficeUserRecord(sandbox, item)
+	built, err := buildBackofficeUserRecord(sandbox, record)
 	if err != nil {
 		sandbox.Deps.StdDeps.Logf("FindBackofficeUserById: %s \n", err.Error())
 		return BackofficeUserRecord{}, false
@@ -47,17 +51,17 @@ func FindBackofficeUserById(sandbox *api.Sandbox, self *BackofficeDb, id int64) 
 
 // ListBackofficeUsers reads every backoffice-user record the filter keeps.
 func ListBackofficeUsers(sandbox *api.Sandbox, self *BackofficeDb, filter BackofficeUserFilter) ([]BackofficeUserRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return nil, err
 	}
-	items, failure := schema.ListAll()
+	records, failure := collection.ListAll()
 	if failure != nil {
 		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
 	kept := []BackofficeUserRecord{}
-	for _, item := range items {
-		built, err := buildBackofficeUserRecord(sandbox, item)
+	for _, record := range records {
+		built, err := buildBackofficeUserRecord(sandbox, record)
 		if err != nil {
 			return nil, err
 		}
@@ -71,17 +75,17 @@ func ListBackofficeUsers(sandbox *api.Sandbox, self *BackofficeDb, filter Backof
 
 // ListBackofficeUsersPage reads up to limit backoffice-user records after the first offset, every one past them when limit is 0.
 func ListBackofficeUsersPage(sandbox *api.Sandbox, self *BackofficeDb, offset int, limit int) ([]BackofficeUserRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return nil, err
 	}
-	items, failure := schema.List(offset+1, limit)
+	records, failure := collection.List(offset+1, limit)
 	if failure != nil {
 		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
 	page := []BackofficeUserRecord{}
-	for _, item := range items {
-		built, err := buildBackofficeUserRecord(sandbox, item)
+	for _, record := range records {
+		built, err := buildBackofficeUserRecord(sandbox, record)
 		if err != nil {
 			return nil, err
 		}
@@ -92,112 +96,137 @@ func ListBackofficeUsersPage(sandbox *api.Sandbox, self *BackofficeDb, offset in
 
 // CountBackofficeUser is how many backoffice-user records are live.
 func CountBackofficeUser(sandbox *api.Sandbox, self *BackofficeDb) (int, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return 0, err
 	}
-	items, failure := schema.ListAll()
+	records, failure := collection.ListAll()
 	if failure != nil {
 		return 0, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
-	return len(items), nil
+	return len(records), nil
 }
 
 // SetBackofficeUserUsername writes a new username on one backoffice-user record.
 func SetBackofficeUserUsername(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("username", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("username", value))
 }
 
 // SetBackofficeUserEmail writes a new email on one backoffice-user record.
 func SetBackofficeUserEmail(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("email", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("email", value))
 }
 
 // SetBackofficeUserPasswordHash writes a new password-hash on one backoffice-user record.
 func SetBackofficeUserPasswordHash(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("password-hash", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("password-hash", value))
 }
 
 // SetBackofficeUserRole writes a new role on one backoffice-user record.
 func SetBackofficeUserRole(sandbox *api.Sandbox, self *BackofficeDb, id int64, value int64) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("role", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("role", value))
 }
 
 // RemoveBackofficeUser deletes one backoffice-user record and everything nested under it.
 func RemoveBackofficeUser(sandbox *api.Sandbox, self *BackofficeDb, id int64) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Remove())
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Remove())
 }
 
 // AddBackofficeUserSession inserts one session record under one backoffice-user record.
 func AddBackofficeUserSession(sandbox *api.Sandbox, self *BackofficeDb, parentId int64, props BackofficeUserSessionInput) (BackofficeUserSessionRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return BackofficeUserSessionRecord{}, err
 	}
-	parent, ok := schema.FindById(parentId)
-	if !ok {
-		return BackofficeUserSessionRecord{}, sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", parentId)
-	}
-	item, failure := parent.NewSubItem("session", newBackofficeUserSessionFields(props))
+	parent, ok, failure := collection.FindByID(parentId)
 	if failure != nil {
 		return BackofficeUserSessionRecord{}, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
-	return buildBackofficeUserSessionRecord(sandbox, item)
+	if !ok {
+		return BackofficeUserSessionRecord{}, sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", parentId)
+	}
+	record, failure := parent.InsertNested("session", newBackofficeUserSessionFields(props))
+	if failure != nil {
+		return BackofficeUserSessionRecord{}, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
+	return buildBackofficeUserSessionRecord(sandbox, record)
 }
 
 // ListBackofficeUserSessions reads every session record of one backoffice-user record.
 func ListBackofficeUserSessions(sandbox *api.Sandbox, self *BackofficeDb, parentId int64) ([]BackofficeUserSessionRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "backoffice-user")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "backoffice-user")
 	if err != nil {
 		return nil, err
 	}
-	parent, ok := schema.FindById(parentId)
+	parent, ok, failure := collection.FindByID(parentId)
+	if failure != nil {
+		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return nil, sandbox.Deps.StdDeps.Errorf("backoffice-user %d not found", parentId)
 	}
+	records, failure := parent.ListNested("session")
+	if failure != nil {
+		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	nested := []BackofficeUserSessionRecord{}
-	for _, item := range parent.ListAll("session") {
-		built, err := buildBackofficeUserSessionRecord(sandbox, item)
+	for _, record := range records {
+		built, err := buildBackofficeUserSessionRecord(sandbox, record)
 		if err != nil {
 			return nil, err
 		}
@@ -208,29 +237,33 @@ func ListBackofficeUserSessions(sandbox *api.Sandbox, self *BackofficeDb, parent
 
 // AddApiToken inserts one api-token record.
 func AddApiToken(sandbox *api.Sandbox, self *BackofficeDb, props ApiTokenInput) (ApiTokenRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return ApiTokenRecord{}, err
 	}
-	item, failure := schema.NewItem(newApiTokenFields(props))
+	record, failure := collection.Insert(newApiTokenFields(props))
 	if failure != nil {
 		return ApiTokenRecord{}, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
-	return buildApiTokenRecord(sandbox, item)
+	return buildApiTokenRecord(sandbox, record)
 }
 
 // FindApiTokenById reads one api-token record by its permanent id.
 func FindApiTokenById(sandbox *api.Sandbox, self *BackofficeDb, id int64) (ApiTokenRecord, bool) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		sandbox.Deps.StdDeps.Logf("FindApiTokenById: %s \n", err.Error())
 		return ApiTokenRecord{}, false
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		sandbox.Deps.StdDeps.Logf("FindApiTokenById: %s \n", sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure).Error())
+		return ApiTokenRecord{}, false
+	}
 	if !ok {
 		return ApiTokenRecord{}, false
 	}
-	built, err := buildApiTokenRecord(sandbox, item)
+	built, err := buildApiTokenRecord(sandbox, record)
 	if err != nil {
 		sandbox.Deps.StdDeps.Logf("FindApiTokenById: %s \n", err.Error())
 		return ApiTokenRecord{}, false
@@ -240,16 +273,20 @@ func FindApiTokenById(sandbox *api.Sandbox, self *BackofficeDb, id int64) (ApiTo
 
 // FindApiTokenByTokenSha256 reads one api-token record by its indexed token-sha256.
 func FindApiTokenByTokenSha256(sandbox *api.Sandbox, self *BackofficeDb, value string) (ApiTokenRecord, bool) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		sandbox.Deps.StdDeps.Logf("FindApiTokenByTokenSha256: %s \n", err.Error())
 		return ApiTokenRecord{}, false
 	}
-	item, ok := schema.FindByKey("token-sha256", value)
+	record, ok, failure := collection.FindByKey("token-sha256", value)
+	if failure != nil {
+		sandbox.Deps.StdDeps.Logf("FindApiTokenByTokenSha256: %s \n", sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure).Error())
+		return ApiTokenRecord{}, false
+	}
 	if !ok {
 		return ApiTokenRecord{}, false
 	}
-	built, err := buildApiTokenRecord(sandbox, item)
+	built, err := buildApiTokenRecord(sandbox, record)
 	if err != nil {
 		sandbox.Deps.StdDeps.Logf("FindApiTokenByTokenSha256: %s \n", err.Error())
 		return ApiTokenRecord{}, false
@@ -259,17 +296,17 @@ func FindApiTokenByTokenSha256(sandbox *api.Sandbox, self *BackofficeDb, value s
 
 // ListApiTokens reads every api-token record the filter keeps.
 func ListApiTokens(sandbox *api.Sandbox, self *BackofficeDb, filter ApiTokenFilter) ([]ApiTokenRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return nil, err
 	}
-	items, failure := schema.ListAll()
+	records, failure := collection.ListAll()
 	if failure != nil {
 		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
 	kept := []ApiTokenRecord{}
-	for _, item := range items {
-		built, err := buildApiTokenRecord(sandbox, item)
+	for _, record := range records {
+		built, err := buildApiTokenRecord(sandbox, record)
 		if err != nil {
 			return nil, err
 		}
@@ -283,17 +320,17 @@ func ListApiTokens(sandbox *api.Sandbox, self *BackofficeDb, filter ApiTokenFilt
 
 // ListApiTokensPage reads up to limit api-token records after the first offset, every one past them when limit is 0.
 func ListApiTokensPage(sandbox *api.Sandbox, self *BackofficeDb, offset int, limit int) ([]ApiTokenRecord, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return nil, err
 	}
-	items, failure := schema.List(offset+1, limit)
+	records, failure := collection.List(offset+1, limit)
 	if failure != nil {
 		return nil, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
 	page := []ApiTokenRecord{}
-	for _, item := range items {
-		built, err := buildApiTokenRecord(sandbox, item)
+	for _, record := range records {
+		built, err := buildApiTokenRecord(sandbox, record)
 		if err != nil {
 			return nil, err
 		}
@@ -304,145 +341,175 @@ func ListApiTokensPage(sandbox *api.Sandbox, self *BackofficeDb, offset int, lim
 
 // CountApiToken is how many api-token records are live.
 func CountApiToken(sandbox *api.Sandbox, self *BackofficeDb) (int, error) {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return 0, err
 	}
-	items, failure := schema.ListAll()
+	records, failure := collection.ListAll()
 	if failure != nil {
 		return 0, sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
 	}
-	return len(items), nil
+	return len(records), nil
 }
 
 // SetApiTokenTokenSha256 writes a new token-sha256 on one api-token record.
 func SetApiTokenTokenSha256(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("token-sha256", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("token-sha256", value))
 }
 
 // SetApiTokenName writes a new name on one api-token record.
 func SetApiTokenName(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("name", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("name", value))
 }
 
 // SetApiTokenPrefix writes a new prefix on one api-token record.
 func SetApiTokenPrefix(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("prefix", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("prefix", value))
 }
 
 // SetApiTokenOwnerId writes a new owner-id on one api-token record.
 func SetApiTokenOwnerId(sandbox *api.Sandbox, self *BackofficeDb, id int64, value int64) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("owner-id", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("owner-id", value))
 }
 
 // SetApiTokenCreatedAt writes a new created-at on one api-token record.
 func SetApiTokenCreatedAt(sandbox *api.Sandbox, self *BackofficeDb, id int64, value int64) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("created-at", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("created-at", value))
 }
 
 // SetApiTokenExpiresAt writes a new expires-at on one api-token record.
 func SetApiTokenExpiresAt(sandbox *api.Sandbox, self *BackofficeDb, id int64, value int64) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("expires-at", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("expires-at", value))
 }
 
 // SetApiTokenIps writes a new ips on one api-token record.
 func SetApiTokenIps(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("ips", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("ips", value))
 }
 
 // SetApiTokenLastUsedAt writes a new last-used-at on one api-token record.
 func SetApiTokenLastUsedAt(sandbox *api.Sandbox, self *BackofficeDb, id int64, value int64) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("last-used-at", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("last-used-at", value))
 }
 
 // SetApiTokenLastUsedIp writes a new last-used-ip on one api-token record.
 func SetApiTokenLastUsedIp(sandbox *api.Sandbox, self *BackofficeDb, id int64, value string) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Update("last-used-ip", value))
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("last-used-ip", value))
 }
 
 // RemoveApiToken deletes one api-token record and everything nested under it.
 func RemoveApiToken(sandbox *api.Sandbox, self *BackofficeDb, id int64) error {
-	schema, err := sandbox.Deps.OpinionatedAgnosDatabase.Schema(self.handle, "api-token")
+	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "api-token")
 	if err != nil {
 		return err
 	}
-	item, ok := schema.FindById(id)
+	record, ok, failure := collection.FindByID(id)
+	if failure != nil {
+		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
+	}
 	if !ok {
 		return sandbox.Deps.StdDeps.Errorf("api-token %d not found", id)
 	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(item.Remove())
+	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Remove())
 }
 
 // newBackofficeUserFields is one insert into backoffice-user as the stored field map.
@@ -458,28 +525,28 @@ func newBackofficeUserFields(props BackofficeUserInput) map[string]any {
 // buildBackofficeUserRecord reads one stored backoffice-user record back into its Go form.
 // Every conversion is checked, so a value of the wrong type is an error rather
 // than a panic.
-func buildBackofficeUserRecord(sandbox *api.Sandbox, item databasedeps.SchemaItem) (BackofficeUserRecord, error) {
-	built := BackofficeUserRecord{Id: item.Id}
+func buildBackofficeUserRecord(sandbox *api.Sandbox, record databasedeps.Record) (BackofficeUserRecord, error) {
+	built := BackofficeUserRecord{Id: record.ID}
 
-	valueUsername, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "username")
+	valueUsername, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "username")
 	if err != nil {
 		return built, err
 	}
 	built.Username = valueUsername
 
-	valueEmail, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "email")
+	valueEmail, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "email")
 	if err != nil {
 		return built, err
 	}
 	built.Email = valueEmail
 
-	valuePasswordHash, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "password-hash")
+	valuePasswordHash, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "password-hash")
 	if err != nil {
 		return built, err
 	}
 	built.PasswordHash = valuePasswordHash
 
-	valueRole, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(item, "role")
+	valueRole, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(record, "role")
 	if err != nil {
 		return built, err
 	}
@@ -516,10 +583,10 @@ func newBackofficeUserSessionFields(props BackofficeUserSessionInput) map[string
 // buildBackofficeUserSessionRecord reads one stored session record back into its Go form.
 // Every conversion is checked, so a value of the wrong type is an error rather
 // than a panic.
-func buildBackofficeUserSessionRecord(sandbox *api.Sandbox, item databasedeps.SchemaItem) (BackofficeUserSessionRecord, error) {
-	built := BackofficeUserSessionRecord{Id: item.Id}
+func buildBackofficeUserSessionRecord(sandbox *api.Sandbox, record databasedeps.Record) (BackofficeUserSessionRecord, error) {
+	built := BackofficeUserSessionRecord{Id: record.ID}
 
-	valueExpiresAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(item, "expires-at")
+	valueExpiresAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(record, "expires-at")
 	if err != nil {
 		return built, err
 	}
@@ -546,58 +613,58 @@ func newApiTokenFields(props ApiTokenInput) map[string]any {
 // buildApiTokenRecord reads one stored api-token record back into its Go form.
 // Every conversion is checked, so a value of the wrong type is an error rather
 // than a panic.
-func buildApiTokenRecord(sandbox *api.Sandbox, item databasedeps.SchemaItem) (ApiTokenRecord, error) {
-	built := ApiTokenRecord{Id: item.Id}
+func buildApiTokenRecord(sandbox *api.Sandbox, record databasedeps.Record) (ApiTokenRecord, error) {
+	built := ApiTokenRecord{Id: record.ID}
 
-	valueTokenSha256, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "token-sha256")
+	valueTokenSha256, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "token-sha256")
 	if err != nil {
 		return built, err
 	}
 	built.TokenSha256 = valueTokenSha256
 
-	valueName, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "name")
+	valueName, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "name")
 	if err != nil {
 		return built, err
 	}
 	built.Name = valueName
 
-	valuePrefix, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "prefix")
+	valuePrefix, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "prefix")
 	if err != nil {
 		return built, err
 	}
 	built.Prefix = valuePrefix
 
-	valueOwnerId, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(item, "owner-id")
+	valueOwnerId, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(record, "owner-id")
 	if err != nil {
 		return built, err
 	}
 	built.OwnerId = valueOwnerId
 
-	valueCreatedAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(item, "created-at")
+	valueCreatedAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(record, "created-at")
 	if err != nil {
 		return built, err
 	}
 	built.CreatedAt = valueCreatedAt
 
-	valueExpiresAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(item, "expires-at")
+	valueExpiresAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(record, "expires-at")
 	if err != nil {
 		return built, err
 	}
 	built.ExpiresAt = valueExpiresAt
 
-	valueIps, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "ips")
+	valueIps, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "ips")
 	if err != nil {
 		return built, err
 	}
 	built.Ips = valueIps
 
-	valueLastUsedAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(item, "last-used-at")
+	valueLastUsedAt, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadInt(record, "last-used-at")
 	if err != nil {
 		return built, err
 	}
 	built.LastUsedAt = valueLastUsedAt
 
-	valueLastUsedIp, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(item, "last-used-ip")
+	valueLastUsedIp, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "last-used-ip")
 	if err != nil {
 		return built, err
 	}

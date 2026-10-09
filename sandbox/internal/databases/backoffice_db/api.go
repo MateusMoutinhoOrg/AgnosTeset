@@ -105,13 +105,13 @@ type ApiTokenFilter struct {
 	LastUsedIpEquals      string
 }
 
-// BackofficeDb is the backoffice-db database: the handle it was built over and one
-// function field per generated method. Building one is free — it touches no
-// key and creates nothing until the first record is written — so whoever needs
-// it calls New on the spot instead of reading it off the Sandbox.
+// BackofficeDb is the backoffice-db database: the store database it was built over and
+// one function field per generated method. Building one is free — it touches
+// no key and creates nothing until the first record is written — so whoever
+// needs it calls New on the spot instead of reading it off the Sandbox.
 type BackofficeDb struct {
-	sandbox *api.Sandbox
-	handle  databasedeps.DatabaseHandle
+	sandbox  *api.Sandbox
+	database databasedeps.Database
 
 	// AddBackofficeUser inserts one backoffice-user record.
 	AddBackofficeUser func(props BackofficeUserInput) (BackofficeUserRecord, error)
