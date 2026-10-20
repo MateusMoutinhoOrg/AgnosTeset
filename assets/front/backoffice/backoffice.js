@@ -67,7 +67,7 @@
         body: file
       }).then(function (response) {
         if (response.ok) {
-          location.href = '/admin/root/list-backup-snapshots?notice=uploaded';
+          location.href = '/admin/root/list-backups?notice=uploaded';
           return;
         }
         return response.json().then(function (body) {

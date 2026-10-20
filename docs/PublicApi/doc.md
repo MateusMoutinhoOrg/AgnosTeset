@@ -23,18 +23,19 @@ struct of function fields, filled by a binder.
 
 | Page | Declares |
 | --- | --- |
-| [`sandbox/api/sandbox.go`](api.sandbox.md) | `Sandbox` |
+| [`sandbox/api/generated.sandbox.go`](api.sandbox.md) | `Sandbox` |
 | [`sandbox/api/backofficeconfig.go`](api.backofficeconfig.md) | `BackofficeConfig` |
-| [`sandbox/api/cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
-| [`sandbox/api/clisandbox.go`](api.clisandbox.md) | `CliSandbox` |
-| [`sandbox/api/command.go`](api.command.md) | `ArgString`, `ArgInteger`, `ArgNumber`, `ArgUuid`, `FlagString`, `FlagInteger`, `FlagNumber`, `FlagBoolean`, `FlagStringArray`, `FlagIntegerArray`, `FailureHandler`, `FailureNotFound`, `FailureBadUsage`, `FailureUnknownFlag`, `FailureUnexpectedArg`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command` |
-| [`sandbox/api/config.go`](api.config.md) | `Config` |
+| [`sandbox/api/generated.cli.go`](api.cli.md) | `ExitOk`, `ExitFailure`, `ExitUsage`, `Cli` |
+| [`sandbox/api/generated.clisandbox.go`](api.clisandbox.md) | `CliSandbox` |
+| [`sandbox/api/generated.command.go`](api.command.md) | `ArgString`, `ArgInteger`, `ArgNumber`, `ArgUuid`, `FlagString`, `FlagInteger`, `FlagNumber`, `FlagBoolean`, `FlagStringArray`, `FlagIntegerArray`, `FailureHandler`, `FailureNotFound`, `FailureBadUsage`, `FailureUnknownFlag`, `FailureUnexpectedArg`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command` |
+| [`sandbox/api/generated.config.go`](api.config.md) | `Config` |
+| [`sandbox/api/generated.databaseconfig.go`](api.databaseconfig.md) | `DefaultDatabaseDir`, `DatabaseConfig` |
+| [`sandbox/api/generated.route.go`](api.route.md) | `PathString`, `PathInteger`, `PathNumber`, `PathUuid`, `SourceHeader`, `SourceQuery`, `SourceCookie`, `ParameterString`, `ParameterNumber`, `ParameterBoolean`, `ParameterDateTime`, `ParameterStringArray`, `ParameterInteger`, `ParameterIntegerArray`, `AnyMethod`, `PathType`, `Path`, `ParameterSource`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route` |
+| [`sandbox/api/generated.server.go`](api.server.md) | `StatusOK`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMediaType`, `StatusUnprocessableEntity`, `StatusTooManyRequests`, `StatusInternalServerError`, `StatusServiceUnavailable`, `Server`, `ServeProps` |
+| [`sandbox/api/generated.serversandbox.go`](api.serversandbox.md) | `ServerSandbox` |
+| [`sandbox/api/generated.trigger.go`](api.trigger.md) | `TriggerEqual`, `TriggerPrefix`, `TriggerTextPrefix`, `TriggerSuffix`, `TriggerRegex`, `TriggerOneOf`, `TriggerType`, `Trigger` |
 | [`sandbox/api/projectconfig.go`](api.projectconfig.md) | `ProjectConfig` |
 | [`sandbox/api/projectsandbox.go`](api.projectsandbox.md) | `ProjectSandbox` |
-| [`sandbox/api/route.go`](api.route.md) | `PathString`, `PathInteger`, `PathNumber`, `PathUuid`, `SourceHeader`, `SourceQuery`, `SourceCookie`, `ParameterString`, `ParameterNumber`, `ParameterBoolean`, `ParameterDateTime`, `ParameterStringArray`, `ParameterInteger`, `ParameterIntegerArray`, `AnyMethod`, `PathType`, `Path`, `ParameterSource`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route` |
-| [`sandbox/api/server.go`](api.server.md) | `StatusOK`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMediaType`, `StatusUnprocessableEntity`, `StatusTooManyRequests`, `StatusInternalServerError`, `StatusServiceUnavailable`, `Server`, `ServeProps` |
-| [`sandbox/api/serversandbox.go`](api.serversandbox.md) | `ServerSandbox` |
-| [`sandbox/api/trigger.go`](api.trigger.md) | `TriggerEqual`, `TriggerPrefix`, `TriggerTextPrefix`, `TriggerSuffix`, `TriggerRegex`, `TriggerOneOf`, `TriggerType`, `Trigger` |
 
 ## Dependency contracts
 
@@ -44,7 +45,7 @@ field is that package's `Sandbox` struct, filled by `adapters/impls/<name>.Bind(
 | Page | Declares |
 | --- | --- |
 | [`deps.OpinionatedAgnosCli`](deps.OpinionatedAgnosCli.md) | `TriggerEqual`, `TriggerPrefix`, `TriggerTextPrefix`, `TriggerSuffix`, `TriggerRegex`, `TriggerOneOf`, `ArgString`, `ArgInteger`, `ArgNumber`, `ArgUuid`, `FlagString`, `FlagInteger`, `FlagNumber`, `FlagBoolean`, `FlagStringArray`, `FlagIntegerArray`, `FailureHandler`, `FailureNotFound`, `FailureBadUsage`, `FailureUnknownFlag`, `FailureUnexpectedArg`, `ExitOk`, `ExitFailure`, `ExitUsage`, `TriggerType`, `Trigger`, `ArgType`, `CommandArg`, `FlagType`, `CommandFlag`, `CommandResponse`, `CommandFailureKind`, `CommandFailure`, `Command`, `Cli`, `MainProps`, `Contract`, `Error` |
-| [`deps.OpinionatedAgnosDatabase`](deps.OpinionatedAgnosDatabase.md) | `Contract` |
+| [`deps.OpinionatedAgnosDatabase`](deps.OpinionatedAgnosDatabase.md) | `OpRenameField`, `OpRetypeField`, `OpRequireField`, `OpRemoveField`, `OpRemoveTable`, `TypeKey`, `TypeString`, `TypeInteger`, `TypeNumber`, `TypeBytes`, `TypeLink`, `TypeObject`, `VersionTable`, `MigratingDir`, `PreMigrationDir`, `Op`, `Version`, `Migrations`, `MigrateProps`, `Contract` |
 | [`deps.OpinionatedAgnosFront`](deps.OpinionatedAgnosFront.md) | `Root`, `Index`, `NotFound`, `RevalidateCache`, `Contract` |
 | [`deps.OpinionatedAgnosServer`](deps.OpinionatedAgnosServer.md) | `PathString`, `PathInteger`, `PathNumber`, `PathUuid`, `SourceHeader`, `SourceQuery`, `SourceCookie`, `ParameterString`, `ParameterNumber`, `ParameterBoolean`, `ParameterDateTime`, `ParameterStringArray`, `ParameterInteger`, `ParameterIntegerArray`, `AnyMethod`, `StatusOK`, `StatusCreated`, `StatusNoContent`, `StatusMovedPermanently`, `StatusFound`, `StatusSeeOther`, `StatusNotModified`, `StatusTemporaryRedirect`, `StatusPermanentRedirect`, `StatusBadRequest`, `StatusUnauthorized`, `StatusForbidden`, `StatusNotFound`, `StatusMethodNotAllowed`, `StatusConflict`, `StatusPayloadTooLarge`, `StatusUnsupportedMediaType`, `StatusUnprocessableEntity`, `StatusTooManyRequests`, `StatusInternalServerError`, `StatusServiceUnavailable`, `PathType`, `Path`, `ParameterSource`, `ParameterType`, `Parameter`, `RouteBody`, `RouteFailure`, `Route`, `Server`, `ServeProps`, `MainProps`, `Contract`, `Error` |
 | [`deps.ArchiveDeps`](deps.archivedeps.md) | `File`, `Contract` |

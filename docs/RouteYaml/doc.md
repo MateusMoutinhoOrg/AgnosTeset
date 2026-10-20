@@ -2,9 +2,9 @@
 
 `sandbox/internal/routes/[<folder>/]<name>/route.yaml` declares one http route — the file is
 what makes its directory a route, at any depth. `agnos build`
-generates two files beside it: `new.go`, the `api.Route` that lands in `Server.Routes` — a 1:1
+generates two files beside it: `generated.new.go`, the `api.Route` that lands in `Server.Routes` — a 1:1
 image of the yaml, built on `Deps.OpinionatedAgnosServer.NewRoute` — and
-`input.go`, the `Input` struct the route's `Handle` is handed, plus the
+`generated.input.go`, the `Input` struct the route's `Handle` is handed, plus the
 `ReadBody` its body calls for. The dispatch is the `OpinionatedAgnosServer` lib's `Main`:
 it reads every request against those declarations, and nothing about a route is spelled
 in Go anywhere else.
@@ -12,7 +12,7 @@ in Go anywhere else.
 | File | Owner |
 |---|---|
 | `route.yaml` | the editors below |
-| `new.go`, `input.go` | every build |
+| `generated.new.go`, `generated.input.go` | every build |
 | `handler.go` | written once by `agnos add-route`, then the project's |
 
 Grow the file with the editors of [Workflow](../Workflow/doc.md#change-the-route-surface) — one
@@ -96,6 +96,7 @@ body:
 | `paths` | The slices of the request path it reads. Required and never empty |
 | `parameters` | The values it reads from the query string and the headers |
 | `category`, `summary`, `description`, `examples`, `hidden` | As in [CommandYaml](../CommandYaml/doc.md#command-keys); feeds [Routes](../Routes/doc.md) |
+| `private` | `true` leaves the route out of `/openapi.json`, still in [Routes](../Routes/doc.md) and dispatched. `agnos set-route <name> --private` / `--public`. The backoffice's routes carry it |
 | `body` | The request body, one object rather than a sequence |
 
 `method`, `headers`, `params` and the `identifier` / `name` spelling of `paths` are the older
@@ -187,7 +188,7 @@ GET /admin  Authorization: Bearer abc       this route
 
 ## Input and `Handle`
 
-`input.go` declares one struct, every field tagged with the id `Run` fills it by:
+`generated.input.go` declares one struct, every field tagged with the id `Run` fills it by:
 
 ```go
 type Input struct {
@@ -217,7 +218,7 @@ calls the handler by reflection, since every route's `Input` is a type of its ow
 | `type` | `none` (default, no `ReadBody` at all), `raw` (`[]byte`), `text` (`string`), `json`, `form` (`map[string][]string`, `application/x-www-form-urlencoded`) |
 | `required` | An absent or empty body is `400` |
 | `max-bytes` | A longer body is `413`. Default `1048576` |
-| `content-type` | A divergent one is `415`. Default `application/json` for `json`, `application/x-www-form-urlencoded` for `form` |
+| `content-type` | A divergent one is `415`, compared without its parameters (`; charset=...`) and regardless of case; a body sent with no `Content-Type` is `415` too. Default `application/json` for `json`, `application/x-www-form-urlencoded` for `form` |
 | `json-schema` | A subset of JSON Schema, only with `type: json` |
 | `form-schema` | The same subset held flat, only with `type: form` — see [Form schema](#form-schema) |
 
@@ -263,7 +264,7 @@ body:
 ## Generated `ReadBody`
 
 `ReadBody(sandbox *api.Sandbox, route *api.Route)` is generated into the route's own
-`input.go`, and `new.go` hands it to `Route.ReadBody`: the dispatch calls it before the handler
+`generated.input.go`, and `generated.new.go` hands it to `Route.ReadBody`: the dispatch calls it before the handler
 runs and binds what it returns onto `Input.Body`, in what its `body.type` declares:
 
 | `body.type` | Returns |

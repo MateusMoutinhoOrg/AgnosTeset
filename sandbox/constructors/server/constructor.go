@@ -2,11 +2,11 @@ package server
 
 import (
 	api "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/api"
-	server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/generated/server"
+	server "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/server"
 )
 
 // Constructor fills Sandbox.Server, building it with the
-// NewServer of sandbox/internal/generated/server. sandbox/new.go calls it
+// NewServer of sandbox/internal/server. sandbox/generated.new.go calls it
 // once, along with the Constructor of every other package under
 // sandbox/constructors/.
 //

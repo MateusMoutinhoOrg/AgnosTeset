@@ -1,4 +1,4 @@
-key-prefix: data/backup
+key-prefix: backup
 name: backup
 tables:
     - fields:

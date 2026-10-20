@@ -16,6 +16,12 @@ lists the flags of the middlewares in front of it too.
 | --- | --- |
 | [`add-backoffice-user`](add-backoffice-user.md) | Create a backoffice user with a generated password, printed once |
 
+## Database
+
+| Command | Does |
+| --- | --- |
+| [`migrate-database`](migrate-database.md) | Bring the stored data up to the version every database.yaml declares |
+
 ## Info
 
 | Command | Does |
@@ -36,6 +42,8 @@ Run in front of the commands they match, lowest `priority` first; typed by nobod
 | Middleware | Runs before | Priority | Flags it adds |
 | --- | --- | --- | --- |
 | [`backoffice-start-server`](backoffice-start-server.md) | `start-server` | 50 | `--addr`, `--allow-x-forwarded-for`, `--insecure-http` |
+| [`database-dir`](database-dir.md) | `*` | 6 | `--database` |
+| [`database-version`](database-version.md) | `*` | 7 | — |
 | [`help-flag`](help-flag.md) | `*` | 5 | `--help`, `-h` |
 
 Output channels and exit codes are in [Rules](../Rules/doc.md#output-channels).

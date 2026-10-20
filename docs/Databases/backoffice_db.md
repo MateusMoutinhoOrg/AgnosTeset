@@ -1,6 +1,6 @@
 # `BackofficeDb`
 
-`sandbox/internal/databases/backoffice_db/`, keys under `data/backofficedb`. Build one with
+`sandbox/internal/databases/backoffice_db/`, keys under `backofficedb`. Build one with
 `backoffice_db.New(sandbox)` — it touches no key, so building one is free.
 
 ## `backoffice-user`

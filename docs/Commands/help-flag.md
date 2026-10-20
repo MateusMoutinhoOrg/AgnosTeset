@@ -14,6 +14,7 @@ Runs in front of every command line. Without --help it hands the line on. With i
 | Runs in front of | When |
 | --- | --- |
 | [`add-backoffice-user`](add-backoffice-user.md) | always |
+| [`migrate-database`](migrate-database.md) | always |
 | [`help`](help.md) | always |
 | [`version`](version.md) | always |
 | [`start-server`](start-server.md) | always |

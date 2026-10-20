@@ -17,7 +17,8 @@ curl localhost:3000/admin \
   -H 'origin: my-origin' \
   -H 'host: my-host' \
   -H 'x-client-ip: my-x-client-ip' \
-  -H 'x-forwarded-for: my-x-forwarded-for'
+  -H 'x-forwarded-for: my-x-forwarded-for' \
+  -H 'x-request-method: my-x-request-method'
 ```
 
 ## Query string, headers and cookies
@@ -28,6 +29,7 @@ curl localhost:3000/admin \
 | `host` | header | text | no | `my-host` | the host the request was sent to |
 | `x-client-ip` | header | text | no | `my-x-client-ip` | the ip of the connection, set by the server and never by the client — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
 | `x-forwarded-for` | header | text | no | `my-x-forwarded-for` | the client chain a reverse proxy appended to, read only with --allow-x-forwarded-for — read by [`backoffice-client-ip`](backoffice_client_ip.md), which runs first |
+| `x-request-method` | header | text | no | `my-x-request-method` | the method of the request, set by the server and never by the client — read by [`backoffice-maintenance`](backoffice_maintenance.md), which runs first |
 
 ## What comes back
 
@@ -45,7 +47,8 @@ or `403`, for example — or let it through to this route.
 | Route | When |
 | --- | --- |
 | [`backoffice-client-ip`](backoffice_client_ip.md) | always |
-| [`backoffice-security-headers`](backoffice_security_headers.md) | depends on the address — `explain-route` gives the exact answer |
+| [`backoffice-maintenance`](backoffice_maintenance.md) | always |
+| [`backoffice-security-headers`](backoffice_security_headers.md) | always |
 
 ---
 

@@ -29,7 +29,7 @@ Serving http - bring the server up, declare routes, read a body
 | [FrontUsage](docs/FrontUsage/doc.md) | Serve a website from testebackoffice: bring the front layer up, drop files in assets/front, add pages |
 | [Routes](docs/Routes/doc.md) | Every address testebackoffice answers: what to send, a request to run, what comes back, and the OpenAPI document for Postman or Swagger |
 | [Backoffice](docs/Backoffice/doc.md) | The admin backoffice of testebackoffice: secret, users, roles, sessions, API tokens and the /api/admin JSON api |
-| [Backups](docs/Backups/doc.md) | Snapshots of every database of data/ from the backoffice: take one in the background, download, upload and restore, or build one by hand file by file |
+| [Backups](docs/Backups/doc.md) | Backups of every database of testebackoffice from the backoffice: take a snapshot in the background, download, upload and restore one, or build one by hand file by file |
 
 ### LibUsage
 
