@@ -7,6 +7,7 @@ import (
 	opinionatedagnosdatabase "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/deps/OpinionatedAgnosDatabase"
 	backoffice_db "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/backoffice_db"
 	backup "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/backup"
+	public_user "github.com/MateusMoutinhoOrg/AgnosTeset/sandbox/internal/databases/public_user"
 )
 
 // Migrations is every database the project declares, each as its own
@@ -25,5 +26,6 @@ func Migrations(sandbox *api.Sandbox) []opinionatedagnosdatabase.Migrations {
 	return []opinionatedagnosdatabase.Migrations{
 		backoffice_db.Migrations(sandbox),
 		backup.Migrations(sandbox),
+		public_user.Migrations(sandbox),
 	}
 }

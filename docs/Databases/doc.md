@@ -8,6 +8,7 @@ with the `generated.new.go` they render.
 | --- | --- | --- |
 | [`BackofficeDb`](backoffice_db.md) | `backoffice_db` | `backofficedb` |
 | [`Backup`](backup.md) | `backup` | `backup` |
+| [`PublicUser`](public_user.md) | `public_user` | `public-user` |
 
 ## The files
 
