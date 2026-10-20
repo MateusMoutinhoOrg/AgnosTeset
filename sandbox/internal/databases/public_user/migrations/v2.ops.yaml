@@ -1,0 +1,5 @@
+ops:
+    - field: username
+      kind: remove-field
+      table: users
+      type: string

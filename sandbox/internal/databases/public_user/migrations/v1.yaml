@@ -1,0 +1,7 @@
+key-prefix: public-user
+name: public-user
+tables:
+    - fields:
+        - name: username
+          type: string
+      name: users

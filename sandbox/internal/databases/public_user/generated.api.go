@@ -14,21 +14,17 @@ import (
 // UsersRecord is one stored users record: its permanent id and every
 // plain field the declaration gives it.
 type UsersRecord struct {
-	Id       int64
-	Username string
+	Id int64
 }
 
 // UsersInput is one insert into users: the fields a new record carries.
 type UsersInput struct {
-	Username string
 }
 
 // UsersFilter narrows a ListUsers. Every plain field is here, because
 // only a `key` field is indexed and this is the one way to reach the rest. A
 // zero value turns its own filter off.
 type UsersFilter struct {
-	UsernameStartsWith string
-	UsernameEquals     string
 }
 
 // PublicUser is the public-user database: the store database it was built over and
@@ -49,8 +45,6 @@ type PublicUser struct {
 	ListUsersesPage func(offset int, limit int) ([]UsersRecord, error)
 	// CountUsers is how many users records are live.
 	CountUsers func() (int, error)
-	// SetUsersUsername writes a new username on one users record.
-	SetUsersUsername func(id int64, value string) error
 	// RemoveUsers deletes one users record and everything nested under it.
 	RemoveUsers func(id int64) error
 }

@@ -1,7 +1,6 @@
 key-prefix: public-user
 name: public-user
 tables:
-    - fields:
-        - name: username
-          type: string
+    - fields: []
       name: users
+version: 2

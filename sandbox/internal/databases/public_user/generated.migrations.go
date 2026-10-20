@@ -34,6 +34,18 @@ func Migrations(sandbox *api.Sandbox) opinionatedagnosdatabase.Migrations {
 					},
 				},
 			},
+			{
+				Version: 2,
+				Schemas: []databasedeps.Schema{
+					{
+						Name:   "users",
+						Fields: []databasedeps.Field{},
+					},
+				},
+				Ops: []opinionatedagnosdatabase.Op{
+					{Kind: "remove-field", Table: "users", Field: "username", Type: "string"},
+				},
+			},
 		},
 	}
 }

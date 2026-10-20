@@ -21,10 +21,8 @@ func New(sandbox *api.Sandbox) *PublicUser {
 		Path: sandbox.Config.DatabaseDir + "/public-user",
 		Schemas: []databasedeps.Schema{
 			{
-				Name: "users",
-				Fields: []databasedeps.Field{
-					{Name: "username", Type: databasedeps.String},
-				},
+				Name:   "users",
+				Fields: []databasedeps.Field{},
 			},
 		},
 	}
@@ -50,9 +48,6 @@ func New(sandbox *api.Sandbox) *PublicUser {
 	}
 	self.CountUsers = func() (int, error) {
 		return CountUsers(self.sandbox, &self)
-	}
-	self.SetUsersUsername = func(id int64, value string) error {
-		return SetUsersUsername(self.sandbox, &self, id, value)
 	}
 	self.RemoveUsers = func(id int64) error {
 		return RemoveUsers(self.sandbox, &self, id)

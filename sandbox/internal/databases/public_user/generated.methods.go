@@ -109,22 +109,6 @@ func CountUsers(sandbox *api.Sandbox, self *PublicUser) (int, error) {
 	return len(records), nil
 }
 
-// SetUsersUsername writes a new username on one users record.
-func SetUsersUsername(sandbox *api.Sandbox, self *PublicUser, id int64, value string) error {
-	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "users")
-	if err != nil {
-		return err
-	}
-	record, ok, failure := collection.FindByID(id)
-	if failure != nil {
-		return sandbox.Deps.OpinionatedAgnosDatabase.Fail(failure)
-	}
-	if !ok {
-		return sandbox.Deps.StdDeps.Errorf("users %d not found", id)
-	}
-	return sandbox.Deps.OpinionatedAgnosDatabase.Fail(record.Update("username", value))
-}
-
 // RemoveUsers deletes one users record and everything nested under it.
 func RemoveUsers(sandbox *api.Sandbox, self *PublicUser, id int64) error {
 	collection, err := sandbox.Deps.OpinionatedAgnosDatabase.Collection(self.database, "users")
@@ -143,9 +127,7 @@ func RemoveUsers(sandbox *api.Sandbox, self *PublicUser, id int64) error {
 
 // newUsersFields is one insert into users as the stored field map.
 func newUsersFields(props UsersInput) map[string]any {
-	return map[string]any{
-		"username": props.Username,
-	}
+	return map[string]any{}
 }
 
 // buildUsersRecord reads one stored users record back into its Go form.
@@ -154,20 +136,11 @@ func newUsersFields(props UsersInput) map[string]any {
 func buildUsersRecord(sandbox *api.Sandbox, record databasedeps.Record) (UsersRecord, error) {
 	built := UsersRecord{Id: record.ID}
 
-	valueUsername, err := sandbox.Deps.OpinionatedAgnosDatabase.ReadString(record, "username")
-	if err != nil {
-		return built, err
-	}
-	built.Username = valueUsername
-
 	return built, nil
 }
 
 // matchUsers is one UsersFilter applied to one record. A zero value
 // never filters, so an empty filter keeps everything.
 func matchUsers(sandbox *api.Sandbox, item UsersRecord, filter UsersFilter) bool {
-	if !sandbox.Deps.OpinionatedAgnosDatabase.TextMatches(item.Username, filter.UsernameStartsWith, filter.UsernameEquals) {
-		return false
-	}
 	return true
 }
